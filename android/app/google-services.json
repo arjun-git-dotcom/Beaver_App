@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "754094927603",
+    "project_id": "beaver-app-370bd",
+    "storage_bucket": "beaver-app-370bd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754094927603:android:55fee4d41b57e9eaf89186",
+        "android_client_info": {
+          "package_name": "com.example.Beaver_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEaEX3jgBqT5d0M-ms05g39SCgFruSeXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
