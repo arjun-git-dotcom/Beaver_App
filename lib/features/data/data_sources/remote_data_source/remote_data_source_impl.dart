@@ -1,17 +1,56 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/data/model/user/user_model.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
+import 'package:uuid/uuid.dart';
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   final FirebaseFirestore firebaseFirestore;
   final FirebaseAuth firebaseAuth;
+  final FirebaseStorage firebaseStorage;
 
   FirebaseRemoteDataSourceImpl(
-      {required this.firebaseFirestore, required this.firebaseAuth});
+      {required this.firebaseFirestore,
+      required this.firebaseAuth,
+      required this.firebaseStorage});
+@override
+  Future<void> createUserWithImage(UserEntity user, String profileUrl) async {
+    final userCollection =
+        firebaseFirestore.collection(FirebaseConstants.users);
+
+    final uid = await getCurrentUid();
+    userCollection.doc(uid).get().then((userDoc) {
+      final newUser = UserModel(
+              name: user.name,
+              email: user.email,
+              uid: uid,
+              username: user.username,
+              bio: user.bio,
+              website: user.website,
+              followers: user.followers,
+              following: user.followers,
+              totalFollowers: user.totalFollowers,
+              totalFollowing: user.totalFollowing,
+              profileUrl: profileUrl,
+              totalPosts: user.totalPosts)
+          .toJson();
+
+      if (!userDoc.exists) {
+        userCollection.doc(uid).set(newUser);
+      } else {
+        userCollection.doc(uid).update(newUser);
+      }
+    }).catchError((error) {
+      toast('some error occured');
+    });
+  }
+
   @override
   Future<void> createUser(UserEntity user) async {
     final userCollection =
@@ -99,6 +138,14 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
               email: user.email!, password: user.password!)
           .then((value) async {
         if (value.user?.uid != null) {
+          if (user.imageFile != null) {
+            uploadImageToStorage(user.imageFile, "profileImages", false)
+                .then((profileUrl) {
+              createUserWithImage(user, profileUrl);
+            });
+          } else {
+            createUserWithImage(user, "");
+          }
           await createUser(user);
         }
       });
@@ -162,25 +209,39 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       if (userDoc != null) {
         await FirebaseFirestore.instance.collection("users").doc(user.uid).set({
           'uid': user.uid,
-       
           'name': user.displayName ?? '',
           'email': user.email ?? '',
-          'profileUrl':  '',
+          'profileUrl': '',
           'location': null,
-           "bio":null,
-           "username":null,
-           "followers":null,
-           "following":null,
-           "totalfollowers":null,
-           "totalfollowing":null,
-           "website":null
-
-
-
+          "bio": null,
+          "username": null,
+          "followers": null,
+          "following": null,
+          "totalfollowers": null,
+          "totalfollowing": null,
+          "website": null
         });
       }
     }
     return user!.uid;
   }
-}
 
+  @override
+  Future<String> uploadImageToStorage(
+      File? file, String childName, bool isPost) async {
+    Reference ref = firebaseStorage
+        .ref()
+        .child(childName)
+        .child(firebaseAuth.currentUser!.uid);
+    if (isPost) {
+      String id = Uuid().v1();
+      ref = ref.child(id);
+    }
+
+    final uploadTask = ref.putFile(file!);
+    final imageUrl =
+        (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
+
+    return await imageUrl;
+  }
+}

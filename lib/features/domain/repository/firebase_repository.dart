@@ -21,5 +21,7 @@ abstract class FirebaseRepository {
   //storage
 
   Future<String> uploadImageToStorage(
-      File? imageFile, bool? isPost, String childName);
+      File? imageFile, bool isPost, String childName);
+
+  Future<void> createUseWithImageUseCase(UserEntity user, String profileUrl);
 }

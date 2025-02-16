@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
@@ -43,7 +47,14 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Future<String> googleSignIn() async =>
       firebaseRemoteDataSource.googleSignIn();
+
+  @override
+  Future<void> createUseWithImageUseCase(UserEntity user, String profileUrl) =>
+      firebaseRemoteDataSource.createUserWithImage(user, profileUrl);
+
+  @override
+  Future<String> uploadImageToStorage(
+          File? imageFile, bool isPost, String childName) =>
+      firebaseRemoteDataSource.uploadImageToStorage(
+          imageFile, childName, isPost);
 }
-
-
-

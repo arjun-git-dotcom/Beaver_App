@@ -55,7 +55,7 @@ Future<void> init() async {
 
 
   //cloud storage
-  
+
   sl.registerLazySingleton(() => UploadImageToStorageUsecase(repository: sl.call()));
 
   //repositories
@@ -66,7 +66,7 @@ Future<void> init() async {
   //Remote Data Source
 
   sl.registerLazySingleton<FirebaseRemoteDataSource>(() =>
-      FirebaseRemoteDataSourceImpl(
+      FirebaseRemoteDataSourceImpl(firebaseStorage: sl.call(),
           firebaseFirestore: sl.call(), firebaseAuth: sl.call()));
 
   //externals
