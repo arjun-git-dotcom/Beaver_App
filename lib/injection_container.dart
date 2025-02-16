@@ -5,6 +5,7 @@ import 'package:social_media/features/data/data_sources/remote_data_source/remot
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source_impl.dart';
 import 'package:social_media/features/data/repository/firebase_repository_impl.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/create_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_single_user_usecase.dart';
@@ -27,12 +28,12 @@ Future<void> init() async {
       logoutUsecase: sl.call(),
       isLoginUsecase: sl.call(),
       getCurrentUuidUsecase: sl.call(),
-       googleSignInUsecase: sl.call()));
+      googleSignInUsecase: sl.call()));
 
   sl.registerFactory(() => CredentialCubit(
-      loginUserUsecase: sl.call(),
-      registerUserUsecase: sl.call(),
-     ));
+        loginUserUsecase: sl.call(),
+        registerUserUsecase: sl.call(),
+      ));
 
   sl.registerFactory(() =>
       UserCubit(getUsersUsecase: sl.call(), updateUserUsecase: sl.call()));
@@ -50,8 +51,12 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => CreateuserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(
-      () => GoogleSignInUsecase(firebaseRepository: sl.call()));
+  sl.registerLazySingleton(() => GoogleSignInUsecase(firebaseRepository: sl.call()));
+
+
+  //cloud storage
+  
+  sl.registerLazySingleton(() => UploadImageToStorageUsecase(repository: sl.call()));
 
   //repositories
 

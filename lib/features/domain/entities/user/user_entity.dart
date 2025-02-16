@@ -1,6 +1,6 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:social_media/features/core/validator.dart';
 
 class UserEntity extends Equatable {
@@ -19,7 +19,7 @@ class UserEntity extends Equatable {
   final String? location;
 
   //not send to DB
-
+ final File? imageFile;
   final String? password;
   final String? otheruid;
 
@@ -38,7 +38,9 @@ class UserEntity extends Equatable {
       this.password,
       this.otheruid,
       this.totalPosts,
-      this.location});
+      this.location,
+      this.imageFile
+      });
 
   @override
   List<Object?> get props => [
@@ -55,7 +57,8 @@ class UserEntity extends Equatable {
         totalFollowing,
         location,
         password,
-        otheruid
+        otheruid,
+        imageFile
       ];
 }
 
@@ -72,3 +75,6 @@ Either<ValidationError, Tuple2<String, String>> validate(
   }
   return right(Tuple2(email, password));
 }
+
+
+
