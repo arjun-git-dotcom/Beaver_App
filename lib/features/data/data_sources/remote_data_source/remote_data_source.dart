@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 
 abstract class FirebaseRemoteDataSource {
@@ -20,10 +18,10 @@ abstract class FirebaseRemoteDataSource {
   Future<void> updateUser(UserEntity user);
   Future<String> googleSignIn();
 
-  //storage
-
-  Future<String> uploadImageToStorage(
-      File? imageFile, String childName, bool isPost);
-
-  
+//post
+  Future<void> createPost(PostEntity post);
+  Future<void> updatePost(PostEntity post);
+  Stream<List<PostEntity>> readPost(PostEntity post);
+  Future<void> deletePost(PostEntity post);
+  Future<void> likePost(PostEntity post);
 }

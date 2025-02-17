@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
+import 'package:social_media/features/widget_profile.dart';
 
 class Profilepage extends StatefulWidget {
   final UserEntity currentUser;
@@ -35,7 +36,7 @@ class _ProfilepageState extends State<Profilepage> {
                           const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     InkWell(
-                        onTap: () => _openbottomModelSheet(context),
+                        onTap: () => _openbottomModelSheet(context,widget.currentUser),
                         child: Icon(MdiIcons.menu))
                   ],
                 ),
@@ -43,9 +44,7 @@ class _ProfilepageState extends State<Profilepage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const CircleAvatar(
-                      radius: 30,
-                    ),
+                     profileWidget(imageUrl: widget.currentUser.profileUrl),
                     Row(
                       children: [
                          Column(
@@ -64,7 +63,7 @@ class _ProfilepageState extends State<Profilepage> {
                   ],
                 ),
                 sizeVer(10),
-                 Text('${widget.currentUser.name==""??widget.currentUser.username:widget.currentUser.name}',
+                 Text('${widget.currentUser.name  ==""  ? widget.currentUser.username:widget.currentUser.name }',
                     style:
                        const  TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                  Text(
@@ -132,7 +131,7 @@ logOut(context) {
           ));
 }
 
-_openbottomModelSheet(context) {
+_openbottomModelSheet(context,currentUser) {
   return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -152,7 +151,7 @@ _openbottomModelSheet(context) {
               ),
               GestureDetector(
                   onTap: () => Navigator.pushNamed(
-                      context, PageConstants.editProfilepage),
+                      context, PageConstants.editProfilepage,arguments: currentUser),
                   child: const Text('Edit profile')),
               sizeVer(10),
               const Divider(

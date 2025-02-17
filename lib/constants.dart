@@ -25,7 +25,7 @@ class PageConstants {
   static const String commentpage = 'commentPage';
   static const String loginpage = 'loginPage';
   static const String registerpage = 'registerPage';
-  static const String forgotPasswordPage= 'forgotPasswordPage';
+  static const String forgotPasswordPage = 'forgotPasswordPage';
 }
 
 class FirebaseConstants {
@@ -43,4 +43,8 @@ void toast(String message) {
       backgroundColor: primaryColor,
       textColor: backgroundColor,
       fontSize: 16);
+}
+
+class CloudinaryConstants {
+  static const uploadPreset = "preset-for-file-upload";
 }

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source._impl.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source_impl.dart';
 import 'package:social_media/features/data/repository/firebase_repository_impl.dart';
@@ -51,29 +54,37 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => CreateuserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => GoogleSignInUsecase(firebaseRepository: sl.call()));
-
+  sl.registerLazySingleton(
+      () => GoogleSignInUsecase(firebaseRepository: sl.call()));
 
   //cloud storage
 
-  sl.registerLazySingleton(() => UploadImageToStorageUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+      () => UploadImageToStorageUsecase(repository: sl.call()));
 
   //repositories
 
-  sl.registerLazySingleton<FirebaseRepository>(
-      () => FirebaseRepositoryImpl(firebaseRemoteDataSource: sl.call()));
+  sl.registerLazySingleton<FirebaseRepository>(() => FirebaseRepositoryImpl(
+      firebaseRemoteDataSource: sl.call(), cloudinaryRepository: sl.call()));
 
   //Remote Data Source
 
   sl.registerLazySingleton<FirebaseRemoteDataSource>(() =>
-      FirebaseRemoteDataSourceImpl(firebaseStorage: sl.call(),
-          firebaseFirestore: sl.call(), firebaseAuth: sl.call()));
+      FirebaseRemoteDataSourceImpl(
+          cloudinaryRepository: sl.call(),
+          firebaseFirestore: sl.call(),
+          firebaseAuth: sl.call()));
+
+  sl.registerLazySingleton<CloudinaryRepository>(
+      () => CloudinaryRepositoryImpl(firebaseAuth: sl.call(),firebaseFirestore: sl.call()));
 
   //externals
 
   final firebaseFirestore = FirebaseFirestore.instance;
   final firebaseAuth = FirebaseAuth.instance;
+  final firebaseStorage = FirebaseStorage.instance;
 
   sl.registerLazySingleton(() => firebaseFirestore);
   sl.registerLazySingleton(() => firebaseAuth);
+  sl.registerLazySingleton(() => firebaseStorage);
 }

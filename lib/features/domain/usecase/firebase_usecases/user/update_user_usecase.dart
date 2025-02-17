@@ -7,6 +7,6 @@ class UpdateUserUsecase{
  UpdateUserUsecase({required this.repository});
 
   Future<void> call(UserEntity user) {
-    return repository.registerUser(user);
+    return repository.updateUser(user);
   }
 }

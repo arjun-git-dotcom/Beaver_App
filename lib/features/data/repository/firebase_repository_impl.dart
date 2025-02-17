@@ -1,15 +1,15 @@
 import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
+import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
 
 class FirebaseRepositoryImpl implements FirebaseRepository {
   final FirebaseRemoteDataSource firebaseRemoteDataSource;
+  final CloudinaryRepository cloudinaryRepository;
 
-  FirebaseRepositoryImpl({required this.firebaseRemoteDataSource});
+  FirebaseRepositoryImpl({required this.firebaseRemoteDataSource,required this.cloudinaryRepository});
 
   @override
   Future<void> createUser(UserEntity user) async =>
@@ -55,6 +55,35 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Future<String> uploadImageToStorage(
           File? imageFile, bool isPost, String childName) =>
-      firebaseRemoteDataSource.uploadImageToStorage(
-          imageFile, childName, isPost);
+      cloudinaryRepository.uploadImageToStorage(imageFile, childName, isPost);
+
+  @override
+  Future<void> createPost(PostEntity post) {
+    // TODO: implement createPost
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deletePost(PostEntity post) {
+    // TODO: implement deletePost
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> likePost(PostEntity post) {
+    // TODO: implement likePost
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<PostEntity>> readPost(PostEntity post) {
+    // TODO: implement readPost
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updatePost(PostEntity post) {
+    // TODO: implement updatePost
+    throw UnimplementedError();
+  }
 }

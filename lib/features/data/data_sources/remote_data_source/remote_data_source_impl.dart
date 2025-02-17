@@ -1,25 +1,25 @@
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/data/model/user/user_model.dart';
+import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
-import 'package:uuid/uuid.dart';
+
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   final FirebaseFirestore firebaseFirestore;
   final FirebaseAuth firebaseAuth;
-  final FirebaseStorage firebaseStorage;
+  final CloudinaryRepository cloudinaryRepository;
 
   FirebaseRemoteDataSourceImpl(
       {required this.firebaseFirestore,
       required this.firebaseAuth,
-      required this.firebaseStorage});
-@override
+      required this.cloudinaryRepository});
+  @override
   Future<void> createUserWithImage(UserEntity user, String profileUrl) async {
     final userCollection =
         firebaseFirestore.collection(FirebaseConstants.users);
@@ -133,28 +133,28 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   @override
   Future<void> registerUser(UserEntity user) async {
     try {
-      await firebaseAuth
-          .createUserWithEmailAndPassword(
-              email: user.email!, password: user.password!)
-          .then((value) async {
-        if (value.user?.uid != null) {
-          if (user.imageFile != null) {
-            uploadImageToStorage(user.imageFile, "profileImages", false)
-                .then((profileUrl) {
-              createUserWithImage(user, profileUrl);
-            });
-          } else {
-            createUserWithImage(user, "");
-          }
-          await createUser(user);
+      UserCredential userCredential =
+          await firebaseAuth.createUserWithEmailAndPassword(
+        email: user.email!,
+        password: user.password!,
+      );
+
+      if (userCredential.user?.uid != null) {
+        String profileUrl = "";
+
+        if (user.imageFile != null) {
+          profileUrl = await cloudinaryRepository.uploadImageToStorage(
+              user.imageFile, "profileImages", false);
         }
-      });
-      return;
+
+        await createUserWithImage(user, profileUrl);
+        await createUser(user);
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        toast('email is already registered, login Instead');
+        toast('Email is already registered, login instead.');
       } else {
-        toast('something went wrong ');
+        toast('Something went wrong.');
       }
     }
   }
@@ -227,21 +227,55 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
-  Future<String> uploadImageToStorage(
-      File? file, String childName, bool isPost) async {
-    Reference ref = firebaseStorage
-        .ref()
-        .child(childName)
-        .child(firebaseAuth.currentUser!.uid);
-    if (isPost) {
-      String id = Uuid().v1();
-      ref = ref.child(id);
-    }
-
-    final uploadTask = ref.putFile(file!);
-    final imageUrl =
-        (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
-
-    return await imageUrl;
+  Future<void> createPost(PostEntity post) {
+    // TODO: implement createPost
+    throw UnimplementedError();
   }
+
+  @override
+  Future<void> deletePost(PostEntity post) {
+    // TODO: implement deletePost
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> likePost(PostEntity post) {
+    // TODO: implement likePost
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<PostEntity>> readPost(PostEntity post) {
+    // TODO: implement readPost
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updatePost(PostEntity post) {
+    // TODO: implement updatePost
+    throw UnimplementedError();
+  }
+
+
+
+  
+
+  // @override
+  // Future<String> uploadImageToStorage(
+  //     File? file, String childName, bool isPost) async {
+  //   Reference ref = firebaseStorage
+  //       .ref()
+  //       .child(childName)
+  //       .child(firebaseAuth.currentUser!.uid);
+  //   if (isPost) {
+  //     String id = Uuid().v1();
+  //     ref = ref.child(id);
+  //   }
+
+  //   final uploadTask = ref.putFile(file!);
+  //   final imageUrl =
+  //       (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
+
+  //   return await imageUrl;
+  // }
 }

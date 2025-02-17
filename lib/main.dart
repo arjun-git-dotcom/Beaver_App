@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
@@ -13,6 +14,7 @@ import 'package:social_media/injection_container.dart' as di;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp();
   await di.init();
   runApp(const MyApp());

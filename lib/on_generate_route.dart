@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
-import 'package:social_media/features/presentation/pages/map/map_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/comment_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/update_page.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
@@ -14,7 +14,10 @@ class OnGenerateRoute {
     switch (settings.name) {
       case PageConstants.editProfilepage:
         {
-          return routeBuilder(const EditProfilepage());
+          if (args is UserEntity) {
+            return routeBuilder(EditProfilepage(currentUser: args));
+          }
+          return routeBuilder(const NoPageFound());
         }
       case PageConstants.updatePostpage:
         {
@@ -43,4 +46,19 @@ class OnGenerateRoute {
 
 dynamic routeBuilder(Widget child) {
   return MaterialPageRoute(builder: (context) => child);
+}
+
+class NoPageFound extends StatelessWidget {
+  const NoPageFound({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('No Page Found'),
+        centerTitle: true,
+      ),
+      body: const Text('No Page Found'),
+    );
+  }
 }
