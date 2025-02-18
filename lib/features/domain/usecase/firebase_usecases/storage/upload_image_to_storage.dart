@@ -7,7 +7,7 @@ class UploadImageToStorageUsecase {
   UploadImageToStorageUsecase({required this.repository,});
 
 
-  Future<void> call(File?imageFile,bool isPost,String childName) {
+  Future<String> call(File?imageFile,bool isPost,String childName) {
     return repository.uploadImageToStorage(
      imageFile,isPost,childName
     );

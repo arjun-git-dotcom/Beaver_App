@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:social_media/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media/features/domain/entities/user/user_entity.dart';
+import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
+import 'package:social_media/features/presentation/pages/post/widget/upload_post_main_widget.dart';
+import 'package:social_media/injection_container.dart' as di;
 
-class Postpage extends StatelessWidget {
-  const Postpage({super.key});
+class UploadPostpage extends StatelessWidget {
+  final UserEntity currentUser;
+  const UploadPostpage({required this.currentUser, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(body: Center(child: Container(
-      
-      height: 100,width: 100,
-     
-      decoration:const  BoxDecoration(shape: BoxShape.circle, color: secondaryColor,),
-  
-    child: const Icon(Icons.upload,size: 40,color: backgroundColor,),)),);
+    return BlocProvider<PostCubit>(
+      create: (context) => di.sl<PostCubit>(),
+      child: UploadPostMainWidget(currentUser: currentUser),
+    );
   }
 }

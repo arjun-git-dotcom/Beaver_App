@@ -8,6 +8,11 @@ import 'package:social_media/features/data/data_sources/remote_data_source/remot
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source_impl.dart';
 import 'package:social_media/features/data/repository/firebase_repository_impl.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/posts/create_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/posts/delete_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/posts/like_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/posts/read_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/posts/update_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/create_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
@@ -21,6 +26,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/user/regi
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/update_user_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
+import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 
@@ -43,6 +49,15 @@ Future<void> init() async {
 
   sl.registerFactory(() => GetSingleUserCubit(getSingleUserUsecase: sl.call()));
 
+//post cubit
+
+  sl.registerFactory(() => PostCubit(
+      createPostUsecase: sl.call(),
+      deletePostUsecase: sl.call(),
+      updatePostUsecase: sl.call(),
+      likePostUsecase: sl.call(),
+      readPostUsecase: sl.call()));
+
   //usecases
 
   sl.registerLazySingleton(() => LogoutUsecase(repository: sl.call()));
@@ -62,6 +77,23 @@ Future<void> init() async {
   sl.registerLazySingleton(
       () => UploadImageToStorageUsecase(repository: sl.call()));
 
+
+
+      //post usecases
+
+      sl.registerLazySingleton(
+      () => CreatePostUsecase(repository: sl.call()));
+        sl.registerLazySingleton(
+      () => UpdatePostUsecase(repository: sl.call()));
+        sl.registerLazySingleton(
+      () => ReadPostUsecase(repository: sl.call()));
+        sl.registerLazySingleton(
+      () => DeletePostUsecase(repository: sl.call()));
+        sl.registerLazySingleton(
+      () => LikePostUsecase(repository: sl.call()));
+
+
+
   //repositories
 
   sl.registerLazySingleton<FirebaseRepository>(() => FirebaseRepositoryImpl(
@@ -75,8 +107,8 @@ Future<void> init() async {
           firebaseFirestore: sl.call(),
           firebaseAuth: sl.call()));
 
-  sl.registerLazySingleton<CloudinaryRepository>(
-      () => CloudinaryRepositoryImpl(firebaseAuth: sl.call(),firebaseFirestore: sl.call()));
+  sl.registerLazySingleton<CloudinaryRepository>(() => CloudinaryRepositoryImpl(
+      firebaseAuth: sl.call(), firebaseFirestore: sl.call()));
 
   //externals
 
@@ -85,6 +117,6 @@ Future<void> init() async {
   final firebaseStorage = FirebaseStorage.instance;
 
   sl.registerLazySingleton(() => firebaseFirestore);
-  sl.registerLazySingleton(() => firebaseAuth);
+  sl.registerLazySingleton(() => firebaseAuth);  
   sl.registerLazySingleton(() => firebaseStorage);
 }

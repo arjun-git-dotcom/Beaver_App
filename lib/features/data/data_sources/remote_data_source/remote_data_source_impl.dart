@@ -1,14 +1,13 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
+import 'package:social_media/features/data/model/post/post_model.dart';
 import 'package:social_media/features/data/model/user/user_model.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
-
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   final FirebaseFirestore firebaseFirestore;
@@ -227,38 +226,96 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
-  Future<void> createPost(PostEntity post) {
-    // TODO: implement createPost
-    throw UnimplementedError();
+  Future<void> createPost(PostEntity post) async {
+    final postCollection =
+        firebaseFirestore.collection(FirebaseConstants.posts);
+    final newpost = PostModel(
+      postId: post.postId,
+      creatorUid: post.creatorUid,
+      username: post.username,
+      description: post.description,
+      postImageUrl: post.postImageUrl,
+      likes: [],
+      totalLikes: 0,
+      totalComments: 0,
+      createAt: post.createAt,
+      userProfileUrl: post.userProfileUrl,
+    ).toJson();
+    try {
+      final postDocRef = await postCollection.doc(post.postId).get();
+      if (!postDocRef.exists) {
+        postCollection.doc(post.postId).set(newpost,SetOptions(merge: true));
+      } else {
+        postCollection.doc(post.postId).update(newpost);
+      }
+    } catch (e) {
+      print('some error occured $e');
+    }
   }
 
   @override
-  Future<void> deletePost(PostEntity post) {
-    // TODO: implement deletePost
-    throw UnimplementedError();
+  Future<void> deletePost(PostEntity post) async {
+    final postCollection =
+        firebaseFirestore.collection(FirebaseConstants.posts);
+
+    try {
+      postCollection.doc(post.postId).delete();
+    } catch (e) {
+      print('some error occured $e');
+    }
   }
 
   @override
-  Future<void> likePost(PostEntity post) {
-    // TODO: implement likePost
-    throw UnimplementedError();
+  Future<void> likePost(PostEntity post) async {
+    final postCollection =
+        firebaseFirestore.collection(FirebaseConstants.posts);
+    final currentuid = await getCurrentUid();
+    final PostRef = await postCollection.doc(currentuid).get();
+
+    if (PostRef.exists) {
+      List likes = PostRef.get('likes');
+      final totalLikes = PostRef.get('totalLikes');
+      if (likes.contains(currentuid)) {
+        postCollection.doc(post.postId).update({
+          'likes': FieldValue.arrayRemove([currentuid]),
+          'totalLikes': totalLikes - 1
+        });
+      } else {
+        postCollection.doc(post.postId).update({
+          'likes': FieldValue.arrayUnion([currentuid]),
+          "totalLikes": totalLikes + 1
+        });
+      }
+    }
   }
 
   @override
   Stream<List<PostEntity>> readPost(PostEntity post) {
-    // TODO: implement readPost
-    throw UnimplementedError();
+    final postCollection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .orderBy("createAt", descending: true);
+    return postCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => PostModel.fromSnapShot(e)).toList());
   }
 
   @override
-  Future<void> updatePost(PostEntity post) {
-    // TODO: implement updatePost
-    throw UnimplementedError();
+  Future<void> updatePost(PostEntity post) async {
+    final postCollection =
+        firebaseFirestore.collection(FirebaseConstants.posts);
+
+    Map<String, dynamic> postInfo = Map();
+
+    if (post.description != "" || post.description != null) {
+      postInfo['description'] = post.description;
+    }
+
+    if (post.postImageUrl != "" || post.postImageUrl != null) {
+      postInfo['postImageUrl'] = post.postImageUrl;
+      postCollection.doc(post.postId).update(postInfo);
+    }
   }
 
-
-
-  
+//image --->firebaseFirestore
 
   // @override
   // Future<String> uploadImageToStorage(

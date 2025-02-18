@@ -144,10 +144,14 @@ class _RegisterPageState extends State<RegisterPage> {
               height: MediaQuery.of(context).size.height * 0.15,
             ),
             Stack(children: [
-               CircleAvatar(
-                  radius: 50,
-                  backgroundColor: blueColor,
-                  child: profileWidget(image: _image)),
+              
+                  SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: profileWidget(image: _image)),
+                  ),
               Positioned(
                   right: -8,
                   bottom: -5,

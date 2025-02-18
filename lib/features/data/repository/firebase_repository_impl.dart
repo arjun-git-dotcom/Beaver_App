@@ -9,7 +9,9 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   final FirebaseRemoteDataSource firebaseRemoteDataSource;
   final CloudinaryRepository cloudinaryRepository;
 
-  FirebaseRepositoryImpl({required this.firebaseRemoteDataSource,required this.cloudinaryRepository});
+  FirebaseRepositoryImpl(
+      {required this.firebaseRemoteDataSource,
+      required this.cloudinaryRepository});
 
   @override
   Future<void> createUser(UserEntity user) async =>
@@ -58,32 +60,19 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       cloudinaryRepository.uploadImageToStorage(imageFile, childName, isPost);
 
   @override
-  Future<void> createPost(PostEntity post) {
-    // TODO: implement createPost
-    throw UnimplementedError();
-  }
+  Future<void> createPost(PostEntity post) =>
+      firebaseRemoteDataSource.createPost(post);
 
   @override
-  Future<void> deletePost(PostEntity post) {
-    // TODO: implement deletePost
-    throw UnimplementedError();
-  }
+  Future<void> deletePost(PostEntity  post) =>firebaseRemoteDataSource.deletePost(post);
+
+
+ @override
+  Future<void> likePost(PostEntity post) =>firebaseRemoteDataSource.likePost(post);
 
   @override
-  Future<void> likePost(PostEntity post) {
-    // TODO: implement likePost
-    throw UnimplementedError();
-  }
+  Stream<List<PostEntity>> readPost(PostEntity post) =>firebaseRemoteDataSource.readPost(post);
 
-  @override
-  Stream<List<PostEntity>> readPost(PostEntity post) {
-    // TODO: implement readPost
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> updatePost(PostEntity post) {
-    // TODO: implement updatePost
-    throw UnimplementedError();
-  }
+ @override
+  Future<void> updatePost(PostEntity post) =>firebaseRemoteDataSource.updatePost(post);
 }

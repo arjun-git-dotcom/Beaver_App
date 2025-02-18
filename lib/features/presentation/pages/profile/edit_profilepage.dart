@@ -19,7 +19,7 @@ class _EditProfilepageState extends State<EditProfilepage> {
   late TextEditingController _usernameController;
   late TextEditingController _websiteController;
   late TextEditingController _bioController;
-   _isUpdating = false;
+   bool _isUpdating = false;
   @override
   void initState() {
     _nameController = TextEditingController();

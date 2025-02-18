@@ -44,7 +44,13 @@ class _ProfilepageState extends State<Profilepage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     profileWidget(imageUrl: widget.currentUser.profileUrl),
+                     SizedBox(
+                      height: 80,
+                      width: 80,
+                       child: ClipRRect(
+                        borderRadius: BorderRadius.circular(40),
+                        child: profileWidget(imageUrl: widget.currentUser.profileUrl)),
+                     ),
                     Row(
                       children: [
                          Column(
