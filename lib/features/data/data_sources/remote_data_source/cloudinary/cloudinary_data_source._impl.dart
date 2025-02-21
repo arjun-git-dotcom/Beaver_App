@@ -38,7 +38,7 @@ class CloudinaryRepositoryImpl extends CloudinaryRepository {
 
         final userDoc =
             firebaseFirestore.collection('users').doc(currentUser.uid);
-        userDoc.set({'profileUrl': jsonData['secure_url']});
+        userDoc.update({'profileUrl': jsonData['secure_url']});
         return jsonData['secure_url'];
       } else {
         throw Exception("Failed to upload image");

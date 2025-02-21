@@ -13,7 +13,7 @@ class PostModel extends PostEntity {
   final Timestamp? createAt;
   final String? userProfileUrl;
 
-  PostModel(
+const  PostModel(
       {this.postId,
       this.creatorUid,
       this.username,
@@ -44,7 +44,7 @@ class PostModel extends PostEntity {
       username: snap['username'],
       description: snap['description'],
       postImageUrl: snap['postImageUrl'],
-      likes: snap['likes'],
+      likes: List.from(snap.get('likes')),
       totalLikes: snap['totalLikes'],
       totalComments: snap['totalComments'],
       createAt: snap['createAt'],

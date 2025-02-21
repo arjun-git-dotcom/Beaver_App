@@ -161,7 +161,16 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
                    ProfileFormWidget(
                     title: 'Description',
                     controller: _descriptionController,
-                  )
+                  ),
+                  sizeVer(10),
+
+                  isUploading==true?const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    
+                    children: [
+                      
+                      
+                      Text('Uploading ...'),CircularProgressIndicator()],):const SizedBox(height: 0,width: 0,),
                 ],
               ),
             ),
