@@ -102,7 +102,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
                 postImageUrl: image,
                 totalComments: 0,
                 totalLikes: 0,
-                username: widget.currentUser.name,
+                username: widget.currentUser.username,
                 userProfileUrl: widget.currentUser.profileUrl))
         .then((value) => _clear());
   }

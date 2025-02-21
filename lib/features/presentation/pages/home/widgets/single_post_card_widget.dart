@@ -18,7 +18,7 @@ class SinglePostCardWidget extends StatefulWidget {
 }
 
 class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
-  bool isLikeAnimating = false; // Move state variable here
+  bool isLikeAnimating = false; 
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               onDoubleTap: () {
                 _likePost();
                 setState(() {
-                  isLikeAnimating = true; // Update state
+                  isLikeAnimating = true; 
                 });
               },
               child: Stack(

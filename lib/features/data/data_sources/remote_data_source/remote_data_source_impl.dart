@@ -203,10 +203,10 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
     if (user != null) {
       final userDoc =
-          FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+          FirebaseFirestore.instance.collection(FirebaseConstants.users).doc(user.uid).get();
 
       if (userDoc != null) {
-        await FirebaseFirestore.instance.collection("users").doc(user.uid).set({
+        await FirebaseFirestore.instance.collection(FirebaseConstants.users).doc(user.uid).set({
           'uid': user.uid,
           'name': user.displayName ?? '',
           'email': user.email ?? '',
@@ -244,7 +244,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     try {
       final postDocRef = await postCollection.doc(post.postId).get();
       if (!postDocRef.exists) {
-        postCollection.doc(post.postId).set(newpost,SetOptions(merge: true));
+        postCollection.doc(post.postId).set(newpost, SetOptions(merge: true));
       } else {
         postCollection.doc(post.postId).update(newpost);
       }
@@ -270,20 +270,20 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final postCollection =
         firebaseFirestore.collection(FirebaseConstants.posts);
     final currentuid = await getCurrentUid();
-    final postRef = await postCollection.doc(currentuid).get();
+    final postRef =  postCollection.doc(post.postId);
+    final postRefget = await postRef.get();
 
-    if (postRef.exists) {
-      List likes = postRef.get('likes');
-      final totalLikes = postRef.get('totalLikes');
+    if (postRefget.exists) {
+      List likes = postRefget.get('likes');
       if (likes.contains(currentuid)) {
         postCollection.doc(post.postId).update({
           'likes': FieldValue.arrayRemove([currentuid]),
-          'totalLikes': totalLikes - 1
+          'totalLikes': FieldValue.increment(-1)
         });
       } else {
         postCollection.doc(post.postId).update({
           'likes': FieldValue.arrayUnion([currentuid]),
-          "totalLikes": totalLikes + 1
+          "totalLikes": FieldValue.increment(1)
         });
       }
     }

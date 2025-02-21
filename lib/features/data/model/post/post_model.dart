@@ -39,16 +39,16 @@ const  PostModel(
   factory PostModel.fromSnapShot(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
     return PostModel(
-      postId: snap['postId'],
-      creatorUid: snap['creatorUid'],
-      username: snap['username'],
-      description: snap['description'],
-      postImageUrl: snap['postImageUrl'],
+      postId: snapshot['postId'],
+      creatorUid: snapshot['creatorUid'],
+      username: snapshot['username'],
+      description: snapshot['description'],
+      postImageUrl: snapshot['postImageUrl'],
       likes: List.from(snap.get('likes')),
-      totalLikes: snap['totalLikes'],
-      totalComments: snap['totalComments'],
-      createAt: snap['createAt'],
-      userProfileUrl: snap['userProfileUrl'],
+      totalLikes: snapshot['totalLikes'],
+      totalComments: snapshot['totalComments'],
+      createAt: snapshot['createAt'],
+      userProfileUrl: snapshot['userProfileUrl'],
     );
   }
 
