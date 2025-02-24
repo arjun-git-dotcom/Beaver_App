@@ -7,7 +7,7 @@ class SearchWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
+
     return SizedBox(
       width: double.infinity,
       height: 45,

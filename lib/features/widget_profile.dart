@@ -2,20 +2,22 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:social_media/constants.dart';
 
 Widget profileWidget({String? imageUrl, File? image}) {
   if (image == null) {
     if (imageUrl == null || imageUrl == "")
-     return Image.asset(
+      return Image.asset(
         'assets/propicjpg-removebg-preview.png',
         fit: BoxFit.cover,
       );
-    else{
-         return CachedNetworkImage(
+    else {
+      return CachedNetworkImage(
         imageUrl: "$imageUrl",
         fit: BoxFit.cover,
         progressIndicatorBuilder: (context, url, downloadProgress) {
-          return const CircularProgressIndicator();
+          return SpinkitConstants().spinkitspinninglines(blueColor);
         },
         errorWidget: (context, url, error) => Image.asset(
           'assets/propicjpg-removebg-preview.png',
@@ -23,8 +25,10 @@ Widget profileWidget({String? imageUrl, File? image}) {
         ),
       );
     }
-   
   } else {
-    return Image.file(image, fit: BoxFit.cover,);
+    return Image.file(
+      image,
+      fit: BoxFit.cover,
+    );
   }
 }

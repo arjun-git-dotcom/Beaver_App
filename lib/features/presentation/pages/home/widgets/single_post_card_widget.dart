@@ -1,12 +1,16 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/pages/home/widgets/like_animation_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/injection_container.dart' as di;
 
 class SinglePostCardWidget extends StatefulWidget {
   final PostEntity post;
@@ -18,13 +22,22 @@ class SinglePostCardWidget extends StatefulWidget {
 }
 
 class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
-  bool isLikeAnimating = false; 
+  bool isLikeAnimating = false;
+  String _currentUid = "";
+  @override
+  void initState() {
+    di.sl<GetCurrentUuidUsecase>().call().then((value) {
+      _currentUid = value;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: SingleChildScrollView(
+    return Container(
+      color: backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -33,8 +46,13 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundColor: darkgreyColor,
+                    SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: profileWidget(
+                              imageUrl: widget.post.userProfileUrl)),
                     ),
                     sizeHor(10),
                     Text(widget.post.username!),
@@ -48,19 +66,18 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
             ),
             sizeVer(10),
             GestureDetector(
-              onTap: () => displayImage(widget.post.postImageUrl,context),
+              onTap: () => displayImage(widget.post.postImageUrl, context),
               onDoubleTap: () {
                 _likePost();
                 setState(() {
-                  isLikeAnimating = true; 
+                  isLikeAnimating = true;
                 });
               },
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Container(
+                  SizedBox(
                     width: double.infinity,
-                    height: MediaQuery.of(context).size.height * 0.4,
                     child: profileWidget(imageUrl: widget.post.postImageUrl),
                   ),
                   AnimatedOpacity(
@@ -90,7 +107,18 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               children: [
                 Row(
                   children: [
-                    Icon(MdiIcons.heartOutline, color: primaryColor),
+                    widget.post.likes!.contains(_currentUid)
+                       
+                        ? GestureDetector(
+                          onTap: ()=>_likePost(),
+                          child: Icon(
+                              MdiIcons.heart,
+                              color: Colors.red,
+                            ),
+                        ):  GestureDetector(
+                            
+                            onTap: ()=>_likePost(),
+                            child: Icon(MdiIcons.heartOutline, color: primaryColor)),
                     sizeHor(10),
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(context, 'commentPage'),
@@ -117,7 +145,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
             ),
             Text('view all ${widget.post.totalComments} comments'),
             Text(
-              '${DateFormat("dd/MMM/yyyy").format(widget.post.createAt!.toDate())}',
+              DateFormat("dd/MMM/yyyy").format(widget.post.createAt!.toDate()),
             ),
           ],
         ),
@@ -135,12 +163,11 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: Colors.transparent,
-            content: Container(
-              color:Colors.transparent ,
-              child: profileWidget(imageUrl: image),
-            )
-          );
+              backgroundColor: Colors.transparent,
+              content: Container(
+                color: Colors.transparent,
+                child: profileWidget(imageUrl: image),
+              ));
         });
   }
 }

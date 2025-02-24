@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 const backgroundColor = Colors.white;
@@ -48,3 +49,21 @@ void toast(String message) {
 class CloudinaryConstants {
   static const uploadPreset = "preset-for-file-upload";
 }
+
+
+class SpinkitConstants{
+  spinkitcircle() {
+  return SpinKitChasingDots();
+}
+
+spinkitspinninglines(color) {
+  return SpinKitSpinningLines(color: color);
+}
+
+spinKitRotatingCircle(color) {
+  return SpinKitRotatingCircle(
+    color: color,
+  );
+}
+}
+

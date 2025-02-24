@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
+import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 
 class CloudinaryRepositoryImpl extends CloudinaryRepository {
   final FirebaseFirestore firebaseFirestore;
@@ -38,7 +39,13 @@ class CloudinaryRepositoryImpl extends CloudinaryRepository {
 
         final userDoc =
             firebaseFirestore.collection('users').doc(currentUser.uid);
-        userDoc.update({'profileUrl': jsonData['secure_url']});
+
+        PostEntity post = const PostEntity();
+        final postDoc = firebaseFirestore.collection('posts').doc(post.postId);
+
+        isPost == false
+            ? userDoc.update({'profileUrl': jsonData['secure_url']})
+            : postDoc.update({'postImageUrl': jsonData['secure_url']});
         return jsonData['secure_url'];
       } else {
         throw Exception("Failed to upload image");

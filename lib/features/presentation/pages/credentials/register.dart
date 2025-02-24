@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
@@ -12,8 +10,6 @@ import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_state.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
-import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
-
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
 import 'package:social_media/features/widget_profile.dart';

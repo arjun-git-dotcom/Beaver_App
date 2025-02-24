@@ -150,7 +150,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
                           child: profileWidget(
                               imageUrl: widget.currentUser.profileUrl))),
                   sizeVer(10),
-                  Text('${widget.currentUser.name}'),
+                  Text('${widget.currentUser.username}'),
                   sizeVer(10),
                   SizedBox(
                     width: double.infinity,
