@@ -4,6 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
+import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
+import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
         BlocProvider(create: (_) => di.sl<CredentialCubit>()),
         BlocProvider(create: (_) => di.sl<UserCubit>()),
-        BlocProvider(create: (_) => di.sl<GetSingleUserCubit>())
+        BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

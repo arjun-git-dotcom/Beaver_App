@@ -105,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 website: "",
                 name: "",
                 imageFile: _image,
-                uid: ""))
+                uid: null))
         .then((value) => _clear());
   }
 

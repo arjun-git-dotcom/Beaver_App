@@ -27,6 +27,9 @@ class PageConstants {
   static const String loginpage = 'loginPage';
   static const String registerpage = 'registerPage';
   static const String forgotPasswordPage = 'forgotPasswordPage';
+
+  static const String postDetailsPage = "postDetailsPage";
+  static const String profilePage = 'profilePage';
 }
 
 class FirebaseConstants {
@@ -50,20 +53,18 @@ class CloudinaryConstants {
   static const uploadPreset = "preset-for-file-upload";
 }
 
-
-class SpinkitConstants{
+class SpinkitConstants {
   spinkitcircle() {
-  return SpinKitChasingDots();
-}
+    return SpinKitChasingDots();
+  }
 
-spinkitspinninglines(color) {
-  return SpinKitSpinningLines(color: color);
-}
+  spinkitspinninglines(color) {
+    return SpinKitSpinningLines(color: color);
+  }
 
-spinKitRotatingCircle(color) {
-  return SpinKitRotatingCircle(
-    color: color,
-  );
+  spinKitRotatingCircle(color) {
+    return SpinKitRotatingCircle(
+      color: color,
+    );
+  }
 }
-}
-

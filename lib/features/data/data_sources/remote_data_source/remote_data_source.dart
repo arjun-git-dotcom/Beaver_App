@@ -24,4 +24,5 @@ abstract class FirebaseRemoteDataSource {
   Stream<List<PostEntity>> readPost(PostEntity post);
   Future<void> deletePost(PostEntity post);
   Future<void> likePost(PostEntity post);
+  Stream<List<PostEntity>> getSinglePost(String postId);
 }

@@ -8,7 +8,7 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
-import 'package:social_media/features/presentation/pages/home/widgets/like_animation_widget.dart';
+import 'package:social_media/features/presentation/pages/post/widget/like_animation_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 

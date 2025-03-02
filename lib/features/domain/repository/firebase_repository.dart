@@ -29,7 +29,7 @@ abstract class FirebaseRepository {
   //post features
 
   Future<void> createPost(PostEntity post);
-    Future<void> updatePost(PostEntity post);
+  Future<void> updatePost(PostEntity post);
 
   Stream<List<PostEntity>> readPost(PostEntity post);
 
@@ -37,4 +37,5 @@ abstract class FirebaseRepository {
 
   Future<void> likePost(PostEntity post);
 
+  Stream<List<PostEntity>> getSinglePost(String postId);
 }

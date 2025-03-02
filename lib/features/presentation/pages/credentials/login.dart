@@ -1,15 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_state.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
-import 'package:social_media/features/presentation/utils/validation_toast.dart';
 
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';

@@ -64,15 +64,22 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       firebaseRemoteDataSource.createPost(post);
 
   @override
-  Future<void> deletePost(PostEntity  post) =>firebaseRemoteDataSource.deletePost(post);
-
-
- @override
-  Future<void> likePost(PostEntity post) =>firebaseRemoteDataSource.likePost(post);
+  Future<void> deletePost(PostEntity post) =>
+      firebaseRemoteDataSource.deletePost(post);
 
   @override
-  Stream<List<PostEntity>> readPost(PostEntity post) =>firebaseRemoteDataSource.readPost(post);
+  Future<void> likePost(PostEntity post) =>
+      firebaseRemoteDataSource.likePost(post);
 
- @override
-  Future<void> updatePost(PostEntity post) =>firebaseRemoteDataSource.updatePost(post);
+  @override
+  Stream<List<PostEntity>> readPost(PostEntity post) =>
+      firebaseRemoteDataSource.readPost(post);
+
+  @override
+  Future<void> updatePost(PostEntity post) =>
+      firebaseRemoteDataSource.updatePost(post);
+
+  @override
+  Stream<List<PostEntity>> getSinglePost(String postId) =>
+      firebaseRemoteDataSource.getSinglePost(postId);
 }

@@ -6,7 +6,10 @@ import 'package:social_media/features/presentation/pages/credentials/login.dart'
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
 import 'package:social_media/features/presentation/pages/post/comment/comment_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/update_page.dart';
+import 'package:social_media/features/presentation/pages/post/post_details_page.dart';
+import 'package:social_media/features/presentation/pages/post/widget/post_details_main_widget.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
+import 'package:social_media/features/presentation/pages/profile/profilepage.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -39,6 +42,21 @@ class OnGenerateRoute {
       case PageConstants.forgotPasswordPage:
         {
           return routeBuilder(const ForgotPasswordPage());
+        }
+
+      case PageConstants.postDetailsPage:
+        {
+          if (args is String) {
+            return routeBuilder(PostDetailsPage(postId: args));
+          }
+          return routeBuilder(NoPageFound());
+        }
+
+      case PageConstants.profilePage:
+        {
+          if (args is UserEntity) {
+            return routeBuilder(Profilepage(currentUser: args));
+          }
         }
     }
   }

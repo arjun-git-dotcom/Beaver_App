@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:social_media/constants.dart';
 
 Widget profileWidget({String? imageUrl, File? image}) {
   if (image == null) {
-    if (imageUrl == null || imageUrl == "")
+    if (imageUrl == null || imageUrl == ""){
       return Image.asset(
         'assets/propicjpg-removebg-preview.png',
         fit: BoxFit.cover,
       );
+    }
+      
     else {
       return CachedNetworkImage(
         imageUrl: "$imageUrl",

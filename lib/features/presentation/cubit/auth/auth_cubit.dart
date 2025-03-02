@@ -44,6 +44,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> googleSignIn() async {
+ 
     try {
       final uid = await googleSignInUsecase.call();
       emit(Authenticated(uid: uid));

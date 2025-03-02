@@ -55,7 +55,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final userCollection =
         firebaseFirestore.collection(FirebaseConstants.users);
 
-    final uid = await getCurrentUid();
+    final uid = user.uid ?? await getCurrentUid();
     userCollection.doc(uid).get().then((userDoc) {
       final newUser = UserModel(
               name: user.name,
@@ -101,8 +101,10 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final userCollection =
         firebaseFirestore.collection(FirebaseConstants.users);
 
-    return userCollection.snapshots().map((querySnapshot) =>
-        querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
+    return userCollection.snapshots().map((querySnapshot) {
+  
+      return querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
+    });
   }
 
   @override
@@ -201,28 +203,48 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         await FirebaseAuth.instance.signInWithCredential(credential);
     final User? user = userCredential.user;
 
-    if (user != null) {
-      final userDoc =
-          FirebaseFirestore.instance.collection(FirebaseConstants.users).doc(user.uid).get();
+    final firebaseUser = UserEntity(
+        uid: user!.uid,
+        name: user.displayName ?? "",
+        email: user.email ?? "",
+        profileUrl: '',
+        location: null,
+        bio: null,
+        username: user.displayName,
+        followers: const [],
+        following: const [],
+        totalFollowers: 0,
+        totalFollowing: 0,
+        website: null);
+    createUser(firebaseUser);
 
-      if (userDoc != null) {
-        await FirebaseFirestore.instance.collection(FirebaseConstants.users).doc(user.uid).set({
-          'uid': user.uid,
-          'name': user.displayName ?? '',
-          'email': user.email ?? '',
-          'profileUrl': '',
-          'location': null,
-          "bio": null,
-          "username": null,
-          "followers": null,
-          "following": null,
-          "totalfollowers": null,
-          "totalfollowing": null,
-          "website": null
-        });
-      }
-    }
-    return user!.uid;
+    // if (user != null) {
+    //   final userDoc = FirebaseFirestore.instance
+    //       .collection(FirebaseConstants.users)
+    //       .doc(user.uid)
+    //       .get();
+
+    //   if (userDoc != null) {
+    //     await FirebaseFirestore.instance
+    //         .collection(FirebaseConstants.users)
+    //         .doc(user.uid)
+    //         .set({
+    //       'uid': user.uid,
+    //       'name': user.displayName ?? '',
+    //       'email': user.email ?? '',
+    //       'profileUrl': '',
+    //       'location': null,
+    //       "bio": null,
+    //       "username": null,
+    //       "followers": null,
+    //       "following": null,
+    //       "totalfollowers": null,
+    //       "totalfollowing": null,
+    //       "website": null
+    //     });
+    //   }
+    // }
+    return user.uid;
   }
 
   @override
@@ -270,7 +292,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final postCollection =
         firebaseFirestore.collection(FirebaseConstants.posts);
     final currentuid = await getCurrentUid();
-    final postRef =  postCollection.doc(post.postId);
+    final postRef = postCollection.doc(post.postId);
     final postRefget = await postRef.get();
 
     if (postRefget.exists) {
@@ -294,6 +316,16 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final postCollection = firebaseFirestore
         .collection(FirebaseConstants.posts)
         .orderBy("createAt", descending: true);
+    return postCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => PostModel.fromSnapShot(e)).toList());
+  }
+
+  @override
+  Stream<List<PostEntity>> getSinglePost(String postId) {
+    final postCollection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .orderBy("createAt", descending: true)
+        .where("postId", isEqualTo: postId);
     return postCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => PostModel.fromSnapShot(e)).toList());
   }

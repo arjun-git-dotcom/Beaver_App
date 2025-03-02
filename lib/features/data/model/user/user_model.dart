@@ -44,19 +44,20 @@ class UserModel extends UserEntity {
   factory UserModel.fromSnapshot(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
     return UserModel(
-        email: snap['email'],
-        username: snap['username'],
-        uid: snap['uid'],
-        bio: snap['bio'],
-        website: snap['website'],
-        profileUrl: snap['profileUrl'],
-        name: snap['name'],
-        totalFollowers: snap['totalFollowers'],
-        totalFollowing: snap['totalFollowing'],
-        following: List.from(
-          snap.get('followers'),
+        email: snapshot['email'],
+        totalPosts: snapshot['totalPosts'],
+        username: snapshot['username'],
+        uid: snapshot['uid'],
+        bio: snapshot['bio'],
+        website: snapshot['website'],
+        profileUrl: snapshot['profileUrl'],
+        name: snapshot['name'],
+        totalFollowers: snapshot['totalFollowers'],
+        totalFollowing: snapshot['totalFollowing'],
+        following: List<String>.from(
+          snapshot['followers']??[],
         ),
-        followers: List.from(snap.get('followers')));
+        followers: List<String>.from(snapshot['followers']??[]));
   }
 
   Map<String, dynamic> toJson() => {
@@ -67,6 +68,7 @@ class UserModel extends UserEntity {
  'website':website,
         'profileUrl':profileUrl,
  'name':name,
+ "totalPosts":totalPosts,
  'totalFollowers':totalFollowers,
   'totalFollowing':totalFollowing,
    'following':following,

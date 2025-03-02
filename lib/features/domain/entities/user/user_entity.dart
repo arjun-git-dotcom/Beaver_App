@@ -58,7 +58,8 @@ class UserEntity extends Equatable {
         location,
         password,
         otheruid,
-        imageFile
+        imageFile,
+        totalPosts
       ];
 }
 

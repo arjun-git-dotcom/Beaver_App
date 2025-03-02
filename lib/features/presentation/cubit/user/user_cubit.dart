@@ -13,7 +13,6 @@ class UserCubit extends Cubit<UserState> {
       : super(UserInitial());
 
   Future<void> updateUser(UserEntity user) async {
- 
     try {
       await updateUserUsecase.call(user);
     } on SocketException catch (_) {
@@ -23,12 +22,21 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> getUsers(UserEntity user) async {
+  Future<void> getUsers({required UserEntity user}) async {
     emit(UserLoading());
 
     try {
       final streamResponse = getUsersUsecase.call(user);
+      print("Stream Type: ${streamResponse.runtimeType}"); 
+      print("STREAM OBTAINED $streamResponse");
+      print('hiii');
       streamResponse.listen((users) {
+        (users) => print("Users received: $users");
+        onError:
+        (error) => print("Stream error: $error");
+        onDone:
+        () => print("Stream closed");
+       
         emit(UserLoaded(users: users));
       });
     } on SocketException catch (_) {
