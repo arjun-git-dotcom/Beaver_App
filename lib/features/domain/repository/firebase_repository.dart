@@ -18,6 +18,7 @@ abstract class FirebaseRepository {
   Future<String> getCurrentUid();
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
+  Future<void> followUser(UserEntity user);
 
   //storage features
 

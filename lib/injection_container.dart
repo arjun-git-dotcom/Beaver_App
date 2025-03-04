@@ -16,6 +16,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/posts/rea
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/update_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/create_user_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/user/follow_unfollow_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_single_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_users_usecase.dart';
@@ -32,9 +33,94 @@ import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 
+
 final sl = GetIt.instance;
+
+void printRegisteredDependencies() {
+  
+
+  print("🔹 Registered Dependencies in GetIt:");
+
+  final registeredTypes = [
+    FollowUsecase,
+    GetUsersUsecase,
+    UpdateUserUsecase,
+    UserCubit,
+    PostCubit,
+  ];
+
+bool _isRegistered(GetIt sl, Type type) {
+  if (type == FollowUsecase) return sl.isRegistered<FollowUsecase>();
+  if (type == GetUsersUsecase) return sl.isRegistered<GetUsersUsecase>();
+  if (type == UpdateUserUsecase) return sl.isRegistered<UpdateUserUsecase>();
+  if (type == UserCubit) return sl.isRegistered<UserCubit>();
+  if (type == PostCubit) return sl.isRegistered<PostCubit>();
+  return false; // Default case if type is not recognized
+}
+  for (var type in registeredTypes) {
+    bool isRegistered = _isRegistered(sl, type);
+    print("${type.toString()}: ${isRegistered ? "✅ Registered" : "❌ Not Registered"}");
+  }
+}
+
 Future<void> init() async {
-  //Cubits
+  print('1 2 3 4 5 h e l l o 1 2 3 4 5');
+  // External Dependencies
+  final firebaseFirestore = FirebaseFirestore.instance;
+  final firebaseAuth = FirebaseAuth.instance;
+  final firebaseStorage = FirebaseStorage.instance;
+
+  sl.registerLazySingleton(() => firebaseFirestore);
+  sl.registerLazySingleton(() => firebaseAuth);
+  sl.registerLazySingleton(() => firebaseStorage);
+
+  // Data Sources
+  sl.registerLazySingleton<CloudinaryRepository>(() => CloudinaryRepositoryImpl(
+      firebaseAuth: sl.call(), firebaseFirestore: sl.call()));
+
+  sl.registerLazySingleton<FirebaseRemoteDataSource>(
+      () => FirebaseRemoteDataSourceImpl(
+            cloudinaryRepository: sl.call(),
+            firebaseFirestore: sl.call(),
+            firebaseAuth: sl.call(),
+          ));
+
+  // Repositories
+  sl.registerLazySingleton<FirebaseRepository>(() => FirebaseRepositoryImpl(
+      firebaseRemoteDataSource: sl.call(), cloudinaryRepository: sl.call()));
+
+  // Use Cases - User
+  sl.registerLazySingleton<FollowUsecase>(() {
+    print('followusecase c h e c k  1 2 3');
+    return FollowUsecase(repository: sl.call());
+  });
+  sl.registerLazySingleton<GetUsersUsecase>(() {
+    return GetUsersUsecase(repository: sl.call());
+  });
+  sl.registerLazySingleton<UpdateUserUsecase>(() => UpdateUserUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+      () => GoogleSignInUsecase(firebaseRepository: sl.call()));
+  sl.registerLazySingleton(() => CreateuserUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => LogoutUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => IsLoginUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetCurrentUuidUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => LoginUserUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => RegisterUserUsecase(repository: sl.call()));
+
+  // Use Cases - Posts
+  sl.registerLazySingleton(() => CreatePostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => UpdatePostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => ReadPostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeletePostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => LikePostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetSinglePostUsecase(repository: sl.call()));
+
+  // Use Cases - Storage
+  sl.registerLazySingleton(
+      () => UploadImageToStorageUsecase(repository: sl.call()));
+
+  // Cubits
   sl.registerFactory(() => AuthCubit(
       logoutUsecase: sl.call(),
       isLoginUsecase: sl.call(),
@@ -46,74 +132,21 @@ Future<void> init() async {
         registerUserUsecase: sl.call(),
       ));
 
-  sl.registerFactory(() =>
-      UserCubit(getUsersUsecase: sl.call(), updateUserUsecase: sl.call()));
+ sl.registerFactory(() => UserCubit(
+  followUsecase: sl<FollowUsecase>(),
+  getUsersUsecase: sl<GetUsersUsecase>(),
+  updateUserUsecase: sl<UpdateUserUsecase>(),
+));
 
   sl.registerFactory(() => GetSingleUserCubit(getSingleUserUsecase: sl.call()));
-
-//post cubit
-
   sl.registerFactory(() => PostCubit(
-      createPostUsecase: sl.call(),
-      deletePostUsecase: sl.call(),
-      updatePostUsecase: sl.call(),
-      likePostUsecase: sl.call(),
-      readPostUsecase: sl.call()));
+        createPostUsecase: sl.call(),
+        deletePostUsecase: sl.call(),
+        updatePostUsecase: sl.call(),
+        likePostUsecase: sl.call(),
+        readPostUsecase: sl.call(),
+      ));
 
   sl.registerFactory(() => GetSinglePostCubit(getSinglePostUsecase: sl.call()));
-
-  //usecases
-
-  sl.registerLazySingleton(() => LogoutUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => IsLoginUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => GetCurrentUuidUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => LoginUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => RegisterUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => GetUsersUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => UpdateUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => CreateuserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(
-      () => GoogleSignInUsecase(firebaseRepository: sl.call()));
-
-
-  //cloud storage
-
-  sl.registerLazySingleton(
-      () => UploadImageToStorageUsecase(repository: sl.call()));
-
-  //post usecases
-
-  sl.registerLazySingleton(() => CreatePostUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => UpdatePostUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => ReadPostUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => DeletePostUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => LikePostUsecase(repository: sl.call()));
-    sl.registerLazySingleton(() => GetSinglePostUsecase(repository: sl.call()));
-
-  //repositories
-
-  sl.registerLazySingleton<FirebaseRepository>(() => FirebaseRepositoryImpl(
-      firebaseRemoteDataSource: sl.call(), cloudinaryRepository: sl.call()));
-
-  //Remote Data Source
-
-  sl.registerLazySingleton<FirebaseRemoteDataSource>(() =>
-      FirebaseRemoteDataSourceImpl(
-          cloudinaryRepository: sl.call(),
-          firebaseFirestore: sl.call(),
-          firebaseAuth: sl.call()));
-
-  sl.registerLazySingleton<CloudinaryRepository>(() => CloudinaryRepositoryImpl(
-      firebaseAuth: sl.call(), firebaseFirestore: sl.call()));
-
-  //externals
-
-  final firebaseFirestore = FirebaseFirestore.instance;
-  final firebaseAuth = FirebaseAuth.instance;
-  final firebaseStorage = FirebaseStorage.instance;
-
-  sl.registerLazySingleton(() => firebaseFirestore);
-  sl.registerLazySingleton(() => firebaseAuth);
-  sl.registerLazySingleton(() => firebaseStorage);
+  print('1 2 3 4 5 h e l l o 1 2 3 4 5 in         r e v e r s e');
 }

@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/user/follow_unfollow_user_usecase.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_state.dart';
 import 'package:social_media/features/presentation/pages/search/search_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/injection_container.dart';
 
 class SearchMainWidget extends StatefulWidget {
   const SearchMainWidget({super.key});
@@ -23,8 +25,10 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
   @override
   void initState() {
     searchcontroller = TextEditingController();
-    BlocProvider.of<PostCubit>(context).getPost(post: const PostEntity());
-    BlocProvider.of<UserCubit>(context).getUsers(user:UserEntity());
+      BlocProvider.of<PostCubit>(context).getPost(post: const PostEntity());
+     BlocProvider.of<UserCubit>(context).getUsers(user:const UserEntity());
+   
+   
 
     searchcontroller.addListener(() {
       setState(() {});
@@ -71,7 +75,7 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
                                   final user = filter[index];
                                   
                                   return GestureDetector(
-                                    onTap: ()=>Navigator.pushNamed(context, PageConstants.profilePage,arguments: user),
+                                    onTap: ()=>Navigator.pushNamed(context, PageConstants.singleprofilePage,arguments: user),
                                     child: Row(
                                     
                                       children: [
@@ -97,7 +101,7 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
                         ]
                       );
                     }
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   },
                 )
               : BlocBuilder<PostCubit, PostState>(

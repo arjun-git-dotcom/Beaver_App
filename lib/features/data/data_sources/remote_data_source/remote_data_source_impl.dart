@@ -51,6 +51,35 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Future<void> followUser(UserEntity user) async {
+    DocumentSnapshot userCollection = await firebaseFirestore
+        .collection(FirebaseConstants.users)
+        .doc(user.uid)
+        .get();
+    if (userCollection.exists) {
+      List followers = userCollection.get('followers');
+      if (followers.contains(user)) {
+        firebaseFirestore
+            .collection(FirebaseConstants.users)
+            .doc(user.uid)
+            .update({
+          'followers': FieldValue.arrayRemove([user.uid]),
+          'totalfollowers': FieldValue.increment(-1)
+        });
+      } else {
+        firebaseFirestore
+            .collection(FirebaseConstants.users)
+            .doc(user.uid)
+            .update({
+"followers":FieldValue.arrayUnion([user.uid]),
+"totalfollowers":FieldValue.increment(1)
+
+            });
+      }
+    }
+  }
+
+  @override
   Future<void> createUser(UserEntity user) async {
     final userCollection =
         firebaseFirestore.collection(FirebaseConstants.users);
@@ -102,7 +131,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         firebaseFirestore.collection(FirebaseConstants.users);
 
     return userCollection.snapshots().map((querySnapshot) {
-  
       return querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
     });
   }

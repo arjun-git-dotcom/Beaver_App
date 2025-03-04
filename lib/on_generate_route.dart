@@ -10,6 +10,7 @@ import 'package:social_media/features/presentation/pages/post/post_details_page.
 import 'package:social_media/features/presentation/pages/post/widget/post_details_main_widget.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
 import 'package:social_media/features/presentation/pages/profile/profilepage.dart';
+import 'package:social_media/features/presentation/pages/profile/single_profilepage.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -49,13 +50,13 @@ class OnGenerateRoute {
           if (args is String) {
             return routeBuilder(PostDetailsPage(postId: args));
           }
-          return routeBuilder(NoPageFound());
+          return routeBuilder(const NoPageFound());
         }
 
-      case PageConstants.profilePage:
+      case PageConstants.singleprofilePage:
         {
-          if (args is UserEntity) {
-            return routeBuilder(Profilepage(currentUser: args));
+          if (args is String) {
+            return routeBuilder(SingleProfilepage(otheruserId: args));
           }
         }
     }

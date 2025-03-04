@@ -29,7 +29,8 @@ class PageConstants {
   static const String forgotPasswordPage = 'forgotPasswordPage';
 
   static const String postDetailsPage = "postDetailsPage";
-  static const String profilePage = 'profilePage';
+  static const String singleprofilePage = 'singleprofilePage';
+  
 }
 
 class FirebaseConstants {

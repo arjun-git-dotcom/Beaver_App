@@ -85,9 +85,10 @@ class _MainScreenState extends State<MainScreen> {
                 const Searchpage(),
                  UploadPostpage(currentUser: currentUser,),
                 const Likespage(),
-                Profilepage(
-                  currentUser: currentUser,
-                )
+               Profilepage(currentuser: currentUser)
+                  
+                
+                
               ],
             ),
           );

@@ -18,6 +18,10 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       firebaseRemoteDataSource.createUser(user);
 
   @override
+  Future<void> followUser(UserEntity user) async =>
+      firebaseRemoteDataSource.followUser(user);
+
+  @override
   Future<String> getCurrentUid() async =>
       firebaseRemoteDataSource.getCurrentUid();
 

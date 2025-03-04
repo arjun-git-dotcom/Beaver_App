@@ -17,6 +17,7 @@ abstract class FirebaseRemoteDataSource {
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
   Future<String> googleSignIn();
+  Future<void> followUser(UserEntity user);
 
 //post
   Future<void> createPost(PostEntity post);
