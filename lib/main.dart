@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:get_it/get_it.dart';
-import 'package:social_media/features/domain/usecase/firebase_usecases/user/follow_unfollow_user_usecase.dart';
-import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_users_usecase.dart';
-import 'package:social_media/features/domain/usecase/firebase_usecases/user/update_user_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
-import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
@@ -23,10 +18,6 @@ Future main() async {
   await Firebase.initializeApp();
   await di.init();
 
-
-
-
-  di.printRegisteredDependencies();
 
   runApp(const MyApp());
 }
@@ -43,7 +34,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
         BlocProvider(create: (_) => di.sl<CredentialCubit>()),
         BlocProvider(create: (_) {
-          print('1 2 3 4 5 h e l l o');
           return di.sl<UserCubit>();
         }),
         BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),

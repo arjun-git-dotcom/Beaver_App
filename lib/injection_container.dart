@@ -36,35 +36,8 @@ import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 
 final sl = GetIt.instance;
 
-void printRegisteredDependencies() {
-  
-
-  print("🔹 Registered Dependencies in GetIt:");
-
-  final registeredTypes = [
-    FollowUsecase,
-    GetUsersUsecase,
-    UpdateUserUsecase,
-    UserCubit,
-    PostCubit,
-  ];
-
-bool _isRegistered(GetIt sl, Type type) {
-  if (type == FollowUsecase) return sl.isRegistered<FollowUsecase>();
-  if (type == GetUsersUsecase) return sl.isRegistered<GetUsersUsecase>();
-  if (type == UpdateUserUsecase) return sl.isRegistered<UpdateUserUsecase>();
-  if (type == UserCubit) return sl.isRegistered<UserCubit>();
-  if (type == PostCubit) return sl.isRegistered<PostCubit>();
-  return false; // Default case if type is not recognized
-}
-  for (var type in registeredTypes) {
-    bool isRegistered = _isRegistered(sl, type);
-    print("${type.toString()}: ${isRegistered ? "✅ Registered" : "❌ Not Registered"}");
-  }
-}
 
 Future<void> init() async {
-  print('1 2 3 4 5 h e l l o 1 2 3 4 5');
   // External Dependencies
   final firebaseFirestore = FirebaseFirestore.instance;
   final firebaseAuth = FirebaseAuth.instance;
@@ -91,7 +64,6 @@ Future<void> init() async {
 
   // Use Cases - User
   sl.registerLazySingleton<FollowUsecase>(() {
-    print('followusecase c h e c k  1 2 3');
     return FollowUsecase(repository: sl.call());
   });
   sl.registerLazySingleton<GetUsersUsecase>(() {
@@ -148,5 +120,5 @@ Future<void> init() async {
       ));
 
   sl.registerFactory(() => GetSinglePostCubit(getSinglePostUsecase: sl.call()));
-  print('1 2 3 4 5 h e l l o 1 2 3 4 5 in         r e v e r s e');
+  
 }
