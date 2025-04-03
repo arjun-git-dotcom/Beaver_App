@@ -12,8 +12,9 @@ class PostModel extends PostEntity {
   final num? totalComments;
   final Timestamp? createAt;
   final String? userProfileUrl;
+ 
 
-const  PostModel(
+  const PostModel(
       {this.postId,
       this.creatorUid,
       this.username,
@@ -23,7 +24,8 @@ const  PostModel(
       this.totalLikes,
       this.totalComments,
       this.createAt,
-      this.userProfileUrl})
+      this.userProfileUrl,
+      })
       : super(
             postId: postId,
             creatorUid: creatorUid,
@@ -34,7 +36,8 @@ const  PostModel(
             totalLikes: totalLikes,
             totalComments: totalComments,
             createAt: createAt,
-            userProfileUrl: userProfileUrl);
+            userProfileUrl: userProfileUrl,
+            );
 
   factory PostModel.fromSnapShot(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -49,6 +52,7 @@ const  PostModel(
       totalComments: snapshot['totalComments'],
       createAt: snapshot['createAt'],
       userProfileUrl: snapshot['userProfileUrl'],
+     
     );
   }
 
@@ -63,5 +67,6 @@ const  PostModel(
         "totalComments": totalComments,
         "createAt": createAt,
         "userProfileUrl": userProfileUrl,
+      
       };
 }

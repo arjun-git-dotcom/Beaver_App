@@ -6,13 +6,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
-import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
-import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
-import 'package:social_media/injection_container.dart' as di;
 
 class ProfileMainWidget extends StatefulWidget {
   final UserEntity currentUser;
@@ -25,8 +22,8 @@ class ProfileMainWidget extends StatefulWidget {
 class _ProfileMainWidgetState extends State<ProfileMainWidget> {
   @override
   void initState() {
-    BlocProvider.of<PostCubit>(context).getPost(post: PostEntity());
-    // TODO: implement initState
+    BlocProvider.of<PostCubit>(context).getPost(post:const  PostEntity());
+    
     super.initState();
   }
 
@@ -158,7 +155,14 @@ logOut(context) {
                           BlocProvider.of<AuthCubit>(context).logOut();
                           Navigator.pushNamedAndRemoveUntil(context,
                               PageConstants.loginpage, (route) => false);
-                          await GoogleSignIn().signOut();
+                                try {
+    await GoogleSignIn().signOut();
+     await GoogleSignIn().disconnect();
+    print("User signed out");
+  } catch (e) {
+    print("Error signing out: $e");
+  }
+                         
                           FirebaseAuth.instance.signOut();
                         },
                         child: const Text('Yes')),
@@ -201,7 +205,9 @@ _openbottomModelSheet(context, currentUser) {
               const Divider(
                 color: secondaryColor,
               ),
-              const Text('Saved Posts'),
+                 GestureDetector(
+                onTap: ()=>Navigator.pushNamed(context, PageConstants.savedPostpage),
+                child: const Text('Saved Posts')),
               sizeVer(10),
               const Divider(
                 color: secondaryColor,

@@ -6,6 +6,7 @@ class FollowUsecase {
   FollowUsecase({required this.repository});
 
   Future<void> call(UserEntity user) async {
-    return  repository.followUser(user);
+    print('followuser call');
+    return repository.followUser(user);
   }
 }

@@ -14,7 +14,7 @@ class BottomContainerWidget extends StatelessWidget {
       onTap: onTapListener,
       child: Container(width: double.infinity,
       height: 50,
-      decoration:  BoxDecoration(color: color),child:  Center(child: Text('$text',style:const  TextStyle(color: backgroundColor),))),
+      decoration:  BoxDecoration(color: color),child:  Center(child: Text('$text',style:const  TextStyle(color: backgroundColor,fontSize: 18),))),
     );
   }
 }

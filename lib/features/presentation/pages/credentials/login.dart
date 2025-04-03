@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
             sizeVer(10),
             FormContainerWidget(
               controller: passwordController,
-              hintText: "password",
+              hintText: "Password",
               isPasswordField: true,
             ),
             sizeVer(10),
@@ -138,7 +138,7 @@ sizeVer(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Dont have an account?'),
+                const Text("Don't have an account?"),
                 InkWell(
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(

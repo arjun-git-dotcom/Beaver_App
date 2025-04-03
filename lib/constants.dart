@@ -7,6 +7,7 @@ const blueColor = Colors.blue;
 const primaryColor = Colors.black;
 const secondaryColor = Colors.grey;
 const darkgreyColor = Color.fromARGB(255, 92, 92, 92);
+const redColor = Colors.red;
 
 Widget sizeVer(double height) {
   return SizedBox(
@@ -30,13 +31,14 @@ class PageConstants {
 
   static const String postDetailsPage = "postDetailsPage";
   static const String singleprofilePage = 'singleprofilePage';
-  
+  static const String savedPostpage = "savedPostPage";
+  static const String updateCommentPage = "updateCommentPage";
 }
 
 class FirebaseConstants {
   static const String users = 'users';
   static const String posts = 'posts';
-  static const String comment = 'comment';
+  static const String comment = 'comments';
   static const String reply = 'reply';
 }
 
@@ -69,3 +71,5 @@ class SpinkitConstants {
     );
   }
 }
+
+const snackbar = SnackBar(content: Text('Post Saved'));

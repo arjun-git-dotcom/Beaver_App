@@ -8,12 +8,19 @@ import 'package:social_media/features/data/data_sources/remote_data_source/remot
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source_impl.dart';
 import 'package:social_media/features/data/repository/firebase_repository_impl.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/comments/create_comment_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/comments/delete_comment_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/comments/like_comment_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/comments/read_comment_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/comments/update_comment_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/create_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/delete_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/get_single_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/like_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/read_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/posts/save_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/update_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/savedposts/read_savedPost_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/create_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/follow_unfollow_user_usecase.dart';
@@ -27,15 +34,15 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/user/logo
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/register_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/update_user_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
+import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
+import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 
-
 final sl = GetIt.instance;
-
 
 Future<void> init() async {
   // External Dependencies
@@ -69,7 +76,8 @@ Future<void> init() async {
   sl.registerLazySingleton<GetUsersUsecase>(() {
     return GetUsersUsecase(repository: sl.call());
   });
-  sl.registerLazySingleton<UpdateUserUsecase>(() => UpdateUserUsecase(repository: sl.call()));
+  sl.registerLazySingleton<UpdateUserUsecase>(
+      () => UpdateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(
       () => GoogleSignInUsecase(firebaseRepository: sl.call()));
@@ -87,6 +95,17 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeletePostUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => LikePostUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSinglePostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => SavePostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => ReadSavedpostUsecase(repository: sl.call()));
+
+  //use Cases - comments
+
+  sl.registerLazySingleton(() => CreateCommentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeleteCommentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => LikeCommentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => UpdateCommentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => ReadCommentUsecase(repository: sl.call()));
+
 
   // Use Cases - Storage
   sl.registerLazySingleton(
@@ -104,21 +123,29 @@ Future<void> init() async {
         registerUserUsecase: sl.call(),
       ));
 
- sl.registerFactory(() => UserCubit(
-  followUsecase: sl<FollowUsecase>(),
-  getUsersUsecase: sl<GetUsersUsecase>(),
-  updateUserUsecase: sl<UpdateUserUsecase>(),
-));
-
-  sl.registerFactory(() => GetSingleUserCubit(getSingleUserUsecase: sl.call()));
-  sl.registerFactory(() => PostCubit(
-        createPostUsecase: sl.call(),
-        deletePostUsecase: sl.call(),
-        updatePostUsecase: sl.call(),
-        likePostUsecase: sl.call(),
-        readPostUsecase: sl.call(),
+  sl.registerFactory(() => UserCubit(
+        followUsecase: sl<FollowUsecase>(),
+        getUsersUsecase: sl<GetUsersUsecase>(),
+        updateUserUsecase: sl<UpdateUserUsecase>(),
       ));
 
+  sl.registerFactory(() => CommentCubit(
+      createCommentUsecase: sl<CreateCommentUsecase>(),
+      deleteCommentUsecase: sl<DeleteCommentUsecase>(),
+      likeCommentUsecase: sl<LikeCommentUsecase>(),
+      readCommentUsecase: sl<ReadCommentUsecase>(),
+      updateCommentUsecase: sl<UpdateCommentUsecase>()));
+  sl.registerFactory(() => GetSingleUserCubit(getSingleUserUsecase: sl.call()));
+  sl.registerFactory(() => PostCubit(
+      createPostUsecase: sl.call(),
+      deletePostUsecase: sl.call(),
+      updatePostUsecase: sl.call(),
+      likePostUsecase: sl.call(),
+      readPostUsecase: sl.call(),
+      savePostUsecase: sl.call()));
+
   sl.registerFactory(() => GetSinglePostCubit(getSinglePostUsecase: sl.call()));
-  
+
+  sl.registerFactory(() => SavedpostCubit(
+      readSavedpostUsecase: sl.call(), readPostUsecase: sl.call()));
 }

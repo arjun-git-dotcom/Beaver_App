@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/domain/entities/app_entity.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
@@ -24,6 +25,7 @@ class SinglePostCardWidget extends StatefulWidget {
 class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
   bool isLikeAnimating = false;
   String _currentUid = "";
+   int count = 0;
   @override
   void initState() {
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
@@ -34,6 +36,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+   
     return Container(
       color: backgroundColor,
       child: Padding(
@@ -59,7 +62,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () => _openbottomModelSheet(context),
+                  onTap: () => _openbottomModelSheet(context,widget.post),
                   child: Icon(MdiIcons.dotsVertical),
                 ),
               ],
@@ -108,25 +111,40 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                 Row(
                   children: [
                     widget.post.likes!.contains(_currentUid)
-                       
                         ? GestureDetector(
-                          onTap: ()=>_likePost(),
-                          child: Icon(
+                            onTap: () => _likePost(),
+                            child: Icon(
                               MdiIcons.heart,
                               color: Colors.red,
                             ),
-                        ):  GestureDetector(
-                            
-                            onTap: ()=>_likePost(),
-                            child: Icon(MdiIcons.heartOutline, color: primaryColor)),
+                          )
+                        : GestureDetector(
+                            onTap: () => _likePost(),
+                            child: Icon(MdiIcons.heartOutline,
+                                color: primaryColor)),
                     sizeHor(10),
                     GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, 'commentPage'),
+                      onTap: () => Navigator.pushNamed(context, 'commentPage',arguments: AppEntity(creatorUid: _currentUid,postId: widget.post.postId)),
                       child: Icon(MdiIcons.commentOutline, color: primaryColor),
                     ),
                   ],
                 ),
-                const Icon(Icons.bookmark_border),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      count = 1;
+                    });
+                    BlocProvider.of<PostCubit>(context)
+                        .savePostUsecase(widget.post.postId!, _currentUid);
+                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                  },
+                  child: count == 0
+                      ? const Icon(Icons.bookmark_border)
+                      : const Icon(
+                          Icons.bookmark_border,
+                          color: Color.fromARGB(255, 30, 2, 2),
+                        ),
+                )
               ],
             ),
             Text(
@@ -172,7 +190,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
   }
 }
 
-_openbottomModelSheet(context) {
+_openbottomModelSheet(context,PostEntity post) {
   return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -191,7 +209,7 @@ _openbottomModelSheet(context) {
                 color: secondaryColor,
               ),
               GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, 'updatePostPage'),
+                  onTap: () => Navigator.pushNamed(context, 'updatePostPage',arguments: post),
                   child: const Text('Update Post')),
               sizeVer(10),
               const Divider(

@@ -5,12 +5,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';
+import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
+import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 
 import 'package:social_media/features/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
@@ -116,13 +119,27 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
                         style: const TextStyle(fontSize: 12),
                       ),
                       sizeVer(10),
+                      _currentUid == singleuser.uid
+                          ? const SizedBox(
+                              height: 30,
+                              width: 30,
+                            )
+                          : BottomContainerWidget(
+                               text: singleuser.followers!.contains(_currentUid) ?"UnFollow":"Follow",
+                        color: singleuser.followers!.contains(_currentUid) ? secondaryColor.withOpacity(.4) : blueColor,
+                              onTapListener: () {
+                                BlocProvider.of<UserCubit>(context)
+                                    .followUser(user: UserEntity(uid: _currentUid,otheruid: widget.otherUserId));
+                              },
+                            ),
+                      sizeVer(10),
                       BlocBuilder<PostCubit, PostState>(
                         builder: (context, poststate) {
                           if (poststate is PostLoaded) {
                             final posts = poststate.posts.where(
                                 (post) => post.creatorUid == _currentUid);
                             return GridView.builder(
-                                itemCount: 15,
+                                itemCount: posts.length,
                                 physics: const ScrollPhysics(),
                                 shrinkWrap: true,
                                 gridDelegate:
@@ -131,7 +148,7 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
                                         mainAxisSpacing: 5,
                                         crossAxisCount: 3),
                                 itemBuilder: (context, index) {
-                                  return Container(
+                                  return SizedBox(
                                     height: 30,
                                     width: 30,
                                     child: profileWidget(
@@ -218,7 +235,9 @@ _openbottomModelSheet(context, currentUser) {
               const Divider(
                 color: secondaryColor,
               ),
-              const Text('Saved Posts'),
+              GestureDetector(
+                onTap: ()=>Navigator.pushNamed(context, PageConstants.savedPostpage),
+                child: const Text('Saved Posts')),
               sizeVer(10),
               const Divider(
                 color: secondaryColor,

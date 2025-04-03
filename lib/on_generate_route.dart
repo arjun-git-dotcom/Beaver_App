@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/domain/entities/app_entity.dart';
+import 'package:social_media/features/domain/entities/comments/comments.dart';
+import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
 import 'package:social_media/features/presentation/pages/post/comment/comment_page.dart';
-import 'package:social_media/features/presentation/pages/post/comment/update_page.dart';
+import 'package:social_media/features/presentation/pages/post/comment/update_comment_page.dart';
+import 'package:social_media/features/presentation/pages/post/update_page.dart';
 import 'package:social_media/features/presentation/pages/post/post_details_page.dart';
-import 'package:social_media/features/presentation/pages/post/widget/post_details_main_widget.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
-import 'package:social_media/features/presentation/pages/profile/profilepage.dart';
 import 'package:social_media/features/presentation/pages/profile/single_profilepage.dart';
+import 'package:social_media/features/presentation/savedpost/savedpost.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -25,11 +28,16 @@ class OnGenerateRoute {
         }
       case PageConstants.updatePostpage:
         {
-          return routeBuilder(const UpdatePostPage());
+          if(args is PostEntity){
+              return routeBuilder( UpdatePostPage(post: args));
+          }
+        
         }
       case PageConstants.commentpage:
         {
-          return routeBuilder(const CommentPage());
+          if (args is AppEntity) {
+            return routeBuilder(CommentPage(appEntity: args));
+          }
         }
       case PageConstants.loginpage:
         {
@@ -57,6 +65,18 @@ class OnGenerateRoute {
         {
           if (args is String) {
             return routeBuilder(SingleProfilepage(otheruserId: args));
+          }
+        }
+
+      case PageConstants.savedPostpage:
+        {
+          return routeBuilder(SavedPostpage());
+        }
+
+      case PageConstants.updateCommentPage:
+        {
+          if (args is CommentEntity) {
+            return routeBuilder(UpdateCommentPage(comment:args));
           }
         }
     }

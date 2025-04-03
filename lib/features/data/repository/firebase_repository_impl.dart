@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
+import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
 
@@ -18,8 +20,10 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       firebaseRemoteDataSource.createUser(user);
 
   @override
-  Future<void> followUser(UserEntity user) async =>
-      firebaseRemoteDataSource.followUser(user);
+  Future<void> followUser(UserEntity user) async {
+    print('repo call');
+    return firebaseRemoteDataSource.followUser(user);
+  }
 
   @override
   Future<String> getCurrentUid() async =>
@@ -86,4 +90,39 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Stream<List<PostEntity>> getSinglePost(String postId) =>
       firebaseRemoteDataSource.getSinglePost(postId);
+
+  @override
+  Future<void> savePost(String postId, String userId) =>
+      firebaseRemoteDataSource.savePost(postId, userId);
+
+  @override
+  Stream<List<SavedpostsEntity>> readsavedPost(String userId) {
+   
+   return   firebaseRemoteDataSource.readSavedPost(userId);
+  }
+
+
+
+
+//comments
+
+    @override
+  Future<void> createComment(CommentEntity comment) =>
+      firebaseRemoteDataSource.createComment(comment);
+
+  @override
+  Future<void> deleteComment(CommentEntity comment) =>
+      firebaseRemoteDataSource.deleteComment(comment);
+
+  @override
+  Future<void> likeComment(CommentEntity comment) =>
+      firebaseRemoteDataSource.likeComment(comment);
+
+  @override
+  Stream<List<CommentEntity>> readComment(String postId) =>
+      firebaseRemoteDataSource.readComment(postId);
+
+  @override
+  Future<void> updateComment(CommentEntity comment) =>
+      firebaseRemoteDataSource.updateComment(comment);
 }

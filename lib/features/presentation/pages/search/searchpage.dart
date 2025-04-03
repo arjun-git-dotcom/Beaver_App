@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,19 +7,19 @@ import 'package:social_media/features/presentation/pages/search/search_main_widg
 import "package:social_media/injection_container.dart" as di;
 
 class Searchpage extends StatelessWidget {
+ 
   const Searchpage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-    
-      providers: [
-         BlocProvider<PostCubit>(
-          create: (context) => di.sl<PostCubit>(), 
-        ),
-   
-      ],
-     child: const SearchMainWidget()
-    );
+        providers: [
+          BlocProvider<PostCubit>(
+            create: (context) => di.sl<PostCubit>(),
+          ),
+        ],
+        child:  SearchMainWidget(
+      
+        ));
   }
 }

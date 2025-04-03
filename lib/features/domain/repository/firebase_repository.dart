@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 
 abstract class FirebaseRepository {
@@ -31,12 +33,20 @@ abstract class FirebaseRepository {
 
   Future<void> createPost(PostEntity post);
   Future<void> updatePost(PostEntity post);
-
   Stream<List<PostEntity>> readPost(PostEntity post);
-
   Future<void> deletePost(PostEntity post);
-
   Future<void> likePost(PostEntity post);
-
   Stream<List<PostEntity>> getSinglePost(String postId);
+  Future<void> savePost(String postId, String userId);
+  Stream<List<SavedpostsEntity>> readsavedPost(String userId);
+
+
+  //comment features
+   Future<void> createComment(CommentEntity comment);
+  Future<void> updateComment(CommentEntity comment);
+  Stream<List<CommentEntity>> readComment(String postId);
+  Future<void> deleteComment(CommentEntity comment);
+  Future<void> likeComment(CommentEntity comment);
+
+
 }

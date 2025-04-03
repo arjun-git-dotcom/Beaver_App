@@ -1,0 +1,74 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media/constants.dart';
+
+import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
+
+import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cubit.dart';
+import 'package:social_media/features/presentation/cubit/savedposts/savedpost_state.dart';
+import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/injection_container.dart' as di;
+
+class SavedpostMainWidget extends StatefulWidget {
+  const SavedpostMainWidget({super.key});
+
+  @override
+  State<SavedpostMainWidget> createState() => _SavedpostMainWidgetState();
+}
+
+class _SavedpostMainWidgetState extends State<SavedpostMainWidget> {
+  String _currentUid = "";
+  @override
+  void initState() {
+    di.sl<GetCurrentUuidUsecase>().call().then((value) {
+      setState(() {
+        _currentUid = value;
+        BlocProvider.of<SavedpostCubit>(context)
+            .getSavedPost(userId: _currentUid);
+      });
+    });
+
+    super.initState;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('SavedPosts'),
+          centerTitle: true,
+          backgroundColor: blueColor,
+        ),
+        body: Column(
+          children: [
+            BlocBuilder<SavedpostCubit, SavedpostState>(
+              builder: (context, poststate) {
+                if (poststate is SavedPostLoaded) {
+                  final posts = poststate.posts;
+                  return Expanded(
+                    child: GridView.builder(
+                        itemCount: posts.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                                crossAxisCount: 3),
+                        itemBuilder: (context, index) => GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, PageConstants.postDetailsPage,
+                                  arguments: posts[index].postId),
+                              child: profileWidget(
+                                  imageUrl: posts[index].postImageUrl),
+                            )),
+                  );
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
