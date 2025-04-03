@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 
@@ -47,6 +48,13 @@ abstract class FirebaseRepository {
   Stream<List<CommentEntity>> readComment(String postId);
   Future<void> deleteComment(CommentEntity comment);
   Future<void> likeComment(CommentEntity comment);
+
+//replys
+   Future<void> createReply(ReplyEntity reply);
+  Future<void> updateReply(ReplyEntity reply);
+  Stream<List<ReplyEntity>> readReply(ReplyEntity reply);
+  Future<void> deleteReply(ReplyEntity reply);
+  Future<void> likeReply(ReplyEntity reply);
 
 
 }

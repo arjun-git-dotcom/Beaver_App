@@ -25,7 +25,7 @@ class SinglePostCardWidget extends StatefulWidget {
 class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
   bool isLikeAnimating = false;
   String _currentUid = "";
-   int count = 0;
+  int count = 0;
   @override
   void initState() {
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
@@ -36,7 +36,6 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Container(
       color: backgroundColor,
       child: Padding(
@@ -62,7 +61,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () => _openbottomModelSheet(context,widget.post),
+                  onTap: () => _openbottomModelSheet(context, widget.post),
                   child: Icon(MdiIcons.dotsVertical),
                 ),
               ],
@@ -124,7 +123,10 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                                 color: primaryColor)),
                     sizeHor(10),
                     GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, 'commentPage',arguments: AppEntity(creatorUid: _currentUid,postId: widget.post.postId)),
+                      onTap: () => Navigator.pushNamed(context, 'commentPage',
+                          arguments: AppEntity(
+                              creatorUid: _currentUid,
+                              postId: widget.post.postId)),
                       child: Icon(MdiIcons.commentOutline, color: primaryColor),
                     ),
                   ],
@@ -188,37 +190,47 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               ));
         });
   }
-}
 
-_openbottomModelSheet(context,PostEntity post) {
-  return showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 150,
-          color: backgroundColor,
-          child: Column(
-            children: [
-              sizeVer(10),
-              const Text(
-                'More Options',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-              sizeVer(10),
-              const Divider(
-                color: secondaryColor,
-              ),
-              GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, 'updatePostPage',arguments: post),
-                  child: const Text('Update Post')),
-              sizeVer(10),
-              const Divider(
-                color: secondaryColor,
-              ),
-              const Text('Delete Posts'),
-              sizeVer(10),
-            ],
-          ),
-        );
-      });
+  _openbottomModelSheet(context, PostEntity post) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 150,
+            color: backgroundColor,
+            child: Column(
+              children: [
+                sizeVer(10),
+                const Text(
+                  'More Options',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                sizeVer(10),
+                const Divider(
+                  color: secondaryColor,
+                ),
+                GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, 'updatePostPage',
+                        arguments: post),
+                    child: const Text('Update Post')),
+                sizeVer(10),
+                const Divider(
+                  color: secondaryColor,
+                ),
+                GestureDetector(
+                    onTap: () {
+                      _deletePost();
+                    },
+                    child: const Text('Delete Posts')),
+                sizeVer(10),
+              ],
+            ),
+          );
+        });
+  }
+
+  _deletePost() {
+    BlocProvider.of<PostCubit>(context)
+        .deletePost(post: PostEntity(postId: widget.post.postId));
+  }
 }

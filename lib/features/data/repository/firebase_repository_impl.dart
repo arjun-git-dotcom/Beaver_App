@@ -3,6 +3,7 @@ import 'package:social_media/features/data/data_sources/remote_data_source/cloud
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
@@ -97,16 +98,12 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
 
   @override
   Stream<List<SavedpostsEntity>> readsavedPost(String userId) {
-   
-   return   firebaseRemoteDataSource.readSavedPost(userId);
+    return firebaseRemoteDataSource.readSavedPost(userId);
   }
-
-
-
 
 //comments
 
-    @override
+  @override
   Future<void> createComment(CommentEntity comment) =>
       firebaseRemoteDataSource.createComment(comment);
 
@@ -125,4 +122,23 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Future<void> updateComment(CommentEntity comment) =>
       firebaseRemoteDataSource.updateComment(comment);
+
+  @override
+  Future<void> createReply(ReplyEntity reply) async =>
+      firebaseRemoteDataSource.createReply(reply);
+
+  @override
+  Future<void> deleteReply(ReplyEntity reply) =>
+      firebaseRemoteDataSource.deleteReply(reply);
+
+  @override
+  Future<void> likeReply(ReplyEntity reply) =>
+      firebaseRemoteDataSource.likeReply(reply);
+
+  @override
+  Stream<List<ReplyEntity>> readReply(ReplyEntity reply ) =>
+      firebaseRemoteDataSource.readReply( reply);
+  @override
+  Future<void> updateReply(ReplyEntity reply) =>
+      firebaseRemoteDataSource.updateReply(reply);
 }

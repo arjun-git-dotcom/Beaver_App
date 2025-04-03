@@ -9,7 +9,7 @@ import 'package:social_media/features/presentation/pages/credentials/login.dart'
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
 import 'package:social_media/features/presentation/pages/post/comment/comment_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/update_comment_page.dart';
-import 'package:social_media/features/presentation/pages/post/update_page.dart';
+import 'package:social_media/features/presentation/pages/post/update_postpage.dart';
 import 'package:social_media/features/presentation/pages/post/post_details_page.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
 import 'package:social_media/features/presentation/pages/profile/single_profilepage.dart';
@@ -29,7 +29,7 @@ class OnGenerateRoute {
       case PageConstants.updatePostpage:
         {
           if(args is PostEntity){
-              return routeBuilder( UpdatePostPage(post: args));
+              return routeBuilder( UpdatePostpage(post: args));
           }
         
         }

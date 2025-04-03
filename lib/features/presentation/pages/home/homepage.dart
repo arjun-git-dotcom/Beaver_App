@@ -9,16 +9,12 @@ import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/pages/home/widgets/single_post_card_widget.dart';
 import 'package:social_media/injection_container.dart' as di;
 
-
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-       
     return Scaffold(
-      
         appBar: AppBar(
           title: SvgPicture.asset(
             "assets/beaver-image.svg",
@@ -38,23 +34,32 @@ class Homepage extends StatelessWidget {
           child:
               BlocBuilder<PostCubit, PostState>(builder: (context, poststate) {
             if (poststate is PostLoading) {
-              return  Center(child:SpinkitConstants().spinkitspinninglines(blueColor));
+              return Center(
+                  child: SpinkitConstants().spinkitspinninglines(blueColor));
             }
 
             if (poststate is PostFailure) {
               toast('Some failure occured while creating the post');
             }
             if (poststate is PostLoaded) {
-              return ListView.builder(
-                  itemCount: poststate.posts.length,
-                  itemBuilder: (context, index) {
-                    final post = poststate.posts[index];
-                    return SinglePostCardWidget(post: post);
-                  });
+              return poststate.posts.isEmpty
+                  ? _noPostsYetWwidget()
+                  : ListView.builder(
+                      itemCount: poststate.posts.length,
+                      itemBuilder: (context, index) {
+                        final post = poststate.posts[index];
+                        return BlocProvider<PostCubit>(
+                            create: (context) => di.sl<PostCubit>(),
+                            child: SinglePostCardWidget(post: post));
+                      });
             }
-       
+
             return SpinkitConstants().spinkitspinninglines(primaryColor);
           }),
         ));
+  }
+
+  _noPostsYetWwidget() {
+    return const Center(child: Text('No Posts Yet',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),));
   }
 }

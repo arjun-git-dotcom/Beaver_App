@@ -6,10 +6,12 @@ import 'package:social_media/features/data/data_sources/remote_data_source/cloud
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/data/model/comment/comment_model.dart';
 import 'package:social_media/features/data/model/post/post_model.dart';
+import 'package:social_media/features/data/model/reply/reply_model.dart';
 import 'package:social_media/features/data/model/savedpost/savedpost_model.dart';
 import 'package:social_media/features/data/model/user/user_model.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 
@@ -551,7 +553,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .collection('comments');
 
     return commentCollection.snapshots().map((querySnapshot) {
-    
       return querySnapshot.docs
           .map((e) => CommentModel.fromSnapshot(e))
           .toList();
@@ -572,5 +573,49 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       commentInfo['description'] = comment.description;
       commentCollection.update(commentInfo);
     }
+  }
+
+  @override
+  Future<void> createReply(ReplyEntity reply) {
+    final collection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConstants.comment)
+        .doc(reply.commentId)
+        .collection(FirebaseConstants.reply)
+        .doc(reply.replyId);
+
+        final newreply = ReplyModel(
+            replyId: reply.replyId!,
+            commentId: reply.commentId,
+            userId: reply.userId!,
+            username: reply.username!,
+            description: reply.description!,
+            likes: const [],
+            createdAt: reply.createdAt!,
+            postId: reply.postId!,
+            profileUrl: reply.profileUrl!)
+        .toJson();
+
+  }
+
+  @override
+  Future<void> deleteReply(ReplyEntity reply) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> likeReply(ReplyEntity reply) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<ReplyEntity>> readReply(ReplyEntity reply) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateReply(ReplyEntity reply) {
+    throw UnimplementedError();
   }
 }
