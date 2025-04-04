@@ -576,7 +576,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
-  Future<void> createReply(ReplyEntity reply) {
+  Future<void> createReply(ReplyEntity reply) async {
     final collection = firebaseFirestore
         .collection(FirebaseConstants.posts)
         .doc(reply.postId)
@@ -585,7 +585,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .collection(FirebaseConstants.reply)
         .doc(reply.replyId);
 
-        final newreply = ReplyModel(
+    final newreply = ReplyModel(
             replyId: reply.replyId!,
             commentId: reply.commentId,
             userId: reply.userId!,
@@ -596,17 +596,62 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
             postId: reply.postId!,
             profileUrl: reply.profileUrl!)
         .toJson();
-
+    try {
+      final replyDocRef = await collection.get();
+      if (!replyDocRef.exists) {
+        collection.set(newreply);
+      } else {
+        collection.update(newreply);
+      }
+    } catch (e) {
+      print('some errors occured $e');
+    }
   }
 
   @override
-  Future<void> deleteReply(ReplyEntity reply) {
-    throw UnimplementedError();
+  Future<void> deleteReply(ReplyEntity reply) async {
+    final collection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConstants.comment)
+        .doc(reply.commentId)
+        .collection(FirebaseConstants.reply)
+        .doc(reply.replyId);
+
+    try {
+      final replyDocRef = await collection.get();
+      if (!replyDocRef.exists) {
+        collection.delete();
+      }
+    } catch (e) {
+      print("some errors occured $e");
+    }
   }
 
   @override
-  Future<void> likeReply(ReplyEntity reply) {
-    throw UnimplementedError();
+  Future<void> likeReply(ReplyEntity reply) async {
+    final collection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConstants.comment)
+        .doc(reply.commentId)
+        .collection(FirebaseConstants.reply)
+        .doc(reply.replyId);
+
+    try {
+      final replyDocRef = await collection.get();
+      if (replyDocRef.exists) {
+        final likes = replyDocRef.get('likes');
+        if (!likes.contains(reply.userId)) {
+          collection.update({"totallikes": FieldValue.increment(1),"likes":FieldValue.arrayUnion([reply.userId])});
+
+        } else {
+          collection.update({"totallikes": FieldValue.increment(-1),"likes":FieldValue.arrayRemove([reply.userId])});
+        }
+      }
+    } catch (e) {
+      print('some error occured $e');
+    }
   }
 
   @override
