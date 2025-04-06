@@ -7,11 +7,13 @@ import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_state.dart';
+import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';
 import 'package:social_media/features/presentation/pages/post/comment/widgets/single_comment_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
 import 'package:uuid/uuid.dart';
+import 'package:social_media/injection_container.dart' as di;
 
 class CommentMainWidget extends StatefulWidget {
   final AppEntity appEntity;
@@ -90,15 +92,19 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
                                   itemBuilder: (context, index) {
                                     final singleComment =
                                         commentState.comments[index];
-                                    return SingleCommentWidget(
-                                      onLikeListener: () {
-                                        _likeComment(singleComment);
-                                      },
-                                      onLongPress: () {
-                                        _openbottomModelSheet(
-                                            context, singleComment);
-                                      },
-                                      comment: singleComment,
+                                    return BlocProvider<ReplyCubit>(
+                                      create: (context)=>di.sl<ReplyCubit>(),
+                                      child: SingleCommentWidget(
+                                        currentUser: singleUser,
+                                        onLikeListener: () {
+                                          _likeComment(singleComment);
+                                        },
+                                        onLongPress: () {
+                                          _openbottomModelSheet(
+                                              context, singleComment);
+                                        },
+                                        comment: singleComment,
+                                      ),
                                     );
                                   })),
                           _commentSection(currentUser: singleUser),

@@ -12,9 +12,26 @@ class ReplyEntity extends Equatable {
   final Timestamp? createdAt;
   final List<String>? likes;
 
-  const ReplyEntity(this.replyId,this.commentId,this.postId, this.userId, this.username, this.profileUrl,
-      this.description, this.createdAt, this.likes);
+  const ReplyEntity(
+      {this.replyId,
+      this.commentId,
+      this.postId,
+      this.userId,
+      this.username,
+      this.profileUrl,
+      this.description,
+      this.createdAt,
+      this.likes});
   @override
-  List<Object?> get props =>
-      [replyId,commentId,postId, userId, username, profileUrl, description, createdAt, likes];
+  List<Object?> get props => [
+        replyId,
+        commentId,
+        postId,
+        userId,
+        username,
+        profileUrl,
+        description,
+        createdAt,
+        likes
+      ];
 }

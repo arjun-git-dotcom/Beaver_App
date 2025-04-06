@@ -1,18 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
+import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
+import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
+import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
+import 'package:social_media/features/presentation/pages/post/comment/widgets/single_reply_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
+import 'package:uuid/uuid.dart';
+
 class SingleCommentWidget extends StatefulWidget {
   final CommentEntity comment;
   final VoidCallback onLongPress;
   final VoidCallback onLikeListener;
+  final UserEntity currentUser;
   const SingleCommentWidget(
-      {required this.onLikeListener,required this.onLongPress, required this.comment, super.key});
+      {required this.onLikeListener,
+      required this.onLongPress,
+      required this.comment,
+      required this.currentUser,
+      super.key});
 
   @override
   State<SingleCommentWidget> createState() => _SingleCommentWidgetState();
@@ -20,14 +33,18 @@ class SingleCommentWidget extends StatefulWidget {
 
 class _SingleCommentWidgetState extends State<SingleCommentWidget> {
   bool _isUserReplaying = false;
-   String _currentUid = "";
+  String _currentUid = "";
+  TextEditingController? _replyDescriptionController;
+
   @override
-    void initState() {
+  void initState() {
+    _replyDescriptionController = TextEditingController();
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
       _currentUid = value;
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -56,8 +73,15 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                         children: [
                           Text(widget.comment.username!),
                           InkWell(
-                            onTap: ()=>widget.onLikeListener(),
-                            child: Icon(widget.comment.likes!.contains(_currentUid)?MdiIcons.heart:MdiIcons.heartOutline,color:widget.comment.likes!.contains(_currentUid)?redColor:primaryColor))
+                              onTap: () => widget.onLikeListener(),
+                              child: Icon(
+                                  widget.comment.likes!.contains(_currentUid)
+                                      ? MdiIcons.heart
+                                      : MdiIcons.heartOutline,
+                                  color: widget.comment.likes!
+                                          .contains(_currentUid)
+                                      ? redColor
+                                      : primaryColor))
                         ],
                       ),
                       Text(widget.comment.description!),
@@ -76,10 +100,11 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                                 _isUserReplaying = !_isUserReplaying;
                               });
                             },
-                            child: const Text(
-                              'reply',
-                              style:
-                                  TextStyle(color: darkgreyColor, fontSize: 12),
+                            child: InkWell(
+                              onTap: () {
+                                _createReply();
+                              },
+                              child: Text("Reply"),
                             ),
                           ),
                           sizeHor(10),
@@ -87,9 +112,11 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                             'View Replys',
                             style:
                                 TextStyle(color: darkgreyColor, fontSize: 12),
-                          )
+                          ),
+                        
                         ],
                       ),
+                        SingleReplyWidget(),
                       _isUserReplaying == true ? sizeVer(10) : sizeVer(0),
                       _isUserReplaying == true
                           ? Column(
@@ -115,5 +142,28 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
         ),
       ),
     );
+  }
+
+  _createReply() {
+    BlocProvider.of<ReplyCubit>(context)
+        .createReply(
+            reply: ReplyEntity(
+                replyId: Uuid().v1(),
+                commentId: widget.comment.commentId,
+                postId: widget.comment.postId,
+                userId: widget.currentUser.uid,
+                username: widget.currentUser.name,
+                profileUrl: widget.currentUser.profileUrl,
+                description: _replyDescriptionController!.text,
+                createdAt: Timestamp.now(),
+                likes: []))
+        .then((value) => _clear());
+  }
+
+  _clear() {
+    setState(() {
+      _replyDescriptionController!.clear();
+      _isUserReplaying = false;
+    });
   }
 }

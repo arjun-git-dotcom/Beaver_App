@@ -20,6 +20,11 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/posts/lik
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/read_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/save_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/update_post_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/replys/create_reply_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/replys/delete_reply_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/replys/like_reply_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/replys/read_reply_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/replys/update_reply_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/savedposts/read_savedPost_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/create_user_usecase.dart';
@@ -38,6 +43,7 @@ import 'package:social_media/features/presentation/cubit/comment/comment_cubit.d
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
+import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
@@ -107,6 +113,16 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ReadCommentUsecase(repository: sl.call()));
 
 
+//Use Cases - replys
+
+sl.registerLazySingleton(()=>CreateReplyUsecase(repository: sl.call()));
+sl.registerLazySingleton(()=>DeleteReplyUsecase(repository: sl.call()));
+sl.registerLazySingleton(()=>LikeReplyUsecase(repository: sl.call()));
+sl.registerLazySingleton(()=>UpdateReplyUsecase(repository: sl.call()));
+sl.registerLazySingleton(()=>ReadReplyUsecase(repository: sl.call()));
+
+
+
   // Use Cases - Storage
   sl.registerLazySingleton(
       () => UploadImageToStorageUsecase(repository: sl.call()));
@@ -143,6 +159,13 @@ Future<void> init() async {
       likePostUsecase: sl.call(),
       readPostUsecase: sl.call(),
       savePostUsecase: sl.call()));
+
+  sl.registerFactory(() => ReplyCubit(
+      createReplyUsecase: sl.call(),
+      deleteReplyUsecase: sl.call(),
+      likeReplyUsecase: sl.call(),
+      readReplyUsecase: sl.call(),
+      updateReplyUsecase: sl.call()));
 
   sl.registerFactory(() => GetSinglePostCubit(getSinglePostUsecase: sl.call()));
 

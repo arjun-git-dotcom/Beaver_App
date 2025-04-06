@@ -21,8 +21,8 @@ class ReplyModel extends ReplyEntity {
       this.description,
       this.createdAt,
       this.likes})
-      : super(replyId, commentId, postId, userId, username, profileUrl,
-            description, createdAt, likes);
+      : super(replyId:replyId, commentId:commentId, postId:postId, userId:userId, username:username,profileUrl: profileUrl,
+            description:description, createdAt:createdAt, likes: likes);
 
   factory ReplyModel.fromSnapshot(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;

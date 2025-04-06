@@ -630,6 +630,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   @override
   Future<void> likeReply(ReplyEntity reply) async {
+    String uid = await getCurrentUid();
     final collection = firebaseFirestore
         .collection(FirebaseConstants.posts)
         .doc(reply.postId)
@@ -642,11 +643,14 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       final replyDocRef = await collection.get();
       if (replyDocRef.exists) {
         final likes = replyDocRef.get('likes');
-        if (!likes.contains(reply.userId)) {
-          collection.update({"totallikes": FieldValue.increment(1),"likes":FieldValue.arrayUnion([reply.userId])});
-
+        if (!likes.contains(uid)) {
+          collection.update({
+            "likes": FieldValue.arrayUnion([uid])
+          });
         } else {
-          collection.update({"totallikes": FieldValue.increment(-1),"likes":FieldValue.arrayRemove([reply.userId])});
+          collection.update({
+            "likes": FieldValue.arrayRemove([uid])
+          });
         }
       }
     } catch (e) {
@@ -656,11 +660,33 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   @override
   Stream<List<ReplyEntity>> readReply(ReplyEntity reply) {
-    throw UnimplementedError();
+    final collection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .doc(reply.replyId)
+        .collection(FirebaseConstants.comment)
+        .doc(reply.commentId)
+        .collection(FirebaseConstants.reply);
+
+    return collection.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((e) => ReplyModel.fromSnapshot(e)).toList();
+    });
   }
 
   @override
-  Future<void> updateReply(ReplyEntity reply) {
-    throw UnimplementedError();
+  Future<void> updateReply(ReplyEntity reply) async {
+    final collection = firebaseFirestore
+        .collection(FirebaseConstants.posts)
+        .doc(reply.postId)
+        .collection(FirebaseConstants.comment)
+        .doc(reply.commentId)
+        .collection(FirebaseConstants.reply)
+        .doc(reply.replyId);
+
+    Map<String, dynamic> replyInfo = {};
+
+    if (reply.description != "" || reply.description != null) {
+      replyInfo['description'] = reply.description;
+      collection.update(replyInfo);
+    }
   }
 }

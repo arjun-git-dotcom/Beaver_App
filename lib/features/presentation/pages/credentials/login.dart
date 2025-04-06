@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -62,14 +61,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() {
-    setState(() {
-      isLoggedIn = true;
-    });
     BlocProvider.of<CredentialCubit>(context)
-        .login(email: emailController.text.trim(), password: passwordController.text.trim())
+        .login(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim())
         .then((value) => _clear());
-
-        
   }
 
   void _clear() {
@@ -111,13 +107,20 @@ class _LoginPageState extends State<LoginPage> {
               color: blueColor,
               onTapListener: () => _login(),
             ),
-sizeVer(10),
-             Row(
+            sizeVer(10),
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                 GestureDetector(
-                  onTap: ()=>Navigator.pushNamed(context, 'forgotPasswordPage'),
-                  child: const Text('Forgot Password?',style: TextStyle(color: blueColor,fontWeight: FontWeight.w400,fontSize: 12),)),
+                GestureDetector(
+                    onTap: () =>
+                        Navigator.pushNamed(context, 'forgotPasswordPage'),
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                          color: blueColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12),
+                    )),
               ],
             ),
             sizeVer(10),
@@ -143,7 +146,6 @@ sizeVer(10),
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(
                         context, 'registerPage', (route) => false);
-                        
                   },
                   child: const Text(
                     ' Register',
@@ -151,8 +153,10 @@ sizeVer(10),
                   ),
                 ),
                 sizeVer(10),
-                isLoggedIn == true
-                    ? Row(
+                BlocBuilder<CredentialCubit, CredentialState>(
+                  builder: (context, state) {
+                    if (state is CredentialLoading) {
+                      return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
@@ -165,11 +169,16 @@ sizeVer(10),
                           sizeHor(10),
                           const CircularProgressIndicator()
                         ],
-                      )
-                    : const SizedBox(
+                      );
+                    } else {
+                     return  const SizedBox(
                         height: 0,
                         width: 0,
-                      )
+                      );
+                    }
+                    
+                  },
+                )
               ],
             )
           ],
