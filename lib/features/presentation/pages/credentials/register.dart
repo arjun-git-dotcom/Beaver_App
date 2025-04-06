@@ -9,6 +9,8 @@ import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_state.dart';
+import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
+import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
@@ -23,6 +25,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool isRegisteredUp = false;
+  late FormCubit formCubit;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
 
@@ -36,21 +39,19 @@ class _RegisterPageState extends State<RegisterPage> {
     _usernameController.dispose();
     _passwordController.dispose();
     _bioController.dispose();
+    formCubit = context.read<FormCubit>();
   }
 
-  File? _image;
   Future selectImage() async {
     try {
       final pickedFile = await ImagePicker.platform
           .getImageFromSource(source: ImageSource.gallery);
 
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        } else {
-          toast('no image has been selcted');
-        }
-      });
+      if (pickedFile != null) {
+        context.read<ImageCubit>().selectImage(File(pickedFile.path));
+      } else {
+        toast('no image has been selcted');
+      }
     } catch (e) {
       toast('some error occured $e');
     }
@@ -86,9 +87,10 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _registerUser() {
-    setState(() {
-      isRegisteredUp = true;
-    });
+    isRegisteredUp = true;
+
+    final imageFile = context.read<ImageCubit>().state;
+
     BlocProvider.of<CredentialCubit>(context)
         .register(
             user: UserEntity(
@@ -104,19 +106,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 profileUrl: "",
                 website: "",
                 name: "",
-                imageFile: _image,
+                imageFile: imageFile,
                 uid: null))
         .then((value) => _clear());
   }
 
   _clear() {
-    setState(() {
-      _usernameController.clear();
-      _emailController.clear();
-      _passwordController.clear();
-      _bioController.clear();
-      isRegisteredUp = false;
-    });
+    _usernameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    _bioController.clear();
+    context.read<ImageCubit>().clearImage();
+    formCubit.resetForm();
   }
 
   _bodyWidget() {
@@ -140,19 +141,21 @@ class _RegisterPageState extends State<RegisterPage> {
               height: MediaQuery.of(context).size.height * 0.15,
             ),
             Stack(children: [
-              
-                  SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: profileWidget(image: _image)),
-                  ),
+              SizedBox(
+                height: 100,
+                width: 100,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: BlocBuilder<ImageCubit, File?>(
+                        builder: (context, state) {
+                      return profileWidget(image: state);
+                    })),
+              ),
               Positioned(
                   right: -8,
                   bottom: -5,
                   child: IconButton(
-                      onPressed: () =>selectImage(),
+                      onPressed: () => selectImage(),
                       icon: const Icon(
                         Icons.add_a_photo,
                         size: 30,
@@ -205,8 +208,10 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
             sizeVer(10),
-            isRegisteredUp == true
-                ? Row(
+            BlocBuilder<CredentialCubit, CredentialState>(
+              builder: (context, state) {
+                if (state is CredentialLoading) {
+                  return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
@@ -219,11 +224,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       sizeHor(10),
                       const CircularProgressIndicator()
                     ],
-                  )
-                : const SizedBox(
+                  );
+                } else {
+                  return const SizedBox(
                     height: 0,
                     width: 0,
-                  )
+                  );
+                }
+              },
+            )
           ],
         ),
       ),

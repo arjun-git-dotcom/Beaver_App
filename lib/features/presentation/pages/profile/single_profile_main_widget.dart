@@ -8,6 +8,7 @@ import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
+import 'package:social_media/features/presentation/cubit/current_uid/current_uid_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
@@ -28,22 +29,20 @@ class SingleProfileMainWidget extends StatefulWidget {
 }
 
 class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
-  String _currentUid = "";
   @override
   void initState() {
     BlocProvider.of<GetSingleUserCubit>(context)
         .getSingleUser(uid: widget.otherUserId);
     BlocProvider.of<PostCubit>(context).getPost(post: PostEntity());
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
-      setState(() {
-        _currentUid = value;
-      });
+      context.read<CurrentUidCubit>().setUid(value);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentUid = context.watch<CurrentUidCubit>().state;
     return SafeArea(
       child: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
         builder: (context, singleuserstate) {
@@ -119,17 +118,23 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
                         style: const TextStyle(fontSize: 12),
                       ),
                       sizeVer(10),
-                      _currentUid == singleuser.uid
+                      currentUid == singleuser.uid
                           ? const SizedBox(
                               height: 30,
                               width: 30,
                             )
                           : BottomContainerWidget(
-                               text: singleuser.followers!.contains(_currentUid) ?"UnFollow":"Follow",
-                        color: singleuser.followers!.contains(_currentUid) ? secondaryColor.withOpacity(.4) : blueColor,
+                              text: singleuser.followers!.contains(currentUid)
+                                  ? "UnFollow"
+                                  : "Follow",
+                              color: singleuser.followers!.contains(currentUid)
+                                  ? secondaryColor.withOpacity(.4)
+                                  : blueColor,
                               onTapListener: () {
-                                BlocProvider.of<UserCubit>(context)
-                                    .followUser(user: UserEntity(uid: _currentUid,otheruid: widget.otherUserId));
+                                BlocProvider.of<UserCubit>(context).followUser(
+                                    user: UserEntity(
+                                        uid: currentUid,
+                                        otheruid: widget.otherUserId));
                               },
                             ),
                       sizeVer(10),
@@ -137,7 +142,7 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
                         builder: (context, poststate) {
                           if (poststate is PostLoaded) {
                             final posts = poststate.posts.where(
-                                (post) => post.creatorUid == _currentUid);
+                                (post) => post.creatorUid == widget.otherUserId).toList();
                             return GridView.builder(
                                 itemCount: posts.length,
                                 physics: const ScrollPhysics(),
@@ -152,8 +157,7 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
                                     height: 30,
                                     width: 30,
                                     child: profileWidget(
-                                        imageUrl: poststate
-                                            .posts[index].postImageUrl),
+                                        imageUrl: posts[index].postImageUrl),
                                   );
                                 });
                           }
@@ -236,8 +240,9 @@ _openbottomModelSheet(context, currentUser) {
                 color: secondaryColor,
               ),
               GestureDetector(
-                onTap: ()=>Navigator.pushNamed(context, PageConstants.savedPostpage),
-                child: const Text('Saved Posts')),
+                  onTap: () =>
+                      Navigator.pushNamed(context, PageConstants.savedPostpage),
+                  child: const Text('Saved Posts')),
               sizeVer(10),
               const Divider(
                 color: secondaryColor,

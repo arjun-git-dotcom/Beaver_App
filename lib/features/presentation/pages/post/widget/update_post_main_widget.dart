@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
+import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
+import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
@@ -18,9 +20,7 @@ class UpdatePostMainWidget extends StatefulWidget {
 }
 
 class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
-  TextEditingController? _descriptionController;
-  File? _image;
-  bool _uploading = false;
+  late TextEditingController _descriptionController;
 
   @override
   void initState() {
@@ -30,16 +30,21 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
   Future selectImage() async {
     try {
       // ignore: invalid_use_of_visible_for_testing_member
       final pickedImage = await ImagePicker.platform
           .getImageFromSource(source: ImageSource.gallery);
-      setState(() {
-        if (pickedImage != null) {
-          _image = File(pickedImage.path);
-        }
-      });
+
+      if (pickedImage != null) {
+        context.read<ImageCubit>().selectImage(File(pickedImage.path));
+      }
     } catch (e) {
       print("some problem occured $e");
     }
@@ -74,8 +79,8 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
             children: [
               Center(
                   child: Container(
-                height: 30,
-                width: 30,
+                height: 50,
+                width: 50,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: profileWidget(),
@@ -91,8 +96,12 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
               Stack(children: [
                 SizedBox(
                     width: double.infinity,
-                    child: profileWidget(
-                        imageUrl: widget.post.postImageUrl, image: _image)),
+                    child: BlocBuilder<ImageCubit, File?>(
+                      builder: (context, state) {
+                        return profileWidget(
+                            imageUrl: widget.post.postImageUrl, image: state);
+                      },
+                    )),
                 Positioned(
                     bottom: 0,
                     right: 5,
@@ -116,13 +125,15 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
               TextField(
                 controller: _descriptionController,
               ),
-                 _uploading==true?const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    
-                    children: [
-                      
-                      
-                      Text('Updating ...'),CircularProgressIndicator()],):const SizedBox(height: 0,width: 0,),
+              context.watch<FormCubit>().state
+                  ? const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Updating ...'),
+                        CircularProgressIndicator()
+                      ],
+                    )
+                  : const SizedBox.shrink()
             ],
           ),
         ),
@@ -131,16 +142,15 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
   }
 
   _updatePost() {
-    setState(() {
-      _uploading = true;
-    });
+    context.read<FormCubit>().setForm();
+    final image = context.read<ImageCubit>().state;
 
-    if (_image == null) {
+    if (image == null) {
       _submitUpdatePost(image: widget.post.postImageUrl!);
     } else {
       di
           .sl<UploadImageToStorageUsecase>()
-          .call(_image, true, "posts")
+          .call(image, true, "posts")
           .then((imageUrl) {
         _submitUpdatePost(image: imageUrl);
       });
@@ -161,11 +171,9 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
   }
 
   _clear() {
-    setState(() {
-      _image = null;
-      _descriptionController!.clear();
-      Navigator.pop(context);
-      _uploading = false;
-    });
+    context.read<ImageCubit>().clearImage();
+    _descriptionController.clear();
+    Navigator.pop(context);
+    context.read<FormCubit>().resetForm();
   }
 }

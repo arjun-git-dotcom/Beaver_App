@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
+import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
@@ -19,7 +20,7 @@ class _EditProfilepageState extends State<EditProfilepage> {
   late TextEditingController _usernameController;
   late TextEditingController _websiteController;
   late TextEditingController _bioController;
-   bool _isUpdating = false;
+  bool _isUpdating = false;
   @override
   void initState() {
     _nameController = TextEditingController();
@@ -40,28 +41,26 @@ class _EditProfilepageState extends State<EditProfilepage> {
   }
 
   updateUserProfile() {
-    BlocProvider.of<UserCubit>(context).updateUser(UserEntity(
-        uid: widget.currentUser.uid,
-        username: _usernameController.text,
-        name: _nameController.text,
-        website: _websiteController.text,
-        bio: _bioController.text)).then(_clear());
+    BlocProvider.of<UserCubit>(context)
+        .updateUser(UserEntity(
+            uid: widget.currentUser.uid,
+            username: _usernameController.text,
+            name: _nameController.text,
+            website: _websiteController.text,
+            bio: _bioController.text))
+        .then(_clear());
   }
 
+  _clear() {
+    context.read<FormCubit>().resetForm();
+    _usernameController.clear();
+    _nameController.clear();
+    _bioController.clear();
+    _websiteController.clear();
 
-_clear(){
-  setState(() {
-     _isUpdating=false;
-  _usernameController.clear();
-  _nameController.clear();
-  _bioController.clear();
-  _websiteController.clear();
-    
-  });
-  Navigator.pop(context);
- 
+    Navigator.pop(context);
+  }
 
-}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,12 +72,12 @@ _clear(){
         leading: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             child: const Icon(Icons.close)),
-        actions:  [
+        actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: GestureDetector(
               onTap: () => updateUserProfile(),
-              child:const  Icon(
+              child: const Icon(
                 Icons.done,
                 color: Colors.blue,
               ),
@@ -113,9 +112,18 @@ _clear(){
               controller: _bioController,
             ),
             sizeVer(10),
-            _isUpdating==true? Row(children: [const Text('Please wait ..'), sizeHor(10),  const CircularProgressIndicator()],):const SizedBox(height: 0,width: 0,)
-
-            
+            _isUpdating == true
+                ? Row(
+                    children: [
+                      const Text('Please wait ..'),
+                      sizeHor(10),
+                      const CircularProgressIndicator()
+                    ],
+                  )
+                : const SizedBox(
+                    height: 0,
+                    width: 0,
+                  )
           ],
         ),
       ),

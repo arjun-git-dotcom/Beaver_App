@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:social_media/constants.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
-import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
+import 'package:social_media/features/presentation/cubit/index/index.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';
 import 'package:social_media/features/presentation/pages/Liked/likespage.dart';
@@ -46,18 +44,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void onPageChanged(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    context.read<IndexCubit>().changeIndex(index);
   }
 
   @override
   Widget build(BuildContext context) {
+    _currentIndex = context.watch<IndexCubit>().state;
     return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
       builder: (context, getSingleUserState) {
-       
         if (getSingleUserState is GetSingleUserLoaded) {
-           final currentUser = getSingleUserState.user;
+          final currentUser = getSingleUserState.user;
           return Scaffold(
             bottomNavigationBar: CupertinoTabBar(
               currentIndex: _currentIndex,
@@ -83,18 +79,18 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 const Homepage(),
                 const Searchpage(),
-                 UploadPostpage(currentUser: currentUser,),
+                UploadPostpage(
+                  currentUser: currentUser,
+                ),
                 const Likespage(),
-               Profilepage(currentuser: currentUser)
-                  
-                
-                
+                Profilepage(currentuser: currentUser)
               ],
             ),
           );
         }
 
-        return  Center(child: SpinkitConstants().spinKitRotatingCircle(backgroundColor));
+        return Center(
+            child: SpinkitConstants().spinKitRotatingCircle(backgroundColor));
       },
     );
   }

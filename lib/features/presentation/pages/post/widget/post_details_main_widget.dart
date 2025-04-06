@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
+import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_state.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
@@ -21,7 +22,6 @@ class PostDetailsMainWidget extends StatefulWidget {
 }
 
 class _PostDetailsMainWidgetState extends State<PostDetailsMainWidget> {
-  bool isLikeAnimating = false;
   String _currentUid = "";
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _PostDetailsMainWidgetState extends State<PostDetailsMainWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(title: const Text("Post Details")),
+      appBar: AppBar(title: const Text("Post Details")),
       body: BlocBuilder<GetSinglePostCubit, GetSinglePostState>(
         builder: (context, singlePostState) {
           if (singlePostState is GetSinglePostLoaded) {
@@ -84,9 +84,7 @@ appBar: AppBar(title: const Text("Post Details")),
                           displayImage(singlepost.postImageUrl, context),
                       onDoubleTap: () {
                         _likePost();
-                        setState(() {
-                          isLikeAnimating = true;
-                        });
+                        context.read<LikeAnimationCubit>().startAnimation();
                       },
                       child: Stack(
                         alignment: Alignment.center,
@@ -96,23 +94,27 @@ appBar: AppBar(title: const Text("Post Details")),
                             child: profileWidget(
                                 imageUrl: singlepost.postImageUrl),
                           ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 300),
-                            opacity: isLikeAnimating ? 1 : 0,
-                            child: LikeAnimationWidget(
-                              duration: const Duration(milliseconds: 300),
-                              isLikeAnimating: isLikeAnimating,
-                              onLikeFinish: () {
-                                setState(() {
-                                  isLikeAnimating = false;
-                                });
-                              },
-                              child: const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
-                                size: 100,
-                              ),
-                            ),
+                          BlocBuilder<LikeAnimationCubit, bool>(
+                            builder: (context, state) {
+                             return  AnimatedOpacity(
+                                duration: const Duration(milliseconds: 300),
+                                opacity: state ? 1 : 0,
+                                child: LikeAnimationWidget(
+                                  duration: const Duration(milliseconds: 300),
+                                  isLikeAnimating: state,
+                                  onLikeFinish: () {
+                                    context
+                                        .read<LikeAnimationCubit>()
+                                        .resetAnimation();
+                                  },
+                                  child: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 100,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

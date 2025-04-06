@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
+import 'package:social_media/features/presentation/cubit/comment_flag/comment_update.dart';
 import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 
@@ -17,13 +18,18 @@ class UpdateCommentMainWidget extends StatefulWidget {
 
 class _UpdateCommentMainWidgetState extends State<UpdateCommentMainWidget> {
   TextEditingController? _descriptionController;
-  bool _isCommentUpdating = false;
 
   @override
   void initState() {
     _descriptionController =
         TextEditingController(text: widget.comment.description);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _descriptionController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,19 +61,17 @@ class _UpdateCommentMainWidgetState extends State<UpdateCommentMainWidget> {
   }
 
   _updateComment() {
-    setState(() {
-      _isCommentUpdating = true;
-    });
+    context.read<CommentflagCubit>().setCommentUpdate();
+
     BlocProvider.of<CommentCubit>(context)
         .updateComment(CommentEntity(
             postId: widget.comment.postId,
             commentId: widget.comment.commentId,
             description: _descriptionController!.text))
         .then((value) {
-      setState(() {
-        _isCommentUpdating = false;
-        _descriptionController!.clear();
-      });
+      context.read<CommentflagCubit>().resetCommentUpdate();
+      _descriptionController!.clear();
+
       Navigator.pop(context);
     });
   }

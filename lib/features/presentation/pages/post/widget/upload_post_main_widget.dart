@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,8 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
+import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
+import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
@@ -23,9 +24,8 @@ class UploadPostMainWidget extends StatefulWidget {
 }
 
 class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
-  File? _image;
   late TextEditingController _descriptionController;
-  bool isUploading = false;
+
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
   }
 
   @override
-  dispose() {
+  void dispose() {
     _descriptionController.dispose();
     super.dispose();
   }
@@ -44,13 +44,11 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
       final pickedFile = await ImagePicker.platform
           .getImageFromSource(source: ImageSource.gallery);
 
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        } else {
-          print('no image is selected');
-        }
-      });
+      if (pickedFile != null) {
+        context.read<ImageCubit>().selectImage(File(pickedFile.path));
+      } else {
+        print('no image is selected');
+      }
     } catch (e) {
       print('some error occured');
     }
@@ -79,12 +77,11 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
   }
 
   _submitPost() {
-    setState(() {
-      isUploading = true;
-    });
+    context.read<FormCubit>().setForm();
+    final image = context.read<ImageCubit>().state;
     di
         .sl<UploadImageToStorageUsecase>()
-        .call(_image, true, "posts")
+        .call(image, true, "posts")
         .then((imageUrl) {
       _createSubmitPost(image: imageUrl);
     });
@@ -108,25 +105,24 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
   }
 
   _clear() {
-    setState(() {
-      isUploading = false;
+   
+    context.read<FormCubit>().resetForm();
       _descriptionController.clear();
-      _image = null;
-    });
+      context.read<ImageCubit>().clearImage();
+   
   }
 
   @override
   Widget build(BuildContext context) {
-    return _image == null
+    final image = context.watch<ImageCubit>().state;
+    return image == null
         ? _uploadPostWidget()
         : Scaffold(
             backgroundColor: backgroundColor,
             appBar: AppBar(
               backgroundColor: backgroundColor,
               leading: GestureDetector(
-                  onTap: () => setState(() {
-                        _image = null;
-                      }),
+                  onTap: () => context.read<ImageCubit>().clearImage(),
                   child: const Icon(Icons.close)),
               actions: [
                 GestureDetector(
@@ -155,22 +151,26 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
                   SizedBox(
                     width: double.infinity,
                     height: 400,
-                    child: profileWidget(image: _image),
+                    child: profileWidget(image: image),
                   ),
                   sizeVer(10),
-                   ProfileFormWidget(
+                  ProfileFormWidget(
                     title: 'Description',
                     controller: _descriptionController,
                   ),
                   sizeVer(10),
-
-                  isUploading==true?const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    
-                    children: [
-                      
-                      
-                      Text('Uploading ...'),CircularProgressIndicator()],):const SizedBox(height: 0,width: 0,),
+                  context.watch<FormCubit>().state
+                      ? const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Uploading ...'),
+                            CircularProgressIndicator()
+                          ],
+                        )
+                      : const SizedBox(
+                          height: 0,
+                          width: 0,
+                        ),
                 ],
               ),
             ),

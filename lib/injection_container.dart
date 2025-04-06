@@ -40,13 +40,19 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/user/regi
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/update_user_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
+import 'package:social_media/features/presentation/cubit/comment_flag/comment_update.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
+import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
+import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
+import 'package:social_media/features/presentation/cubit/index/index.dart';
+import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
+import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -112,16 +118,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateCommentUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => ReadCommentUsecase(repository: sl.call()));
 
-
 //Use Cases - replys
 
-sl.registerLazySingleton(()=>CreateReplyUsecase(repository: sl.call()));
-sl.registerLazySingleton(()=>DeleteReplyUsecase(repository: sl.call()));
-sl.registerLazySingleton(()=>LikeReplyUsecase(repository: sl.call()));
-sl.registerLazySingleton(()=>UpdateReplyUsecase(repository: sl.call()));
-sl.registerLazySingleton(()=>ReadReplyUsecase(repository: sl.call()));
-
-
+  sl.registerLazySingleton(() => CreateReplyUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeleteReplyUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => LikeReplyUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => UpdateReplyUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => ReadReplyUsecase(repository: sl.call()));
 
   // Use Cases - Storage
   sl.registerLazySingleton(
@@ -171,4 +174,11 @@ sl.registerLazySingleton(()=>ReadReplyUsecase(repository: sl.call()));
 
   sl.registerFactory(() => SavedpostCubit(
       readSavedpostUsecase: sl.call(), readPostUsecase: sl.call()));
+
+  sl.registerFactory(() => ImageCubit());
+  sl.registerFactory(() => FormCubit());
+  sl.registerFactory(() => LikeAnimationCubit());
+  sl.registerFactory(() => IndexCubit());
+  sl.registerFactory(() => CommentflagCubit());
+  sl.registerFactory(() => UserReplyFlagCubit());
 }

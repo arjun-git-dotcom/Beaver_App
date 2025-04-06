@@ -9,6 +9,7 @@ import 'package:social_media/features/domain/entities/replys/replay_entity.dart'
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
+import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
 import 'package:social_media/features/presentation/pages/post/comment/widgets/single_reply_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
@@ -32,7 +33,7 @@ class SingleCommentWidget extends StatefulWidget {
 }
 
 class _SingleCommentWidgetState extends State<SingleCommentWidget> {
-  bool _isUserReplaying = false;
+
   String _currentUid = "";
   TextEditingController? _replyDescriptionController;
 
@@ -47,6 +48,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
+                final isReplying = context.watch<UserReplyFlagCubit>().state;
     return InkWell(
       onLongPress: widget.onLongPress,
       child: SizedBox(
@@ -96,9 +98,9 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                           sizeHor(10),
                           GestureDetector(
                             onTap: () {
-                              setState(() {
-                                _isUserReplaying = !_isUserReplaying;
-                              });
+                              context
+                                  .read<UserReplyFlagCubit>()
+                                  .toggleUpdateReply();
                             },
                             child: InkWell(
                               onTap: () {
@@ -113,12 +115,13 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                             style:
                                 TextStyle(color: darkgreyColor, fontSize: 12),
                           ),
-                        
                         ],
                       ),
-                        SingleReplyWidget(),
-                      _isUserReplaying == true ? sizeVer(10) : sizeVer(0),
-                      _isUserReplaying == true
+                      SingleReplyWidget(),
+  
+
+                      isReplying ? sizeVer(10) : sizeVer(0),
+                      isReplying 
                           ? Column(
                               children: [
                                 const FormContainerWidget(
@@ -161,9 +164,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
   }
 
   _clear() {
-    setState(() {
-      _replyDescriptionController!.clear();
-      _isUserReplaying = false;
-    });
+    _replyDescriptionController!.clear();
+    context.read<UserReplyFlagCubit>().resetUpdateReply();
   }
 }

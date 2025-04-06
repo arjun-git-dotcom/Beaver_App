@@ -3,9 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
+import 'package:social_media/features/presentation/cubit/comment_flag/comment_update.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
+import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
+import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
+import 'package:social_media/features/presentation/cubit/index/index.dart';
+import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
+import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 import 'package:social_media/on_generate_route.dart';
@@ -37,6 +43,12 @@ class MyApp extends StatelessWidget {
           return di.sl<UserCubit>();
         }),
         BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
+        BlocProvider(create: (_)=>di.sl<ImageCubit>()),
+        BlocProvider(create: (_)=>di.sl<FormCubit>()),
+        BlocProvider(create: (_)=>di.sl<LikeAnimationCubit>()),
+        BlocProvider(create: (_)=>di.sl<IndexCubit>()),
+        BlocProvider(create: (_)=>di.sl<CommentflagCubit>()),
+        BlocProvider(create: (_)=>di.sl<UserReplyFlagCubit>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -175,9 +175,9 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
             likes: [],
             totalReplys: 0))
         .then((value) {
-      setState(() {
+    
         descriptionController.clear();
-      });
+      
     });
   }
 

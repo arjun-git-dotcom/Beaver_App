@@ -8,6 +8,7 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/app_entity.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
+import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/pages/post/widget/like_animation_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
@@ -23,7 +24,7 @@ class SinglePostCardWidget extends StatefulWidget {
 }
 
 class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
-  bool isLikeAnimating = false;
+ 
   String _currentUid = "";
   int count = 0;
   @override
@@ -71,9 +72,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
               onTap: () => displayImage(widget.post.postImageUrl, context),
               onDoubleTap: () {
                 _likePost();
-                setState(() {
-                  isLikeAnimating = true;
-                });
+                context.read<LikeAnimationCubit>().startAnimation();
               },
               child: Stack(
                 alignment: Alignment.center,
@@ -82,23 +81,27 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                     width: double.infinity,
                     child: profileWidget(imageUrl: widget.post.postImageUrl),
                   ),
-                  AnimatedOpacity(
-                    duration: const Duration(milliseconds: 300),
-                    opacity: isLikeAnimating ? 1 : 0,
-                    child: LikeAnimationWidget(
+                  BlocBuilder<LikeAnimationCubit,bool>(
+                    builder: (context,state){
+
+                     return  AnimatedOpacity(
                       duration: const Duration(milliseconds: 300),
-                      isLikeAnimating: isLikeAnimating,
-                      onLikeFinish: () {
-                        setState(() {
-                          isLikeAnimating = false;
-                        });
-                      },
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                        size: 100,
+                      opacity: state ? 1 : 0,
+                      child: LikeAnimationWidget(
+                        duration: const Duration(milliseconds: 300),
+                        isLikeAnimating:state,
+                        onLikeFinish: () {
+                         context.read<LikeAnimationCubit>().resetAnimation();
+                        },
+                        child: const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: 100,
+                        ),
                       ),
-                    ),
+                    );
+                    },
+                  
                   ),
                 ],
               ),
