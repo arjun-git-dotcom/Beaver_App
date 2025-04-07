@@ -5,13 +5,13 @@ import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
+import 'package:social_media/features/presentation/cubit/search_filter/search_filter_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_state.dart';
 import 'package:social_media/features/presentation/pages/search/search_widget.dart';
 import 'package:social_media/features/widget_profile.dart';
 
 class SearchMainWidget extends StatefulWidget {
-
   const SearchMainWidget({super.key});
 
   @override
@@ -24,13 +24,16 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
   @override
   void initState() {
     searchcontroller = TextEditingController();
-      BlocProvider.of<PostCubit>(context).getPost(post: const PostEntity());
-     BlocProvider.of<UserCubit>(context).getUsers(user:const UserEntity());
-   
-   
+    BlocProvider.of<PostCubit>(context).getPost(post: const PostEntity());
+    BlocProvider.of<UserCubit>(context).getUsers(user: const UserEntity());
 
     searchcontroller.addListener(() {
-      setState(() {});
+      final query = searchcontroller.text;
+      final userState = BlocProvider.of<UserCubit>(context).state;
+      if (userState is UserLoaded) {
+        BlocProvider.of<SearchFilterCubit>(context)
+            .filterUsers(query, userState.users);
+      }
     });
     super.initState();
   }
@@ -50,61 +53,60 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
         child: Column(children: [
           SearchWidget(controller: searchcontroller),
           sizeVer(10),
-          searchcontroller.text.isNotEmpty
-              ? BlocBuilder<UserCubit, UserState>(
-                  builder: (context, userstate) {
-                    print('$userstate');
-                    if (userstate is UserLoaded) {
-                      final filter = userstate.users.where((user) =>
-              user.username!.startsWith(searchcontroller.text) ||
-                  user.username!.toLowerCase().startsWith(searchcontroller.text.toLowerCase()) ||
-                  user.username!.contains(searchcontroller.text) ||
-                  user.username!.toLowerCase().contains(searchcontroller.text.toLowerCase())
-              ).toList();
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
+          searchcontroller.text.isNotEmpty?
+          BlocBuilder<SearchFilterCubit,List<UserEntity>>(builder: (context,filteredUsers){
+                if (filteredUsers.isEmpty) {
+      return const Text('No users found.');
+    }
+            return Expanded(
+              child: ListView.builder(
+                  itemCount: filteredUsers.length,
+                  itemBuilder: (context, index) {
+                    final user = filteredUsers[index];
+              
+                    return GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                          context, PageConstants.singleprofilePage,
+                          arguments: user.uid),
+                      child: Row(
                         children: [
-                          Flexible(
-                            
-                            fit: FlexFit.loose,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                                itemCount: filter.length,
-                                itemBuilder: (context, index) {
-                                  final user = filter[index];
-                                  
-                                  return GestureDetector(
-                                    onTap: ()=>
-                                    
-                                    Navigator.pushNamed(context, PageConstants.singleprofilePage,arguments: user.uid),
-                                    child: Row(
-                                    
-                                      children: [
-                                        SizedBox(
-                                          height: 50,
-                                          width: 50,
-                                          
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(60),
-                                                                     
-                                              
-                                              child: profileWidget(imageUrl: user.profileUrl)),
-                                            
-                                          ),
-                                        
-                                        sizeHor(10),
-                                        Text(user.username!)
-                                      ],
-                                    ),
-                                  );
-                                }),
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(60),
+                                child: profileWidget(
+                                    imageUrl: user.profileUrl)),
                           ),
-                        ]
-                      );
-                    }
-                    return const CircularProgressIndicator();
-                  },
-                )
+                          sizeHor(10),
+                          Text(user.username!)
+                        ],
+                      ),
+                    );
+                  }),
+            );
+
+          })
+              // ? BlocBuilder<UserCubit, UserState>(
+              //     builder: (context, userstate) {
+              //       print('$userstate');
+              //       if (userstate is UserLoaded) {
+              //         final filter = userstate.users
+              //             .where((user) =>
+              //                 user.username!
+              //                     .startsWith(searchcontroller.text) ||
+              //                 user.username!.toLowerCase().startsWith(
+              //                     searchcontroller.text.toLowerCase()) ||
+              //                 user.username!.contains(searchcontroller.text) ||
+              //                 user.username!.toLowerCase().contains(
+              //                     searchcontroller.text.toLowerCase()))
+              //             .toList();
+                      
+                    // }
+                    // return const CircularProgressIndicator();
+                  // },
+                // )
               : BlocBuilder<PostCubit, PostState>(
                   builder: (context, postState) {
                     if (postState is PostLoaded) {
