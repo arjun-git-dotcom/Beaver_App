@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/presentation/cubit/obscure_text/obscure_text_cubit.dart';
 
 class FormContainerWidget extends StatefulWidget {
   final TextEditingController? controller;
@@ -15,11 +17,11 @@ class FormContainerWidget extends StatefulWidget {
 
   const FormContainerWidget(
       {super.key,
-     this.controller,
+      this.controller,
       this.fieldKey,
       this.isPasswordField,
       this.hintText,
-     this.labelText,
+      this.labelText,
       this.helperText,
       this.onSaved,
       this.validator,
@@ -31,41 +33,46 @@ class FormContainerWidget extends StatefulWidget {
 }
 
 class _FormContainerWidgetState extends State<FormContainerWidget> {
-  bool _obscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
           color: backgroundColor, borderRadius: BorderRadius.circular(3)),
-      child: TextFormField(
-        style: const TextStyle(color: primaryColor),
-        controller: widget.controller,
-        keyboardType: widget.inputType,
-        key: widget.fieldKey,
-        obscureText: widget.isPasswordField == true ? _obscureText : false,
-        onSaved: widget.onSaved,
-        validator: widget.validator,
-        onFieldSubmitted: widget.onFieldSubmitted,
-        decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: widget.hintText,
-            hintStyle: const TextStyle(
-              color: secondaryColor,
-            ),
-            suffixIcon: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _obscureText = !_obscureText;
-                  });
-                },
-                child: widget.isPasswordField == true
-                    ? Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                        color:
-                            _obscureText == false ? blueColor : secondaryColor,
-                      )
-                    : const Text(""))),
+      child: BlocBuilder<ObscureTextCubit, bool>(
+        builder: (context, obscureText) {
+          return TextFormField(
+            style: const TextStyle(color: primaryColor),
+            controller: widget.controller,
+            keyboardType: widget.inputType,
+            key: widget.fieldKey,
+            obscureText: widget.isPasswordField == true ? obscureText : false,
+            onSaved: widget.onSaved,
+            validator: widget.validator,
+            onFieldSubmitted: widget.onFieldSubmitted,
+            decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: widget.hintText,
+                hintStyle: const TextStyle(
+                  color: secondaryColor,
+                ),
+                suffixIcon: GestureDetector(
+                    onTap: () {
+                      context.read<ObscureTextCubit>().toggel();
+                    },
+                    child: widget.isPasswordField == true
+                        ? Icon(
+                            obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: obscureText == false
+                                ? blueColor
+                                : secondaryColor,
+                          )
+                        : const Text(""))),
+          );
+        },
       ),
     );
   }

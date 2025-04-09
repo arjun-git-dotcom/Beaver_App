@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/constants.dart';
 
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
+import 'package:social_media/features/presentation/cubit/current_uid/current_uid_cubit.dart';
 
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cubit.dart';
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_state.dart';
@@ -17,18 +18,16 @@ class SavedpostMainWidget extends StatefulWidget {
 }
 
 class _SavedpostMainWidgetState extends State<SavedpostMainWidget> {
-  String _currentUid = "";
+ 
   @override
   void initState() {
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
-      setState(() {
-        _currentUid = value;
-        BlocProvider.of<SavedpostCubit>(context)
-            .getSavedPost(userId: _currentUid);
-      });
+      context.read<CurrentUidCubit>().setUid(value);
+      BlocProvider.of<SavedpostCubit>(context)
+          .getSavedPost(userId: value);
     });
 
-    super.initState;
+    super.initState();
   }
 
   @override

@@ -42,10 +42,12 @@ import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment_flag/comment_update.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
+import 'package:social_media/features/presentation/cubit/current_uid/current_uid_cubit.dart';
 import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/cubit/index/index.dart';
 import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
+import 'package:social_media/features/presentation/cubit/obscure_text/obscure_text_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
@@ -181,4 +183,6 @@ Future<void> init() async {
   sl.registerFactory(() => IndexCubit());
   sl.registerFactory(() => CommentflagCubit());
   sl.registerFactory(() => UserReplyFlagCubit());
+  sl.registerFactory(() => CurrentUidCubit());
+  sl.registerFactory(() => ObscureTextCubit());
 }
