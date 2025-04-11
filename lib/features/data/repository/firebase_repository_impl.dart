@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/http/send_call.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
@@ -136,9 +137,17 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       firebaseRemoteDataSource.likeReply(reply);
 
   @override
-  Stream<List<ReplyEntity>> readReply(ReplyEntity reply ) =>
-      firebaseRemoteDataSource.readReply( reply);
+  Stream<List<ReplyEntity>> readReply(ReplyEntity reply) =>
+      firebaseRemoteDataSource.readReply(reply);
   @override
   Future<void> updateReply(ReplyEntity reply) =>
       firebaseRemoteDataSource.updateReply(reply);
+
+  @override
+  Future<void> callUser(receiverToken, callerName, callID) =>
+      sendCallNotification(
+          receiverToken: receiverToken, callerName: callerName, callID: callID);
+
+  @override
+  Future<String?> getfcmToken() => getFCMToken();
 }

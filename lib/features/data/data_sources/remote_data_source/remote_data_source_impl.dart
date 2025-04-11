@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
@@ -24,6 +25,18 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       {required this.firebaseFirestore,
       required this.firebaseAuth,
       required this.cloudinaryRepository});
+
+  Future<void> saveTokenFirebase(String userID) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    if (token != null) {
+      await firebaseFirestore
+          .collection("users")
+          .doc(userID)
+          .set({"fcmToken": token}, SetOptions(merge: true));
+    }
+    print(token);
+  }
+
   @override
   Future<void> createUserWithImage(UserEntity user, String profileUrl) async {
     final userCollection =
@@ -212,8 +225,11 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   Future<void> loginUser(UserEntity user) async {
     try {
       if (user.email!.isNotEmpty || user.password!.isNotEmpty) {
-        await firebaseAuth.signInWithEmailAndPassword(
+         
+       final userCredential= await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
+
+       saveTokenFirebase(userCredential.user!.uid);
       } else {
         print('fields cannot be empty');
       }
@@ -234,6 +250,8 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         email: user.email!,
         password: user.password!,
       );
+
+      saveTokenFirebase(userCredential.user!.uid);
 
       if (userCredential.user?.uid != null) {
         String profileUrl = "";
@@ -689,4 +707,6 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       collection.update(replyInfo);
     }
   }
+  
+
 }

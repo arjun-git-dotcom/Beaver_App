@@ -21,7 +21,7 @@ abstract class FirebaseRemoteDataSource {
   Future<void> updateUser(UserEntity user);
   Future<String> googleSignIn();
   Future<void> followUser(UserEntity user);
-
+ 
 //post
   Future<void> createPost(PostEntity post);
   Future<void> updatePost(PostEntity post);
@@ -32,7 +32,6 @@ abstract class FirebaseRemoteDataSource {
   Future<void> savePost(String postId, String userId);
   Stream<List<SavedpostsEntity>> readSavedPost(String userId);
 
-
   //comment
   Future<void> createComment(CommentEntity comment);
   Future<void> updateComment(CommentEntity comment);
@@ -40,12 +39,10 @@ abstract class FirebaseRemoteDataSource {
   Future<void> deleteComment(CommentEntity comment);
   Future<void> likeComment(CommentEntity comment);
 
-
   //replys
   Future<void> createReply(ReplyEntity reply);
   Future<void> updateReply(ReplyEntity reply);
   Stream<List<ReplyEntity>> readReply(ReplyEntity reply);
   Future<void> deleteReply(ReplyEntity reply);
   Future<void> likeReply(ReplyEntity reply);
-
 }

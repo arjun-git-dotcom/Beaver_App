@@ -4,6 +4,7 @@ import 'package:social_media/features/domain/entities/app_entity.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
+import 'package:social_media/features/presentation/pages/chat/chatpage.dart';
 import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
@@ -13,6 +14,7 @@ import 'package:social_media/features/presentation/pages/post/update_postpage.da
 import 'package:social_media/features/presentation/pages/post/post_details_page.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
 import 'package:social_media/features/presentation/pages/profile/single_profilepage.dart';
+import 'package:social_media/features/presentation/pages/video_call/videocall_page.dart';
 import 'package:social_media/features/presentation/savedpost/savedpost.dart';
 
 class OnGenerateRoute {
@@ -28,10 +30,9 @@ class OnGenerateRoute {
         }
       case PageConstants.updatePostpage:
         {
-          if(args is PostEntity){
-              return routeBuilder( UpdatePostpage(post: args));
+          if (args is PostEntity) {
+            return routeBuilder(UpdatePostpage(post: args));
           }
-        
         }
       case PageConstants.commentpage:
         {
@@ -70,14 +71,24 @@ class OnGenerateRoute {
 
       case PageConstants.savedPostpage:
         {
-          return routeBuilder(SavedPostpage());
+          return routeBuilder(const SavedPostpage());
         }
 
       case PageConstants.updateCommentPage:
         {
           if (args is CommentEntity) {
-            return routeBuilder(UpdateCommentPage(comment:args));
+            return routeBuilder(UpdateCommentPage(comment: args));
           }
+        }
+
+      case PageConstants.chatPage:
+        {
+          return routeBuilder(ChatPage());
+        }
+
+      case PageConstants.videoCallPage:
+        {
+          return routeBuilder(VideoCallPage());
         }
     }
   }

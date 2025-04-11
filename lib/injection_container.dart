@@ -27,6 +27,8 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/replys/re
 import 'package:social_media/features/domain/usecase/firebase_usecases/replys/update_reply_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/savedposts/read_savedPost_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/storage/upload_image_to_storage.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/user/call_user_get_token_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/user/call_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/create_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/follow_unfollow_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
@@ -101,6 +103,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetCurrentUuidUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => LoginUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => RegisterUserUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+      () => CallUserGetTokenUsecase(firebaseRepository: sl.call()));
+  sl.registerLazySingleton(
+      () => CallUserUsecase(firebaseRepository: sl.call()));
 
   // Use Cases - Posts
   sl.registerLazySingleton(() => CreatePostUsecase(repository: sl.call()));

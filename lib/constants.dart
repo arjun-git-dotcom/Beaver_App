@@ -33,6 +33,8 @@ class PageConstants {
   static const String singleprofilePage = 'singleprofilePage';
   static const String savedPostpage = "savedPostPage";
   static const String updateCommentPage = "updateCommentPage";
+  static const String chatPage = "chatPage";
+  static const String videoCallPage = "videoCallPage";
 }
 
 class FirebaseConstants {

@@ -20,9 +20,13 @@ import 'package:social_media/on_generate_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:social_media/injection_container.dart' as di;
 
+late String appId;
+late String token;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  appId = dotenv.env["APP_ID"]!;
+  token = dotenv.env["TEMP_TOKEN"]!; 
   await Firebase.initializeApp();
   await di.init();
 
