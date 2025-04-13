@@ -36,7 +36,7 @@ class Homepage extends StatelessWidget {
                     const callID = "test_channel";
 
                     callUserUsecase.call(fcmToken, callerName, callID);
-                    Navigator.pushNamed(context, PageConstants.chatPage);
+                    Navigator.pushNamed(context, PageConstants.userListPage);
                   },
                   child: Icon(MdiIcons.facebookMessenger)),
             )

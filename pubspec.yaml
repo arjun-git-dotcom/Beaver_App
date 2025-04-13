@@ -44,7 +44,7 @@ dependencies:
   get_it: ^8.0.3
   flutter_svg: ^2.0.17
   image_picker: ^1.1.2
-  intl: ^0.20.2
+  intl: ^0.19.0
   uuid: ^4.5.1
   cached_network_image: ^3.4.1
   fluttertoast: ^8.2.10
@@ -58,9 +58,10 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_spinkit: ^5.2.1
   agora_rtc_engine: ^6.5.1
-  permission_handler: ^11.4.0
+  permission_handler: ^11.3.1
   zego_uikit_prebuilt_call: ^4.16.27
   firebase_messaging: ^15.2.5
+  zego_zimkit: ^1.18.15
 
 dev_dependencies:
   flutter_test:

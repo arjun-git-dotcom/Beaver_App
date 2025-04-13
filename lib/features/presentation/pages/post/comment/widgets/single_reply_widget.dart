@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/widget_profile.dart';
 
 class SingleReplyWidget extends StatefulWidget {
-  const SingleReplyWidget({super.key});
+  final ReplyEntity reply;
+  const SingleReplyWidget({required this.reply,super.key});
 
   @override
   State<SingleReplyWidget> createState() => _SingleReplyWidgetState();
@@ -14,7 +17,6 @@ class _SingleReplyWidgetState extends State<SingleReplyWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      
       child: SizedBox(
         width: double.infinity,
         child: Row(
@@ -24,7 +26,7 @@ class _SingleReplyWidgetState extends State<SingleReplyWidget> {
               height: 40,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: profileWidget(),
+                child: profileWidget(imageUrl: widget.reply.profileUrl),
               ),
             ),
             sizeHor(10),
@@ -37,29 +39,21 @@ class _SingleReplyWidgetState extends State<SingleReplyWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("username  "),
-                          Icon(
-                              
-                               
-                                MdiIcons.heartOutline,
-                              
-                                 color : primaryColor)
+                          Text(widget.reply.username!),
+                          Icon(MdiIcons.heartOutline, color: primaryColor)
                         ],
                       ),
-                      Text("description"),
+                      Text(widget.reply.description!),
                       Row(
                         children: [
-                          Text(
-                            "4/4/25",
-                            style: const TextStyle(
-                                color: darkgreyColor, fontSize: 12),
-                          ),
-                         
-                        
+                            Text(
+                                DateFormat("dd/MMM/yyyy")
+                                    .format(widget.reply.createdAt!.toDate()),
+                                style: const TextStyle(
+                                    color: darkgreyColor, fontSize: 12),
+                              ),
                         ],
                       ),
-                
-                    
                     ]),
               ),
             ),

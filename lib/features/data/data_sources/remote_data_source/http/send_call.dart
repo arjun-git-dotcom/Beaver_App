@@ -7,7 +7,7 @@ Future<void> sendCallNotification({
   required String callerName,
   required String callID,
 }) async {
-  final url = Uri.parse('http://localhost:3000/send-notification'); 
+  final url = Uri.parse('http://10.0.2.2:3000/send-notification'); 
 
   final response = await http.post(
     url,

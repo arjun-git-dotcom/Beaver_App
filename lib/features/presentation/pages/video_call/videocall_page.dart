@@ -11,7 +11,7 @@ class VideoCallPage extends StatefulWidget {
 
 class _VideoCallPageState extends State<VideoCallPage> {
   final String userID = 'user_${DateTime.now().millisecondsSinceEpoch}';
-  final String callID = 'test_channel'; // channel name
+  final String callID = 'test_channel'; 
 
   @override
   void initState() {

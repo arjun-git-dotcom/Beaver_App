@@ -35,6 +35,7 @@ class PageConstants {
   static const String updateCommentPage = "updateCommentPage";
   static const String chatPage = "chatPage";
   static const String videoCallPage = "videoCallPage";
+  static const String userListPage = "userListPage";
 }
 
 class FirebaseConstants {

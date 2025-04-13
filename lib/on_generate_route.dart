@@ -5,6 +5,8 @@ import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/pages/chat/chatpage.dart';
+import 'package:social_media/features/presentation/pages/chat/userlist_main_widget.dart';
+import 'package:social_media/features/presentation/pages/chat/userlistpage.dart';
 import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password.dart';
 import 'package:social_media/features/presentation/pages/credentials/login.dart';
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
@@ -83,7 +85,20 @@ class OnGenerateRoute {
 
       case PageConstants.chatPage:
         {
-          return routeBuilder(ChatPage());
+          if (args is Map<dynamic, dynamic>) {
+            
+            return routeBuilder(ChatPage(
+              currentUserId: args['currentUserId']!,
+        peerId: args['peerId']!,
+        peerName: args['peerName'],
+        currentUserName: args["currentUserName"],
+        
+            ));
+          }
+        }
+      case PageConstants.userListPage:
+        {
+          return routeBuilder(Userlistpage());
         }
 
       case PageConstants.videoCallPage:

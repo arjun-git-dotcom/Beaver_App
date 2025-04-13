@@ -19,17 +19,17 @@ import 'package:social_media/features/presentation/pages/main_screen/main_screen
 import 'package:social_media/on_generate_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:social_media/injection_container.dart' as di;
+import 'package:zego_zimkit/zego_zimkit.dart';
 
-late String appId;
-late String token;
+
 Future main() async {
+    await ZIMKit().init(appID: 1155415086,appSign: '14c1c636cf9cd714dd248253f3157c0258b14f9f99962e4e274273ba5543af18');
+
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  appId = dotenv.env["APP_ID"]!;
-  token = dotenv.env["TEMP_TOKEN"]!; 
+  
   await Firebase.initializeApp();
   await di.init();
-
 
   runApp(const MyApp());
 }
@@ -39,8 +39,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
- 
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
@@ -49,14 +47,14 @@ class MyApp extends StatelessWidget {
           return di.sl<UserCubit>();
         }),
         BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
-        BlocProvider(create: (_)=>di.sl<ImageCubit>()),
-        BlocProvider(create: (_)=>di.sl<FormCubit>()),
-        BlocProvider(create: (_)=>di.sl<LikeAnimationCubit>()),
-        BlocProvider(create: (_)=>di.sl<IndexCubit>()),
-        BlocProvider(create: (_)=>di.sl<CommentflagCubit>()),
-        BlocProvider(create: (_)=>di.sl<UserReplyFlagCubit>()),
-        BlocProvider(create: (_)=>di.sl<CurrentUidCubit>()),
-        BlocProvider(create: (_)=>di.sl<ObscureTextCubit>())
+        BlocProvider(create: (_) => di.sl<ImageCubit>()),
+        BlocProvider(create: (_) => di.sl<FormCubit>()),
+        BlocProvider(create: (_) => di.sl<LikeAnimationCubit>()),
+        BlocProvider(create: (_) => di.sl<IndexCubit>()),
+        BlocProvider(create: (_) => di.sl<CommentflagCubit>()),
+        BlocProvider(create: (_) => di.sl<UserReplyFlagCubit>()),
+        BlocProvider(create: (_) => di.sl<CurrentUidCubit>()),
+        BlocProvider(create: (_) => di.sl<ObscureTextCubit>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
