@@ -13,6 +13,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/comments/
 import 'package:social_media/features/domain/usecase/firebase_usecases/comments/like_comment_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/comments/read_comment_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/comments/update_comment_usecase.dart';
+import 'package:social_media/features/domain/usecase/firebase_usecases/likepage/likepage_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/create_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/delete_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/get_single_post_usecase.dart';
@@ -41,6 +42,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/user/logo
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/register_user_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/update_user_usecase.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
+import 'package:social_media/features/presentation/cubit/bookmark/bookmark_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment_flag/comment_update.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
@@ -117,6 +119,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetSinglePostUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => SavePostUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => ReadSavedpostUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => LikepageUsecase(repository: sl.call()));
 
   //use Cases - comments
 
@@ -191,4 +194,5 @@ Future<void> init() async {
   sl.registerFactory(() => UserReplyFlagCubit());
   sl.registerFactory(() => CurrentUidCubit());
   sl.registerFactory(() => ObscureTextCubit());
+  sl.registerFactory(() => BookmarkCubit());
 }

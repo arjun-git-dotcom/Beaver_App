@@ -23,7 +23,7 @@ abstract class FirebaseRepository {
   Future<void> updateUser(UserEntity user);
   Future<void> followUser(UserEntity user);
   Future<void> callUser(receiverToken, callerName, callID);
-  Future<String?>getfcmToken();
+  Future<String?> getfcmToken();
 
   //storage features
 
@@ -42,6 +42,7 @@ abstract class FirebaseRepository {
   Stream<List<PostEntity>> getSinglePost(String postId);
   Future<void> savePost(String postId, String userId);
   Stream<List<SavedpostsEntity>> readsavedPost(String userId);
+  Future<List<PostEntity>> likepage();
 
   //comment features
   Future<void> createComment(CommentEntity comment);

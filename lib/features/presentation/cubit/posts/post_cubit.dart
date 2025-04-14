@@ -116,4 +116,39 @@ Future<void> close() {
       emit(PostFailure());
     }
   }
+
+  Future<void> getLikedPosts({required String userId}) async {
+  await _postSubscription?.cancel();
+  
+  emit(PostLoading());
+
+  try {
+    final streamResponse = readPostUsecase.call(PostEntity());
+    _postSubscription = streamResponse.map((posts) {
+      // Filter to only include posts liked by the current user
+      return posts.where((post) => 
+        post.likes != null && post.likes!.contains(userId)
+      ).toList();
+    }).listen(
+      (likedPosts) {
+        if (!isClosed) {
+          emit(PostLoaded(posts: likedPosts));
+        }
+      },
+      onError: (error) {
+        if (!isClosed) {
+          if (error is SocketException) {
+            emit(PostFailure());
+          } else {
+            emit(PostFailure());
+          }
+        }
+      },
+    );
+  } catch (_) {
+    if (!isClosed) {
+      emit(PostFailure());
+    }
+  }
+}
 }

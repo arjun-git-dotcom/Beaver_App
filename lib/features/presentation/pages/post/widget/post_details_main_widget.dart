@@ -22,15 +22,13 @@ class PostDetailsMainWidget extends StatefulWidget {
 }
 
 class _PostDetailsMainWidgetState extends State<PostDetailsMainWidget> {
-  String _currentUid = "";
+  late Future<String> _currentUid;
   @override
   void initState() {
     BlocProvider.of<GetSinglePostCubit>(context)
         .getSinglePost(postId: widget.postId);
 
-    di.sl<GetCurrentUuidUsecase>().call().then((value) {
-      _currentUid = value;
-    });
+    _currentUid=di.sl<GetCurrentUuidUsecase>().call();
     super.initState();
   }
 
@@ -47,130 +45,144 @@ class _PostDetailsMainWidgetState extends State<PostDetailsMainWidget> {
         builder: (context, singlePostState) {
           if (singlePostState is GetSinglePostLoaded) {
             final singlepost = singlePostState.post;
-            return Container(
-              color: backgroundColor,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return FutureBuilder<Object>(
+              future: _currentUid,
+              builder: (context, snapshot) {
+                   if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final currentUid = snapshot.data!;
+                return Container(
+                  color: backgroundColor,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(40),
-                                  child: profileWidget(
-                                      imageUrl: singlepost.userProfileUrl)),
-                            ),
-                            sizeHor(10),
-                            Text(singlepost.username!),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () => _openbottomModelSheet(context),
-                          child: Icon(MdiIcons.dotsVertical),
-                        ),
-                      ],
-                    ),
-                    sizeVer(10),
-                    GestureDetector(
-                      onTap: () =>
-                          displayImage(singlepost.postImageUrl, context),
-                      onDoubleTap: () {
-                        _likePost();
-                        context.read<LikeAnimationCubit>().startAnimation();
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: profileWidget(
-                                imageUrl: singlepost.postImageUrl),
-                          ),
-                          BlocBuilder<LikeAnimationCubit, bool>(
-                            builder: (context, state) {
-                             return  AnimatedOpacity(
-                                duration: const Duration(milliseconds: 300),
-                                opacity: state ? 1 : 0,
-                                child: LikeAnimationWidget(
-                                  duration: const Duration(milliseconds: 300),
-                                  isLikeAnimating: state,
-                                  onLikeFinish: () {
-                                    context
-                                        .read<LikeAnimationCubit>()
-                                        .resetAnimation();
-                                  },
-                                  child: const Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                    size: 100,
-                                  ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(40),
+                                      child: profileWidget(
+                                          imageUrl: singlepost.userProfileUrl)),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    sizeVer(10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            singlepost.likes!.contains(_currentUid)
-                                ? GestureDetector(
-                                    onTap: () => _likePost(),
-                                    child: Icon(
-                                      MdiIcons.heart,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                : GestureDetector(
-                                    onTap: () => _likePost(),
-                                    child: Icon(MdiIcons.heartOutline,
-                                        color: primaryColor)),
-                            sizeHor(10),
+                                sizeHor(10),
+                                Text(singlepost.username!),
+                              ],
+                            ),
                             GestureDetector(
-                              onTap: () =>
-                                  Navigator.pushNamed(context, 'commentPage'),
-                              child: Icon(MdiIcons.commentOutline,
-                                  color: primaryColor),
+                              onTap: () => _openbottomModelSheet(context),
+                              child: Icon(MdiIcons.dotsVertical),
                             ),
                           ],
                         ),
-                        const Icon(Icons.bookmark_border),
-                      ],
-                    ),
-                    Text(
-                      '${singlepost.totalLikes!} likes',
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          ' ${singlepost.username!}',
-                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        sizeVer(10),
+                        GestureDetector(
+                          onTap: () =>
+                              displayImage(singlepost.postImageUrl, context),
+                          onDoubleTap: () {
+                            _likePost();
+                            context
+                                .read<LikeAnimationCubit>()
+                                .startAnimation(widget.postId);
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: profileWidget(
+                                    imageUrl: singlepost.postImageUrl),
+                              ),
+                              BlocBuilder<LikeAnimationCubit, Map<String, bool>>(
+                                builder: (context, state) {
+                                  final isAnimating = state[widget.postId] ?? false;
+                
+                                  return AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 300),
+                                    opacity: isAnimating ? 1 : 0,
+                                    child: LikeAnimationWidget(
+                                      duration: const Duration(milliseconds: 300),
+                                      isLikeAnimating: isAnimating,
+                                      onLikeFinish: () {
+                                        context
+                                            .read<LikeAnimationCubit>()
+                                            .resetAnimation(widget.postId);
+                                      },
+                                      child: const Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: 100,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                        sizeHor(10),
-                        Text(singlepost.description!),
+                        sizeVer(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                singlepost.likes!.contains(currentUid)
+                                    ? GestureDetector(
+                                        onTap: () => _likePost(),
+                                        child: Icon(
+                                          MdiIcons.heart,
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () => _likePost(),
+                                        child: Icon(MdiIcons.heartOutline,
+                                            color: primaryColor)),
+                                sizeHor(10),
+                                GestureDetector(
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, 'commentPage'),
+                                  child: Icon(MdiIcons.commentOutline,
+                                      color: primaryColor),
+                                ),
+                              ],
+                            ),
+                            const Icon(Icons.bookmark_border),
+                          ],
+                        ),
+                        Text(
+                          '${singlepost.totalLikes!} likes',
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              ' ${singlepost.username!}',
+                              style: const TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                            sizeHor(10),
+                            Text(singlepost.description!),
+                          ],
+                        ),
+                        Text('view all ${singlepost.totalComments} comments'),
+                        Text(
+                          DateFormat("dd/MMM/yyyy")
+                              .format(singlepost.createAt!.toDate()),
+                        ),
                       ],
                     ),
-                    Text('view all ${singlepost.totalComments} comments'),
-                    Text(
-                      DateFormat("dd/MMM/yyyy")
-                          .format(singlepost.createAt!.toDate()),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              }
             );
           } else {
             return SpinkitConstants().spinkitspinninglines(blueColor);

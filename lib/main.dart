@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
+import 'package:social_media/features/presentation/cubit/bookmark/bookmark_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment_flag/comment_update.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/current_uid/current_uid_cubit.dart';
@@ -54,7 +55,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<CommentflagCubit>()),
         BlocProvider(create: (_) => di.sl<UserReplyFlagCubit>()),
         BlocProvider(create: (_) => di.sl<CurrentUidCubit>()),
-        BlocProvider(create: (_) => di.sl<ObscureTextCubit>())
+        BlocProvider(create: (_) => di.sl<ObscureTextCubit>()),
+        BlocProvider(create: (_)=>di.sl<BookmarkCubit>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

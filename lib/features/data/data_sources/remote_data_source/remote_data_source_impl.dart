@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
@@ -225,11 +226,10 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   Future<void> loginUser(UserEntity user) async {
     try {
       if (user.email!.isNotEmpty || user.password!.isNotEmpty) {
-         
-       final userCredential= await firebaseAuth.signInWithEmailAndPassword(
+        final userCredential = await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
 
-       saveTokenFirebase(userCredential.user!.uid);
+        saveTokenFirebase(userCredential.user!.uid);
       } else {
         print('fields cannot be empty');
       }
@@ -466,6 +466,17 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Future<List<PostEntity>> likepage() async {
+    final currentuid = getCurrentUid();
+    final snapshot = await firebaseFirestore
+        .collection("posts")
+        .where("likes", arrayContains: currentuid)
+        .get();
+
+    return snapshot.docs.map((doc) => PostModel.fromSnapShot(doc)).toList();
+  }
+
+  @override
   Future<void> createComment(CommentEntity comment) async {
     var collection = firebaseFirestore
         .collection(FirebaseConstants.posts)
@@ -680,7 +691,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   Stream<List<ReplyEntity>> readReply(ReplyEntity reply) {
     final collection = firebaseFirestore
         .collection(FirebaseConstants.posts)
-        .doc(reply.replyId)
+        .doc(reply.postId)
         .collection(FirebaseConstants.comment)
         .doc(reply.commentId)
         .collection(FirebaseConstants.reply);
@@ -707,6 +718,4 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       collection.update(replyInfo);
     }
   }
-  
-
 }

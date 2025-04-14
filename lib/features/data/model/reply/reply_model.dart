@@ -21,8 +21,16 @@ class ReplyModel extends ReplyEntity {
       this.description,
       this.createdAt,
       this.likes})
-      : super(replyId:replyId, commentId:commentId, postId:postId, userId:userId, username:username,profileUrl: profileUrl,
-            description:description, createdAt:createdAt, likes: likes);
+      : super(
+            replyId: replyId,
+            commentId: commentId,
+            postId: postId,
+            userId: userId,
+            username: username,
+            profileUrl: profileUrl,
+            description: description,
+            createdAt: createdAt,
+            likes: likes);
 
   factory ReplyModel.fromSnapshot(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -35,7 +43,7 @@ class ReplyModel extends ReplyEntity {
         profileUrl: snapshot["profileUrl"],
         description: snapshot['description'],
         createdAt: snapshot['createdAt'],
-        likes: snapshot['likes']);
+        likes: List.from(snap.get('likes')));
   }
 
   Map<String, dynamic> toJson() {
@@ -49,6 +57,6 @@ class ReplyModel extends ReplyEntity {
       "description": description,
       "createdAt": createdAt,
       "likes": likes
-    };  
+    };
   }
 }

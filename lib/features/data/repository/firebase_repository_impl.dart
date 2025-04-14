@@ -102,6 +102,10 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
     return firebaseRemoteDataSource.readSavedPost(userId);
   }
 
+  @override
+  Future<List<PostEntity>> likepage() {
+    return firebaseRemoteDataSource.likepage();
+  }
 //comments
 
   @override

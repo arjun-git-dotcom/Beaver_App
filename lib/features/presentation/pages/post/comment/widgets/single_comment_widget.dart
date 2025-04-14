@@ -39,6 +39,10 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
 
   @override
   void initState() {
+    BlocProvider.of<ReplyCubit>(context).readReply(
+        reply: ReplyEntity(
+            postId: widget.comment.postId,
+            commentId: widget.comment.commentId));
     _replyDescriptionController = TextEditingController();
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
       _currentUid = value;
@@ -51,7 +55,9 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
     double replypadding =
         (MediaQuery.of(context).size.width * 0.15).clamp(40, 80);
 
-    final isReplying = context.watch<UserReplyFlagCubit>().state;
+    final replyCubit = context.watch<UserReplyFlagCubit>();
+    final isReplying = replyCubit.isReplyingTo(widget.comment.commentId!);
+
     print("reply is ${isReplying}");
     return InkWell(
       onLongPress: widget.onLongPress,
@@ -106,9 +112,16 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                               sizeHor(10),
                               GestureDetector(
                                 onTap: () {
-                                  context
-                                      .read<UserReplyFlagCubit>()
-                                      .toggleUpdateReply();
+                                  final cubit =
+                                      context.read<UserReplyFlagCubit>();
+                                  if (cubit.isReplyingTo(
+                                      widget.comment.commentId!)) {
+                                    cubit.stopReplying();
+                                  } else {
+                                    cubit.startReplyingTo(
+                                        widget.comment.commentId!);
+                                  }
+
                                   print(isReplying);
                                 },
                                 child: Text("Reply"),
@@ -119,7 +132,9 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                                     BlocProvider.of<ReplyCubit>(context)
                                         .readReply(
                                             reply: ReplyEntity(
-                                                postId: widget.comment.postId)),
+                                                postId: widget.comment.postId,
+                                                commentId:
+                                                    widget.comment.commentId)),
                                 child: const Text(
                                   'View Replys',
                                   style: TextStyle(
@@ -138,7 +153,14 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
               child: BlocBuilder<ReplyCubit, ReplyState>(
                 builder: (BuildContext context, replystate) {
                   if (replystate is ReplySuccess) {
-                    final replys = replystate.reply;
+                    print(replystate.reply.length);
+                    final replys = replystate.reply
+                    .where((element) {
+                      print('where is ${element.commentId}');
+                      return element.commentId == widget.comment.commentId;
+                    }).toList();
+                    print("the filteredd replies are ${replys}");
+                    print("THE COMMENTiD IS${widget.comment.commentId}");
                     return ListView.builder(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
@@ -154,12 +176,13 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
             isReplying
                 ? Column(
                     children: [
-                      const FormContainerWidget(
+                      FormContainerWidget(
                         hintText: 'Post your reply....',
+                        controller: _replyDescriptionController,
                       ),
                       sizeVer(10),
                       GestureDetector(
-                        onTap: ()=>_createReply(),
+                        onTap: () => _createReply(),
                         child: const Text(
                           'Post',
                           style: TextStyle(color: blueColor),
@@ -195,6 +218,6 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
 
   _clear() {
     _replyDescriptionController!.clear();
-    context.read<UserReplyFlagCubit>().resetUpdateReply();
+    context.read<UserReplyFlagCubit>().stopReplying();
   }
 }
