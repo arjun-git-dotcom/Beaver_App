@@ -4,8 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
-import 'package:social_media/features/domain/usecase/firebase_usecases/user/call_user_get_token_usecase.dart';
-import 'package:social_media/features/domain/usecase/firebase_usecases/user/call_user_usecase.dart';
+
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/pages/home/widgets/single_post_card_widget.dart';
@@ -28,14 +27,6 @@ class Homepage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                   onTap: () async {
-                    final getFCMTokenUseCase = di.sl<CallUserGetTokenUsecase>();
-                    final fcmToken = await getFCMTokenUseCase();
-                    print("FCM Token: $fcmToken");
-                    final callUserUsecase = di.sl<CallUserUsecase>();
-                    const callerName = "dk";
-                    const callID = "test_channel";
-
-                    callUserUsecase.call(fcmToken, callerName, callID);
                     Navigator.pushNamed(context, PageConstants.userListPage);
                   },
                   child: Icon(MdiIcons.facebookMessenger)),

@@ -36,6 +36,10 @@ class PageConstants {
   static const String chatPage = "chatPage";
   static const String videoCallPage = "videoCallPage";
   static const String userListPage = "userListPage";
+  static const String followingPage = "followingPage";
+  static const String followersPage = "followersPage";
+  static const String updateReplyPage = "updateReplyPage";
+  static const String aboutPage = "aboutPage";
 }
 
 class FirebaseConstants {
@@ -60,8 +64,10 @@ class CloudinaryConstants {
 }
 
 class SpinkitConstants {
-  spinkitcircle() {
-    return SpinKitChasingDots();
+  spinkitcircle(color) {
+    return SpinKitChasingDots(
+      color: color,
+    );
   }
 
   spinkitspinninglines(color) {

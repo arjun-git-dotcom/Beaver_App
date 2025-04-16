@@ -222,7 +222,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontWeight: FontWeight.w400),
                       ),
                       sizeHor(10),
-                      const CircularProgressIndicator()
+                       SpinkitConstants().spinkitcircle(blueColor)
                     ],
                   );
                 } else {

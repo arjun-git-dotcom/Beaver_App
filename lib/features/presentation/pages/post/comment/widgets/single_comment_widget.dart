@@ -19,12 +19,12 @@ import 'package:uuid/uuid.dart';
 
 class SingleCommentWidget extends StatefulWidget {
   final CommentEntity comment;
-  final VoidCallback onLongPress;
+  final VoidCallback onLongPressListener;
   final VoidCallback onLikeListener;
   final UserEntity currentUser;
   const SingleCommentWidget(
       {required this.onLikeListener,
-      required this.onLongPress,
+      required this.onLongPressListener,
       required this.comment,
       required this.currentUser,
       super.key});
@@ -60,7 +60,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
 
     print("reply is ${isReplying}");
     return InkWell(
-      onLongPress: widget.onLongPress,
+      onLongPress: widget.onLongPressListener,
       child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -86,7 +86,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(widget.comment.username!),
+                              Text(widget.comment.username!,style: TextStyle(fontWeight: FontWeight.w500),),
                               InkWell(
                                   onTap: () => widget.onLikeListener(),
                                   child: Icon(
@@ -94,10 +94,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                                               .contains(_currentUid)
                                           ? MdiIcons.heart
                                           : MdiIcons.heartOutline,
-                                      color: widget.comment.likes!
-                                              .contains(_currentUid)
-                                          ? redColor
-                                          : primaryColor))
+                                      color: redColor))
                             ],
                           ),
                           Text(widget.comment.description!),
@@ -153,20 +150,22 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
               child: BlocBuilder<ReplyCubit, ReplyState>(
                 builder: (BuildContext context, replystate) {
                   if (replystate is ReplySuccess) {
-                    print(replystate.reply.length);
-                    final replys = replystate.reply
-                    .where((element) {
-                      print('where is ${element.commentId}');
+                    final replys = replystate.reply.where((element) {
                       return element.commentId == widget.comment.commentId;
                     }).toList();
-                    print("the filteredd replies are ${replys}");
-                    print("THE COMMENTiD IS${widget.comment.commentId}");
+
                     return ListView.builder(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
                         itemCount: replys.length,
-                        itemBuilder: (context, index) =>
-                            SingleReplyWidget(reply: replys[index]));
+                        itemBuilder: (context, index) => SingleReplyWidget(
+                            reply: replys[index],
+                            onLongPressListener: () {
+                              _openbottomModelSheet(context, replys[index]);
+                            },
+                            onLikeClickListener: () {
+                              _likeReply(reply: replys[index]);
+                            }));
                   }
                   return const CircularProgressIndicator();
                 },
@@ -216,8 +215,67 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
         .then((value) => _clear());
   }
 
+  _openbottomModelSheet(context, ReplyEntity reply) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 150,
+            color: backgroundColor,
+            child: Column(
+              children: [
+                sizeVer(10),
+                const Text(
+                  'More Options',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                sizeVer(10),
+                const Divider(
+                  color: secondaryColor,
+                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, PageConstants.updateReplyPage,
+                          arguments: reply);
+                          
+                    },
+                    child: const Text('Update reply')),
+                sizeVer(10),
+                const Divider(
+                  color: secondaryColor,
+                ),
+                InkWell(
+                    onTap: () {
+                      _deleteReply(reply: reply);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Delete reply')),
+                sizeVer(10),
+              ],
+            ),
+          );
+        });
+  }
+
   _clear() {
     _replyDescriptionController!.clear();
     context.read<UserReplyFlagCubit>().stopReplying();
+  }
+
+  _deleteReply({required ReplyEntity reply}) {
+    BlocProvider.of<ReplyCubit>(context).deleteReply(
+        reply: ReplyEntity(
+            postId: reply.postId,
+            commentId: reply.commentId,
+            replyId: reply.replyId));
+  }
+
+  _likeReply({required ReplyEntity reply}) {
+    BlocProvider.of<ReplyCubit>(context).likeReply(
+        reply: ReplyEntity(
+            postId: reply.postId,
+            commentId: reply.commentId,
+            replyId: reply.replyId));
   }
 }

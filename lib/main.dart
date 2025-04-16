@@ -22,13 +22,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:social_media/injection_container.dart' as di;
 import 'package:zego_zimkit/zego_zimkit.dart';
 
-
 Future main() async {
-    await ZIMKit().init(appID: 1155415086,appSign: '14c1c636cf9cd714dd248253f3157c0258b14f9f99962e4e274273ba5543af18');
-
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: ".env");
+  await ZIMKit().init(
+      appID: int.parse(dotenv.env['APP_ID']!),
+      appSign:dotenv.env['APP_SIGN']!
+          );
+      
+
   
+
+
   await Firebase.initializeApp();
   await di.init();
 
@@ -56,7 +61,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<UserReplyFlagCubit>()),
         BlocProvider(create: (_) => di.sl<CurrentUidCubit>()),
         BlocProvider(create: (_) => di.sl<ObscureTextCubit>()),
-        BlocProvider(create: (_)=>di.sl<BookmarkCubit>())
+        BlocProvider(create: (_) => di.sl<BookmarkCubit>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

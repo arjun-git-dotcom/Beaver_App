@@ -9,54 +9,56 @@ import 'package:social_media/features/widget_profile.dart';
 
 class EditProfilepage extends StatefulWidget {
   final UserEntity currentUser;
-  const EditProfilepage({required this.currentUser, super.key});
+
+  const EditProfilepage({super.key, required this.currentUser});
 
   @override
   State<EditProfilepage> createState() => _EditProfilepageState();
 }
 
 class _EditProfilepageState extends State<EditProfilepage> {
-  late TextEditingController _nameController;
   late TextEditingController _usernameController;
-  late TextEditingController _websiteController;
+  late TextEditingController _emailController;
   late TextEditingController _bioController;
   bool _isUpdating = false;
+
   @override
   void initState() {
-    _nameController = TextEditingController();
-    _usernameController = TextEditingController();
-    _websiteController = TextEditingController();
-    _bioController = TextEditingController();
-
     super.initState();
+
+    _usernameController = TextEditingController(text: widget.currentUser.username ?? '');
+    _emailController = TextEditingController(text: widget.currentUser.email ?? '');
+    _bioController = TextEditingController(text: widget.currentUser.bio ?? '');
   }
 
   @override
-  dispose() {
-    _nameController.dispose();
+  void dispose() {
     _usernameController.dispose();
-    _websiteController.dispose();
+    _emailController.dispose();
     _bioController.dispose();
     super.dispose();
   }
 
-  updateUserProfile() {
-    BlocProvider.of<UserCubit>(context)
-        .updateUser(UserEntity(
-            uid: widget.currentUser.uid,
-            username: _usernameController.text,
-            name: _nameController.text,
-            website: _websiteController.text,
-            bio: _bioController.text))
-        .then(_clear());
+  void updateUserProfile() async {
+    setState(() => _isUpdating = true);
+
+    await BlocProvider.of<UserCubit>(context).updateUser(
+      UserEntity(
+        uid: widget.currentUser.uid,
+        username: _usernameController.text,
+        email: _emailController.text,
+        bio: _bioController.text,
+      ),
+    );
+
+    _clear();
   }
 
-  _clear() {
+  void _clear() {
     context.read<FormCubit>().resetForm();
     _usernameController.clear();
-    _nameController.clear();
+    _emailController.clear();
     _bioController.clear();
-    _websiteController.clear();
 
     Navigator.pop(context);
   }
@@ -68,24 +70,26 @@ class _EditProfilepageState extends State<EditProfilepage> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         centerTitle: true,
-        title: const Text('Edit Profile '),
-        leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(Icons.close)),
+        title: const Text('Edit Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: GestureDetector(
-              onTap: () => updateUserProfile(),
-              child: const Icon(
+              onTap: _isUpdating ? null : updateUserProfile,
+              child: Icon(
                 Icons.done,
-                color: Colors.blue,
+                color: _isUpdating ? Colors.grey : Colors.blue,
               ),
             ),
           )
         ],
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             profileWidget(imageUrl: widget.currentUser.profileUrl),
@@ -94,36 +98,34 @@ class _EditProfilepageState extends State<EditProfilepage> {
               'Change Profile Picture',
               style: TextStyle(color: blueColor, fontSize: 15),
             ),
-            sizeVer(100),
+            sizeVer(50),
             ProfileFormWidget(
-              title: 'Name',
-              controller: _nameController,
-            ),
-            ProfileFormWidget(
-              title: 'username',
+              title: 'Username',
               controller: _usernameController,
             ),
             ProfileFormWidget(
-              title: 'website',
-              controller: _websiteController,
+              title: 'Email',
+              controller: _emailController,
             ),
             ProfileFormWidget(
-              title: 'bio',
+              title: 'Bio',
               controller: _bioController,
             ),
-            sizeVer(10),
-            _isUpdating == true
-                ? Row(
-                    children: [
-                      const Text('Please wait ..'),
-                      sizeHor(10),
-                      const CircularProgressIndicator()
-                    ],
-                  )
-                : const SizedBox(
-                    height: 0,
-                    width: 0,
-                  )
+            sizeVer(20),
+            if (_isUpdating)
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  Text('Updating...'),
+                  SizedBox(width: 10),
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ],
+              ),
+            sizeVer(20),
           ],
         ),
       ),

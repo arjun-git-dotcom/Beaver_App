@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:social_media/constants.dart';
 
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
@@ -35,10 +36,23 @@ class _SavedpostMainWidgetState extends State<SavedpostMainWidget> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('SavedPosts'),
           centerTitle: true,
-          backgroundColor: blueColor,
-        ),
+  title: const  Text(
+          'Saved Posts',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        ),actions: [ Padding(
+          padding: const EdgeInsets.only(right: 15),
+          child: SvgPicture.asset(
+              "assets/beaver-image.svg",
+              height: 50, 
+            ),
+        ),],
+  
+  
+ 
+
+
+),
         body: Column(
           children: [
             BlocBuilder<SavedpostCubit, SavedpostState>(

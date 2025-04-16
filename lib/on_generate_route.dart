@@ -3,7 +3,9 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/app_entity.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
+import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
+import 'package:social_media/features/presentation/pages/about/about_screen.dart';
 import 'package:social_media/features/presentation/pages/chat/chatpage.dart';
 import 'package:social_media/features/presentation/pages/chat/userlist_main_widget.dart';
 import 'package:social_media/features/presentation/pages/chat/userlistpage.dart';
@@ -12,9 +14,12 @@ import 'package:social_media/features/presentation/pages/credentials/login.dart'
 import 'package:social_media/features/presentation/pages/credentials/register.dart';
 import 'package:social_media/features/presentation/pages/post/comment/comment_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/update_comment_page.dart';
+import 'package:social_media/features/presentation/pages/post/comment/widgets/update_reply_page.dart';
 import 'package:social_media/features/presentation/pages/post/update_postpage.dart';
 import 'package:social_media/features/presentation/pages/post/post_details_page.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
+import 'package:social_media/features/presentation/pages/profile/followerspage.dart';
+import 'package:social_media/features/presentation/pages/profile/followingpage.dart';
 import 'package:social_media/features/presentation/pages/profile/single_profilepage.dart';
 import 'package:social_media/features/presentation/pages/video_call/videocall_page.dart';
 import 'package:social_media/features/presentation/savedpost/savedpost.dart';
@@ -86,24 +91,47 @@ class OnGenerateRoute {
       case PageConstants.chatPage:
         {
           if (args is Map<dynamic, dynamic>) {
-            
             return routeBuilder(ChatPage(
               currentUserId: args['currentUserId']!,
-        peerId: args['peerId']!,
-        peerName: args['peerName'],
-        currentUserName: args["currentUserName"],
-        
+              peerId: args['peerId']!,
+              peerName: args['peerName'],
+              currentUserName: args["currentUserName"],
             ));
           }
         }
       case PageConstants.userListPage:
         {
-          return routeBuilder(Userlistpage());
+          return routeBuilder(const Userlistpage());
         }
 
       case PageConstants.videoCallPage:
         {
-          return routeBuilder(VideoCallPage());
+          return routeBuilder(const VideoCallPage());
+        }
+      case PageConstants.followingPage:
+        {
+          if (args is UserEntity) {
+            return routeBuilder(Followingpage(user: args));
+          }
+        }
+
+      case PageConstants.followersPage:
+        {
+          if (args is UserEntity) {
+            return routeBuilder(Followerspage(user: args));
+          }
+        }
+
+      case PageConstants.aboutPage:
+        {
+          return routeBuilder(const AboutPage());
+        }
+
+      case PageConstants.updateReplyPage:
+        {
+          if (args is ReplyEntity) {
+            return routeBuilder(UpdateReplyPage(reply: args));
+          }
         }
     }
   }

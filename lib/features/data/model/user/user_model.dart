@@ -55,7 +55,7 @@ class UserModel extends UserEntity {
         totalFollowers: snapshot['totalFollowers'],
         totalFollowing: snapshot['totalFollowing'],
         following: List<String>.from(
-          snapshot['followers']??[],
+          snapshot['following']??[],
         ),
         followers: List<String>.from(snapshot['followers']??[]));
   }

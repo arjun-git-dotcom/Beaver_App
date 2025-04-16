@@ -7,6 +7,9 @@ import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:social_media/features/presentation/cubit/comment/comment_state.dart';
+import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
+import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_state.dart';
+import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';
@@ -30,7 +33,7 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
   void initState() {
     BlocProvider.of<GetSingleUserCubit>(context)
         .getSingleUser(uid: widget.appEntity.creatorUid!);
-
+  BlocProvider.of<GetSinglePostCubit>(context).getSinglePost(postId: widget.appEntity.postId!);
     BlocProvider.of<CommentCubit>(context)
         .getComments(widget.appEntity.postId!);
 
@@ -59,60 +62,70 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
           builder: (context, singleUserstate) {
             if (singleUserstate is GetSingleUserLoaded) {
               final singleUser = singleUserstate.user;
-              return BlocBuilder<CommentCubit, CommentState>(
-                  builder: (BuildContext context, commentState) {
-                if (commentState is CommentSuccess) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 40,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: profileWidget(
-                                      imageUrl: singleUser.password),
+              return BlocBuilder<GetSinglePostCubit,GetSinglePostState>(
+                builder: (context,singlePoststate){
+                  if(singlePoststate is GetSinglePostLoaded){
+                     final singlePost = singlePoststate.post;
+                  return  BlocBuilder<CommentCubit, CommentState>(
+                    builder: (BuildContext context, commentState) {
+                  if (commentState is CommentSuccess) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: profileWidget(
+                                        imageUrl: singleUser.profileUrl),
+                                  ),
                                 ),
-                              ),
-                              sizeHor(10),
-                              Text('username')
-                            ],
-                          ),
-                          const Text('Hello World'),
-                          sizeVer(10),
-                          const Divider(),
-                          Expanded(
-                              child: ListView.builder(
-                                  itemCount: commentState.comments.length,
-                                  itemBuilder: (context, index) {
-                                    final singleComment =
-                                        commentState.comments[index];
-                                    return BlocProvider<ReplyCubit>(
-                                      create: (context)=>di.sl<ReplyCubit>(),
-                                      child: SingleCommentWidget(
-                                        currentUser: singleUser,
-                                        onLikeListener: () {
-                                          _likeComment(singleComment);
-                                        },
-                                        onLongPress: () {
-                                          _openbottomModelSheet(
-                                              context, singleComment);
-                                        },
-                                        comment: singleComment,
-                                      ),
-                                    );
-                                  })),
-                          _commentSection(currentUser: singleUser),
-                        ]),
-                  );
-                }
-                return const CircularProgressIndicator();
-              });
+                                sizeHor(10),
+                                Text(singlePost.username!)
+                              ],
+                            ),
+                             Text(singlePost.description!),
+                            sizeVer(10),
+                            const Divider(),
+                            Expanded(
+                                child: ListView.builder(
+                                    itemCount: commentState.comments.length,
+                                    itemBuilder: (context, index) {
+                                      final singleComment =
+                                          commentState.comments[index];
+                                      return BlocProvider<ReplyCubit>(
+                                        create: (context)=>di.sl<ReplyCubit>(),
+                                        child: SingleCommentWidget(
+                                          currentUser: singleUser,
+                                          onLikeListener: () {
+                                            _likeComment(singleComment);
+                                          },
+                                          onLongPressListener: () {
+                                            _openbottomModelSheet(
+                                                context, singleComment);
+                                          },
+                                          comment: singleComment,
+                                        ),
+                                      );
+                                    })),
+                            _commentSection(currentUser: singleUser),
+                          ]),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                });
+                  }
+                  return SpinkitConstants().spinkitcircle(blueColor);
+                  
+                },
+                
+              );
             }
             return const CircularProgressIndicator();
           },

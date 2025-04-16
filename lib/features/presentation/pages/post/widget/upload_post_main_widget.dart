@@ -112,68 +112,111 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
    
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final image = context.watch<ImageCubit>().state;
-    return image == null
-        ? _uploadPostWidget()
-        : Scaffold(
-            backgroundColor: backgroundColor,
-            appBar: AppBar(
-              backgroundColor: backgroundColor,
-              leading: GestureDetector(
-                  onTap: () => context.read<ImageCubit>().clearImage(),
-                  child: const Icon(Icons.close)),
-              actions: [
-                GestureDetector(
-                    onTap: () {
-                      _submitPost();
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.forward),
-                    ))
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: profileWidget(
-                              imageUrl: widget.currentUser.profileUrl))),
-                  sizeVer(10),
-                  Text('${widget.currentUser.username}'),
-                  sizeVer(10),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 400,
-                    child: profileWidget(image: image),
-                  ),
-                  sizeVer(10),
-                  ProfileFormWidget(
-                    title: 'Description',
-                    controller: _descriptionController,
-                  ),
-                  sizeVer(10),
-                  context.watch<FormCubit>().state
-                      ? const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Uploading ...'),
-                            CircularProgressIndicator()
-                          ],
-                        )
-                      : const SizedBox(
-                          height: 0,
-                          width: 0,
-                        ),
-                ],
+ @override
+Widget build(BuildContext context) {
+  final image = context.watch<ImageCubit>().state;
+
+  return image == null
+      ? Scaffold(
+          backgroundColor: backgroundColor,
+          body: Center(
+            child: GestureDetector(
+              onTap: () => selectImage(),
+              child: Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: blueColor.withOpacity(0.8),
+                  boxShadow:const  [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.upload_rounded,
+                  size: 40,
+                  color: Colors.white,
+                ),
               ),
             ),
-          );
-  }
+          ),
+        )
+      : Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            backgroundColor: backgroundColor,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: Colors.red),
+              onPressed: () => context.read<ImageCubit>().clearImage(),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.send_rounded, color: blueColor),
+                onPressed: _submitPost,
+              )
+            ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: profileWidget(
+                            imageUrl: widget.currentUser.profileUrl),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        widget.currentUser.username ?? "",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 350,
+                    child: profileWidget(image: image),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ProfileFormWidget(
+                  title: 'Write a caption...',
+                  controller: _descriptionController,
+                ),
+                const SizedBox(height: 20),
+                context.watch<FormCubit>().state
+                    ?  Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Uploading...',
+                              style: TextStyle(
+                                  color: Colors.grey, fontSize: 14)),
+                         const  SizedBox(width: 10),
+                         SpinkitConstants().spinkitcircle(blueColor)
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          ),
+        );
+}
+
 }

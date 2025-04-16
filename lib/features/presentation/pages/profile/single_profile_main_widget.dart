@@ -43,173 +43,184 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
   @override
   Widget build(BuildContext context) {
     final currentUid = context.watch<CurrentUidCubit>().state;
-    return SafeArea(
-      child: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
-        builder: (context, singleuserstate) {
-          if (singleuserstate is GetSingleUserLoaded) {
-            final singleuser = singleuserstate.user;
-            return Scaffold(
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "${singleuser.username}",
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w700),
-                          ),
-                          InkWell(
-                              onTap: () =>
-                                  _openbottomModelSheet(context, singleuser),
-                              child: Icon(MdiIcons.menu))
-                        ],
-                      ),
-                      sizeVer(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: 80,
-                            width: 80,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: profileWidget(
-                                    imageUrl: singleuser.profileUrl)),
-                          ),
-                          Row(
-                            children: [
-                              Column(
-                                children: [
-                                  Text('${singleuser.totalPosts}'),
-                                  const Text('Posts')
-                                ],
-                              ),
-                              sizeHor(20),
-                              Column(
-                                children: [
-                                  Text('${singleuser.totalFollowers}'),
-                                  const Text('followers')
-                                ],
-                              ),
-                              sizeHor(20),
-                              Column(
-                                children: [
-                                  Text('${singleuser.totalFollowing}'),
-                                  const Text('following')
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                      sizeVer(10),
-                      Text(
-                          '${singleuser.name == "" ? singleuser.username : singleuser.name}',
+    return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
+      builder: (context, singleuserstate) {
+        if (singleuserstate is GetSingleUserLoaded) {
+          final singleuser = singleuserstate.user;
+          return Scaffold(
+            appBar: AppBar(),
+            body: Padding(
+              
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10,),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${singleuser.username}",
                           style: const TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.w600)),
-                      Text(
-                        ' ${singleuser.bio}',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      sizeVer(10),
-                      currentUid == singleuser.uid
-                          ? const SizedBox(
-                              height: 30,
-                              width: 30,
-                            )
-                          : BottomContainerWidget(
-                              text: singleuser.followers!.contains(currentUid)
-                                  ? "UnFollow"
-                                  : "Follow",
-                              color: singleuser.followers!.contains(currentUid)
-                                  ? secondaryColor.withOpacity(.4)
-                                  : blueColor,
-                              onTapListener: () {
-                                BlocProvider.of<UserCubit>(context).followUser(
-                                    user: UserEntity(
-                                        uid: currentUid,
-                                        otheruid: widget.otherUserId));
-                              },
+                              fontSize: 20, fontWeight: FontWeight.w700),
+                        ),
+                       currentUid==singleuser.uid? InkWell(
+                            onTap: () =>
+                                _openbottomModelSheet(context, singleuser),
+                            child: Icon(MdiIcons.menu)):const SizedBox.shrink()
+                      ],
+                    ),
+                    sizeVer(10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: 80,
+                          width: 80,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(40),
+                              child: profileWidget(
+                                  imageUrl: singleuser.profileUrl)),
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                Text('${singleuser.totalPosts}'),
+                                const Text('Posts')
+                              ],
                             ),
-                      sizeVer(10),
-                      BlocBuilder<PostCubit, PostState>(
-                        builder: (context, poststate) {
-                          if (poststate is PostLoaded) {
-                            final posts = poststate.posts.where(
-                                (post) => post.creatorUid == widget.otherUserId).toList();
-                            return GridView.builder(
-                                itemCount: posts.length,
-                                physics: const ScrollPhysics(),
-                                shrinkWrap: true,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisSpacing: 5,
-                                        mainAxisSpacing: 5,
-                                        crossAxisCount: 3),
-                                itemBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: profileWidget(
-                                        imageUrl: posts[index].postImageUrl),
-                                  );
-                                });
-                          }
-                          return CircularProgressIndicator();
-                        },
-                      )
-                    ],
-                  ),
+                            sizeHor(20),
+                            Column(
+                              children: [
+                                Text('${singleuser.totalFollowers}'),
+                                const Text('followers')
+                              ],
+                            ),
+                            sizeHor(20),
+                            Column(
+                              children: [
+                                Text('${singleuser.totalFollowing}'),
+                                const Text('following')
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    sizeVer(10),
+                    Text(
+                        '${singleuser.name == "" ? singleuser.username : singleuser.name}',
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600)),
+                    Text(
+                      ' ${singleuser.bio}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    sizeVer(10),
+                    currentUid == singleuser.uid
+                        ? const SizedBox(
+                            height: 30,
+                            width: 30,
+                          )
+                        : BottomContainerWidget(
+                            text: singleuser.followers!.contains(currentUid)
+                                ? "UnFollow"
+                                : "Follow",
+                            color: singleuser.followers!.contains(currentUid)
+                                ? secondaryColor.withOpacity(.4)
+                                : blueColor,
+                            onTapListener: () {
+                              BlocProvider.of<UserCubit>(context).followUser(
+                                  user: UserEntity(
+                                      uid: currentUid,
+                                      otheruid: widget.otherUserId));
+                            },
+                          ),
+                    sizeVer(10),
+                    BlocBuilder<PostCubit, PostState>(
+                      builder: (context, poststate) {
+                        if (poststate is PostLoaded) {
+                          final posts = poststate.posts.where(
+                              (post) => post.creatorUid == widget.otherUserId).toList();
+                          return GridView.builder(
+                              itemCount: posts.length,
+                              physics: const ScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 5,
+                                      mainAxisSpacing: 5,
+                                      crossAxisCount: 3),
+                              itemBuilder: (context, index) {
+                                return SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: profileWidget(
+                                      imageUrl: posts[index].postImageUrl),
+                                );
+                              });
+                        }
+                        return SpinkitConstants().spinKitRotatingCircle(blueColor);
+                      },
+                    )
+                  ],
                 ),
               ),
-            );
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
+            ),
+          );
+        }
+        return  SpinkitConstants().spinkitcircle(blueColor);
+      },
     );
   }
 }
 
 logOut(context) {
   return showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Are you sure ?'),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                        onTap: () async {
-                          BlocProvider.of<AuthCubit>(context).logOut();
-                          Navigator.pushNamedAndRemoveUntil(context,
-                              PageConstants.loginpage, (route) => false);
-                          await GoogleSignIn().signOut();
-                          FirebaseAuth.instance.signOut();
-                        },
-                        child: const Text('Yes')),
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('No'))
-                  ],
-                )
-              ],
-            ),
-          ));
+  context: context,
+  builder: (_) => AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    title: const Text(
+      'Log Out',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+      ),
+    ),
+    content: const Text(
+      'Are you sure you want to log out?',
+      style: TextStyle(fontSize: 16),
+    ),
+    actionsAlignment: MainAxisAlignment.spaceBetween,
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text(
+          'Cancel',
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+      TextButton(
+        onPressed: () async {
+          BlocProvider.of<AuthCubit>(context).logOut();
+          Navigator.pushNamedAndRemoveUntil(
+              context, PageConstants.loginpage, (route) => false);
+          await GoogleSignIn().signOut();
+          FirebaseAuth.instance.signOut();
+        },
+        child: const Text(
+          'Log Out',
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
+    ],
+  ),
+);
+
 }
 
 _openbottomModelSheet(context, currentUser) {

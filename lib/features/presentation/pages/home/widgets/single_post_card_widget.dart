@@ -81,7 +81,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                         displayImage(widget.post.postImageUrl, context),
                     onDoubleTap: () {
                       _likePost();
-                      
+
                       context
                           .read<LikeAnimationCubit>()
                           .startAnimation(widget.post.postId!);
@@ -91,6 +91,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                       children: [
                         SizedBox(
                           width: double.infinity,
+                               height: MediaQuery.of(context).size.height * 0.35,
                           child:
                               profileWidget(imageUrl: widget.post.postImageUrl),
                         ),
@@ -133,13 +134,13 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                                   onTap: () => _likePost(),
                                   child: Icon(
                                     MdiIcons.heart,
-                                    color: Colors.red,
+                                    color: redColor,
                                   ),
                                 )
                               : GestureDetector(
                                   onTap: () => _likePost(),
                                   child: Icon(MdiIcons.heartOutline,
-                                      color: primaryColor)),
+                                      color: redColor)),
                           sizeHor(10),
                           GestureDetector(
                             onTap: () => Navigator.pushNamed(
@@ -250,7 +251,45 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      _deletePost();
+                      showDialog(
+  context: context,
+  builder: (context) => AlertDialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+    ),
+    title: const Text(
+      'Delete Post',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+    content: const Text(
+      'Are you sure you want to delete this post? This action cannot be undone.',
+      style: TextStyle(fontSize: 16),
+    ),
+    actionsAlignment: MainAxisAlignment.spaceBetween,
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text(
+          'Cancel',
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          _deletePost();
+          Navigator.pop(context);
+        },
+        child: const Text(
+          'Delete',
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
+    ],
+  ),
+);
+
                     },
                     child: const Text('Delete Posts')),
                 sizeVer(10),

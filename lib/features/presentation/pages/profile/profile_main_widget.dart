@@ -74,14 +74,18 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                         sizeHor(20),
                         Column(
                           children: [
-                            Text('${widget.currentUser.totalFollowers}'),
+                            GestureDetector(
+                              onTap: ()=>Navigator.pushNamed(context, PageConstants.followersPage,arguments: widget.currentUser),
+                              child: Text('${widget.currentUser.totalFollowers}')),
                             const Text('followers')
                           ],
                         ),
                         sizeHor(20),
                         Column(
                           children: [
-                            Text('${widget.currentUser.totalFollowing}'),
+                            GestureDetector(
+                              onTap: ()=>Navigator.pushNamed(context, PageConstants.followingPage,arguments: widget.currentUser),
+                              child: Text('${widget.currentUser.totalFollowing}')),
                             const Text('following')
                           ],
                         )
@@ -138,44 +142,48 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
 
 logOut(context) {
   return showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Are you sure ?'),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                        onTap: () async {
-                          BlocProvider.of<AuthCubit>(context).logOut();
-                          Navigator.pushNamedAndRemoveUntil(context,
-                              PageConstants.loginpage, (route) => false);
-                                try {
-    await GoogleSignIn().signOut();
-     await GoogleSignIn().disconnect();
-    print("User signed out");
-  } catch (e) {
-    print("Error signing out: $e");
-  }
-                         
-                          FirebaseAuth.instance.signOut();
-                        },
-                        child: const Text('Yes')),
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('No'))
-                  ],
-                )
-              ],
-            ),
-          ));
+  context: context,
+  builder: (_) => AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    title: const Text(
+      'Log Out',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+      ),
+    ),
+    content: const Text(
+      'Are you sure you want to log out?',
+      style: TextStyle(fontSize: 16),
+    ),
+    actionsAlignment: MainAxisAlignment.spaceBetween,
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text(
+          'Cancel',
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+      TextButton(
+        onPressed: () async {
+          BlocProvider.of<AuthCubit>(context).logOut();
+          Navigator.pushNamedAndRemoveUntil(
+              context, PageConstants.loginpage, (route) => false);
+          await GoogleSignIn().signOut();
+          FirebaseAuth.instance.signOut();
+        },
+        child: const Text(
+          'Log Out',
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
+    ],
+  ),
+);
+
 }
 
 _openbottomModelSheet(context, currentUser) {
@@ -183,7 +191,7 @@ _openbottomModelSheet(context, currentUser) {
       context: context,
       builder: (context) {
         return Container(
-          height: 180,
+          height: 220,
           color: backgroundColor,
           child: Column(
             children: [
@@ -193,6 +201,14 @@ _openbottomModelSheet(context, currentUser) {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               sizeVer(10),
+               const Divider(
+                color: secondaryColor,
+              ),
+              GestureDetector(
+                  onTap: () => Navigator.pushNamed(
+                      context, PageConstants.aboutPage,
+                      arguments: currentUser),
+                  child: const Text('About')),
               const Divider(
                 color: secondaryColor,
               ),

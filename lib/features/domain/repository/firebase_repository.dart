@@ -22,8 +22,8 @@ abstract class FirebaseRepository {
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
   Future<void> followUser(UserEntity user);
-  Future<void> callUser(receiverToken, callerName, callID);
-  Future<String?> getfcmToken();
+ 
+
 
   //storage features
 

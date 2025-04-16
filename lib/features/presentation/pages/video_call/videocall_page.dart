@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
@@ -27,8 +28,8 @@ class _VideoCallPageState extends State<VideoCallPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ZegoUIKitPrebuiltCall(
-        appID:  1155415086, 
-        appSign: '14c1c636cf9cd714dd248253f3157c0258b14f9f99962e4e274273ba5543af18', 
+        appID: int.parse(dotenv.env['APP_ID']!), 
+        appSign: dotenv.env['APP_SIGN']!, 
         userID: userID,
         userName: 'User_$userID',
         callID: callID,

@@ -35,8 +35,7 @@ class _ChatPageState extends State<ChatPage> {
       return ZIMKit().updateUserInfo(name: widget.currentUserName);
     });
 
-    print("Logged in as: ${widget.peerName}");
-    print("currentuser is ${widget.currentUserName}");
+   
   }
 
   @override
@@ -51,7 +50,7 @@ class _ChatPageState extends State<ChatPage> {
                     MaterialPageRoute(builder: (context) => VideoCallPage()));
               },
               icon: const Icon(Icons.video_call))
-        ], // Show the peer's name
+        ], 
       ),
       body: FutureBuilder(
         future: _connectFuture,
