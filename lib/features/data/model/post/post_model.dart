@@ -2,15 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 
 class PostModel extends PostEntity {
+  @override
   final String? postId;
+  @override
   final String? creatorUid;
+  @override
   final String? username;
+  @override
   final String? description;
+  @override
   final String? postImageUrl;
+  @override
   final List<String>? likes;
+  @override
   final num? totalLikes;
+  @override
   final num? totalComments;
+  @override
   final Timestamp? createAt;
+  @override
   final String? userProfileUrl;
  
 

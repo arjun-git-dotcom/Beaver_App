@@ -123,7 +123,7 @@ Future<void> close() {
   emit(PostLoading());
 
   try {
-    final streamResponse = readPostUsecase.call(PostEntity());
+    final streamResponse = readPostUsecase.call(const PostEntity());
     _postSubscription = streamResponse.map((posts) {
       // Filter to only include posts liked by the current user
       return posts.where((post) => 

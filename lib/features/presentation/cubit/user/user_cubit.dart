@@ -23,7 +23,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       print('the new instance is $this');
     } catch (e, stacktrace) {
-      print('error creating ${e}');
+      print('error creating $e');
       print('the problem is $stacktrace');
     }
   }

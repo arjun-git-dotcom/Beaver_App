@@ -6,7 +6,7 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
 import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class SingleReplyWidget extends StatefulWidget {

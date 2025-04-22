@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +11,7 @@ import 'package:social_media/features/presentation/cubit/bookmark/bookmark_cubit
 import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/pages/post/widget/like_animation_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class SinglePostCardWidget extends StatefulWidget {

@@ -2,16 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 
 class ReplyModel extends ReplyEntity {
+  @override
   final String? replyId;
+  @override
   final String? commentId;
+  @override
   final String? postId;
+  @override
   final String? userId;
+  @override
   final String? username;
+  @override
   final String? profileUrl;
+  @override
   final String? description;
+  @override
   final Timestamp? createdAt;
+  @override
   final List<String>? likes;
-  ReplyModel(
+  const ReplyModel(
       {this.replyId,
       this.commentId,
       this.postId,

@@ -6,12 +6,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:social_media/features/presentation/cubit/index/index.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';
-import 'package:social_media/features/presentation/pages/Liked/likedpage.dart';
-import 'package:social_media/features/presentation/pages/Liked/likepage_main_widget.dart';
-import 'package:social_media/features/presentation/pages/home/homepage.dart';
-import 'package:social_media/features/presentation/pages/post/upload_postpage.dart';
+import 'package:social_media/features/presentation/pages/Liked_posts/liked_posts_page.dart';
+import 'package:social_media/features/presentation/pages/home/home_page.dart';
+import 'package:social_media/features/presentation/pages/post/upload_post_page.dart';
 import 'package:social_media/features/presentation/pages/profile/profilepage.dart';
-import 'package:social_media/features/presentation/pages/search/searchpage.dart';
+import 'package:social_media/features/presentation/pages/search/search_page.dart';
 
 class MainScreen extends StatefulWidget {
   final String uid;

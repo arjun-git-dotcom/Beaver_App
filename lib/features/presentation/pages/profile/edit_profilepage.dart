@@ -5,7 +5,7 @@ import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 
 class EditProfilepage extends StatefulWidget {
   final UserEntity currentUser;

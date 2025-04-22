@@ -4,8 +4,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source._impl.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
-import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source.dart';
-import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_source_impl.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/comment_remote_data_source/comment_remote_data_source.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/credential_remote_data_source/credential_remote_data_source.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/post_remote_data_souce/post_remote_data_source.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/reply_remote_data_source/reply_remote_data_source.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/user_remote_data_source/user_remote_data_source.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources_impl/comment_remote_data_source_impl/comment_remote_data_source_impl.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources_impl/credential_remote_data_source_impl/credential_remote_data_source_impl.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources_impl/post_remote_data_source_impl/post_remote_data_source_impl.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources_impl/reply_remote_data_source_impl/reply_remote_data_source_impl.dart';
+import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources_impl/user_remote_data_source_impl/user_remote_source_impl.dart';
 import 'package:social_media/features/data/repository/firebase_repository_impl.dart';
 import 'package:social_media/features/domain/repository/firebase_repository.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/comments/create_comment_usecase.dart';
@@ -74,16 +82,34 @@ Future<void> init() async {
   sl.registerLazySingleton<CloudinaryRepository>(() => CloudinaryRepositoryImpl(
       firebaseAuth: sl.call(), firebaseFirestore: sl.call()));
 
-  sl.registerLazySingleton<FirebaseRemoteDataSource>(
-      () => FirebaseRemoteDataSourceImpl(
-            cloudinaryRepository: sl.call(),
-            firebaseFirestore: sl.call(),
-            firebaseAuth: sl.call(),
-          ));
+  sl.registerLazySingleton<UserRemoteDataSource>(() => UserRemoteSourceImpl(
+      firebaseAuth: sl.call(), firebaseFirestore: sl.call()));
+  sl.registerLazySingleton<CredentialRemoteDataSource>(() =>
+      CredentialRemoteDataSourceImpl(
+          firebaseAuth: sl.call(),
+          cloudinaryRepository: sl.call(),
+          firebaseFirestore: sl.call()));
+
+  sl.registerLazySingleton<PostRemoteDataSource>(() => PostRemoteDataSourceImpl(
+      credentialRemoteDataSource: sl.call(), firebaseFirestore: sl.call()));
+
+  sl.registerLazySingleton<CommentRemoteDataSource>(() =>
+      CommentRemoteDataSourceImpl(
+          firebaseFirestore: sl.call(), credentialRemoteDataSource: sl.call()));
+
+  sl.registerLazySingleton<ReplyRemoteDataSource>(() =>
+      ReplyRemoteDataSourceImpl(
+          firebaseFirestore: sl.call(), credentialRemoteDataSource: sl.call()));
+
 
   // Repositories
   sl.registerLazySingleton<FirebaseRepository>(() => FirebaseRepositoryImpl(
-      firebaseRemoteDataSource: sl.call(), cloudinaryRepository: sl.call()));
+    replyRemoteDataSource: sl.call(),
+    postRemoteDataSource: sl.call(),
+    commentRemoteDataSource: sl.call(),
+    credentialRemoteDataSource: sl.call(),
+    userRemoteDataSource: sl.call(),
+   cloudinaryRepository: sl.call()));
 
   // Use Cases - User
   sl.registerLazySingleton<FollowUsecase>(() {
@@ -103,8 +129,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetCurrentUuidUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => LoginUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => RegisterUserUsecase(repository: sl.call()));
- 
- 
 
   // Use Cases - Posts
   sl.registerLazySingleton(() => CreatePostUsecase(repository: sl.call()));

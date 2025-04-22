@@ -8,7 +8,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/storage/u
 import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class UpdatePostMainWidget extends StatefulWidget {
@@ -78,7 +78,7 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                  child: Container(
+                  child: SizedBox(
                 height: 50,
                 width: 50,
                 child: ClipRRect(
@@ -164,7 +164,7 @@ class _UpdatePostMainWidgetState extends State<UpdatePostMainWidget> {
                 creatorUid: widget.post.creatorUid,
                 postId: widget.post.postId,
                 postImageUrl: image,
-                description: _descriptionController!.text))
+                description: _descriptionController.text))
         .then((value) {
       return _clear();
     });

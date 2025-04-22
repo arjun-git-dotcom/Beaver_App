@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_single_user_usecase.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class Followerspage extends StatelessWidget {

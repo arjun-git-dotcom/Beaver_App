@@ -14,7 +14,7 @@ import 'package:social_media/features/presentation/cubit/image/image_cubit.dart'
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

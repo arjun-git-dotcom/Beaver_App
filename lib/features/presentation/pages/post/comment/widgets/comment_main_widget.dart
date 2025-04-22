@@ -14,7 +14,7 @@ import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';
 import 'package:social_media/features/presentation/pages/post/comment/widgets/single_comment_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:uuid/uuid.dart';
 import 'package:social_media/injection_container.dart' as di;
 
@@ -140,8 +140,8 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
       child: Row(
         children: [
           Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
                 height: 40,
                 width: 40,
                 child: ClipRRect(
@@ -181,11 +181,11 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
             userId: currentUser.uid,
             username: currentUser.username,
             profileUrl: currentUser.profileUrl,
-            commentId: Uuid().v1(),
+            commentId: const Uuid().v1(),
             description: descriptionController.text,
             postId: widget.appEntity.postId,
             createdAt: Timestamp.now(),
-            likes: [],
+            likes: const [],
             totalReplys: 0))
         .then((value) {
     

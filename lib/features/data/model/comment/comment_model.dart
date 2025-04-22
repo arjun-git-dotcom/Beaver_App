@@ -2,17 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:social_media/features/domain/entities/comments/comments.dart';
 
 class CommentModel extends CommentEntity {
+  @override
   final String commentId;
+  @override
   final String userId;
+  @override
   final String username;
+  @override
   final String profileUrl;
+  @override
   final String description;
+  @override
   final String postId;
+  @override
   final Timestamp createdAt;
+  @override
   final List<String> likes;
+  @override
   final num totalReplys;
 
-  CommentModel(
+  const CommentModel(
       {required this.commentId,
       required this.userId,
       required this.username,

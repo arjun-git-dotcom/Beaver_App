@@ -8,7 +8,7 @@ import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_state.dart';
 import 'package:social_media/features/presentation/pages/search/search_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 
 class SearchMainWidget extends StatefulWidget {
   const SearchMainWidget({super.key});

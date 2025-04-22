@@ -6,7 +6,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_
 import 'package:social_media/features/presentation/cubit/current_uid/current_uid_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 class LikedpageMainWidget extends StatefulWidget {
   const LikedpageMainWidget({super.key});

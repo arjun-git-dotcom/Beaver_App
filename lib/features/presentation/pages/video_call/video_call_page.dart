@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:social_media/constants.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class VideoCallPage extends StatefulWidget {
@@ -20,9 +21,28 @@ class _VideoCallPageState extends State<VideoCallPage> {
     requestPermissions();
   }
 
-  Future<void> requestPermissions() async {
-    await [Permission.camera, Permission.microphone].request();
+ Future<void> requestPermissions() async {
+  
+  var cameraStatus = await Permission.camera.status;
+  var micStatus = await Permission.microphone.status;
+  
+  if (cameraStatus.isPermanentlyDenied || micStatus.isPermanentlyDenied) {
+    await openAppSettings();
+    return;
   }
+  
+
+  await [Permission.camera, Permission.microphone].request();
+
+  cameraStatus = await Permission.camera.status;
+  micStatus = await Permission.microphone.status;
+  
+  if (!cameraStatus.isGranted || !micStatus.isGranted) {
+   
+    toast("Camera or microphone permission not granted");
+    
+  }
+}
 
   @override
   Widget build(BuildContext context) {

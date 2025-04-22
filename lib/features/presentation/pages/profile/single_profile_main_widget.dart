@@ -16,7 +16,7 @@ import 'package:social_media/features/presentation/cubit/user/get_single_user/ge
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class SingleProfileMainWidget extends StatefulWidget {
@@ -33,7 +33,7 @@ class _SingleProfileMainWidgetState extends State<SingleProfileMainWidget> {
   void initState() {
     BlocProvider.of<GetSingleUserCubit>(context)
         .getSingleUser(uid: widget.otherUserId);
-    BlocProvider.of<PostCubit>(context).getPost(post: PostEntity());
+    BlocProvider.of<PostCubit>(context).getPost(post: const PostEntity());
     di.sl<GetCurrentUuidUsecase>().call().then((value) {
       context.read<CurrentUidCubit>().setUid(value);
     });

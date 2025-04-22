@@ -9,7 +9,7 @@ import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 
 class ProfileMainWidget extends StatefulWidget {
   final UserEntity currentUser;
@@ -120,7 +120,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                   mainAxisSpacing: 5,
                                   crossAxisCount: 3),
                           itemBuilder: (context, index) {
-                            return Container(
+                            return SizedBox(
                               height: 30,
                               width: 30,
                               child: profileWidget(

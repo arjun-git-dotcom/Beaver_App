@@ -2,17 +2,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 
 class UserModel extends UserEntity {
+  @override
   final String? username;
+  @override
   final String? name;
+  @override
   final String? uid;
+  @override
   final String? bio;
+  @override
   final String? website;
+  @override
   final String? email;
+  @override
   final String? profileUrl;
+  @override
   final List? followers;
+  @override
   final List? following;
+  @override
   final num? totalFollowers;
+  @override
   final num? totalFollowing;
+  @override
   final num? totalPosts;
   const UserModel(
       {this.username,

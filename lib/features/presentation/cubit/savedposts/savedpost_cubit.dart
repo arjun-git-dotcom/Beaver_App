@@ -22,13 +22,13 @@ class SavedpostCubit extends Cubit<SavedpostState> {
 
       await for (final savedPosts in savedPostStream) {
         if (savedPosts.isEmpty) {
-          emit(SavedPostLoaded(posts: [])); 
+          emit(SavedPostLoaded(posts: const [])); 
           return;
         }
 
         final savedPostIds = savedPosts.map((post) => post.postId).toList();
 
-        final postStream = readPostUsecase.call(PostEntity());
+        final postStream = readPostUsecase.call(const PostEntity());
         final allPosts = await postStream.first;
 
         final savedPostDetails = allPosts

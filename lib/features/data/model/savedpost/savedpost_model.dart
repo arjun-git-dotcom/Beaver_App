@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 
 class SavedpostModel extends SavedpostsEntity {
+  @override
   final String userId;
+  @override
   final String postId;
+  @override
   final DateTime savedAt;
 
   SavedpostModel(

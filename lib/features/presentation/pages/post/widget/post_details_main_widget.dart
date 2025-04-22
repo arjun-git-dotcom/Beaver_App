@@ -10,7 +10,7 @@ import 'package:social_media/features/presentation/cubit/posts/get_single_post/g
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_state.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/pages/post/widget/like_animation_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class PostDetailsMainWidget extends StatefulWidget {

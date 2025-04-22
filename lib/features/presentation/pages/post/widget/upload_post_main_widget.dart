@@ -11,7 +11,7 @@ import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
 import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:uuid/uuid.dart';
 import 'package:social_media/injection_container.dart' as di;
 
@@ -54,27 +54,7 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
     }
   }
 
-  _uploadPostWidget() {
-    return Scaffold(
-      body: Center(
-          child: GestureDetector(
-        onTap: () => selectImage(),
-        child: Container(
-          height: 100,
-          width: 100,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: secondaryColor,
-          ),
-          child: const Icon(
-            Icons.upload,
-            size: 40,
-            color: backgroundColor,
-          ),
-        ),
-      )),
-    );
-  }
+
 
   _submitPost() {
     context.read<FormCubit>().setForm();
@@ -94,8 +74,8 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
                 description: _descriptionController.text,
                 createAt: Timestamp.now(),
                 creatorUid: widget.currentUser.uid,
-                likes: [],
-                postId: Uuid().v1(),
+                likes: const [],
+                postId: const Uuid().v1(),
                 postImageUrl: image,
                 totalComments: 0,
                 totalLikes: 0,

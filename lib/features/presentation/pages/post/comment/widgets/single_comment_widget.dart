@@ -13,7 +13,7 @@ import 'package:social_media/features/presentation/cubit/replys/reply_state.dart
 import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
 import 'package:social_media/features/presentation/pages/post/comment/widgets/single_reply_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 import 'package:uuid/uuid.dart';
 
@@ -58,7 +58,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
     final replyCubit = context.watch<UserReplyFlagCubit>();
     final isReplying = replyCubit.isReplyingTo(widget.comment.commentId!);
 
-    print("reply is ${isReplying}");
+    print("reply is $isReplying");
     return InkWell(
       onLongPress: widget.onLongPressListener,
       child: SizedBox(
@@ -86,7 +86,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(widget.comment.username!,style: TextStyle(fontWeight: FontWeight.w500),),
+                              Text(widget.comment.username!,style: const TextStyle(fontWeight: FontWeight.w500),),
                               InkWell(
                                   onTap: () => widget.onLikeListener(),
                                   child: Icon(
@@ -121,7 +121,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
 
                                   print(isReplying);
                                 },
-                                child: Text("Reply"),
+                                child: const Text("Reply"),
                               ),
                               sizeHor(10),
                               InkWell(
@@ -156,7 +156,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
 
                     return ListView.builder(
                         shrinkWrap: true,
-                        physics: ScrollPhysics(),
+                        physics: const ScrollPhysics(),
                         itemCount: replys.length,
                         itemBuilder: (context, index) => SingleReplyWidget(
                             reply: replys[index],
@@ -203,7 +203,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
     BlocProvider.of<ReplyCubit>(context)
         .createReply(
             reply: ReplyEntity(
-                replyId: Uuid().v1(),
+                replyId: const Uuid().v1(),
                 commentId: widget.comment.commentId,
                 postId: widget.comment.postId,
                 userId: widget.currentUser.uid,
@@ -211,7 +211,7 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
                 profileUrl: widget.currentUser.profileUrl,
                 description: _replyDescriptionController!.text,
                 createdAt: Timestamp.now(),
-                likes: []))
+                likes: const []))
         .then((value) => _clear());
   }
 

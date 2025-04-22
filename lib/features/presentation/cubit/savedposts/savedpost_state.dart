@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
-import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 
 abstract class SavedpostState extends Equatable{}
 

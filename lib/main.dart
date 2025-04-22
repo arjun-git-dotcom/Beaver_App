@@ -15,7 +15,7 @@ import 'package:social_media/features/presentation/cubit/obscure_text/obscure_te
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
-import 'package:social_media/features/presentation/pages/credentials/login.dart';
+import 'package:social_media/features/presentation/pages/credentials/login_page.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 import 'package:social_media/on_generate_route.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,15 +24,10 @@ import 'package:zego_zimkit/zego_zimkit.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
   await ZIMKit().init(
       appID: int.parse(dotenv.env['APP_ID']!),
-      appSign:dotenv.env['APP_SIGN']!
-          );
-      
-
-  
-
+      appSign: dotenv.env['APP_SIGN']!);
 
   await Firebase.initializeApp();
   await di.init();

@@ -8,7 +8,7 @@ import 'package:social_media/features/presentation/cubit/current_uid/current_uid
 
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cubit.dart';
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_state.dart';
-import 'package:social_media/features/widget_profile.dart';
+import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:social_media/injection_container.dart' as di;
 
 class SavedpostMainWidget extends StatefulWidget {

@@ -5,24 +5,24 @@ import 'package:social_media/features/domain/entities/comments/comments.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/entities/replys/replay_entity.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
-import 'package:social_media/features/presentation/pages/about/about_screen.dart';
-import 'package:social_media/features/presentation/pages/chat/chatpage.dart';
+import 'package:social_media/features/presentation/pages/about/about_screen_page.dart';
+import 'package:social_media/features/presentation/pages/chat/chat_page.dart';
 import 'package:social_media/features/presentation/pages/chat/userlist_main_widget.dart';
-import 'package:social_media/features/presentation/pages/chat/userlistpage.dart';
-import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password.dart';
-import 'package:social_media/features/presentation/pages/credentials/login.dart';
-import 'package:social_media/features/presentation/pages/credentials/register.dart';
+import 'package:social_media/features/presentation/pages/chat/userlist_page.dart';
+import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password_page.dart';
+import 'package:social_media/features/presentation/pages/credentials/login_page.dart';
+import 'package:social_media/features/presentation/pages/credentials/register_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/comment_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/update_comment_page.dart';
 import 'package:social_media/features/presentation/pages/post/comment/widgets/update_reply_page.dart';
-import 'package:social_media/features/presentation/pages/post/update_postpage.dart';
+import 'package:social_media/features/presentation/pages/post/update_post_page.dart';
 import 'package:social_media/features/presentation/pages/post/post_details_page.dart';
 import 'package:social_media/features/presentation/pages/profile/edit_profilepage.dart';
 import 'package:social_media/features/presentation/pages/profile/followerspage.dart';
 import 'package:social_media/features/presentation/pages/profile/followingpage.dart';
 import 'package:social_media/features/presentation/pages/profile/single_profilepage.dart';
-import 'package:social_media/features/presentation/pages/video_call/videocall_page.dart';
-import 'package:social_media/features/presentation/savedpost/savedpost.dart';
+import 'package:social_media/features/presentation/pages/video_call/video_call_page.dart';
+import 'package:social_media/features/presentation/pages/savedpost/savedpost.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -134,6 +134,7 @@ class OnGenerateRoute {
           }
         }
     }
+    return null;
   }
 }
 
