@@ -9,7 +9,6 @@ import 'package:social_media/features/presentation/cubit/comment/comment_cubit.d
 import 'package:social_media/features/presentation/cubit/comment/comment_state.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_state.dart';
-import 'package:social_media/features/presentation/cubit/posts/post_state.dart';
 import 'package:social_media/features/presentation/cubit/replys/reply_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_state.dart';

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
@@ -71,13 +72,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           .get();
 
       if (userQuery.docs.isEmpty) {
-        toast('User not found');
+        toast('User not found',duration: Toast.LENGTH_SHORT);
       }
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: emailController.text.trim());
-      toast('email sent successfully');
+      toast('email sent successfully',duration: Toast.LENGTH_SHORT);
     } on FirebaseException {
-      toast('Please double check your email');
+      toast('Please double check your email',duration: Toast.LENGTH_SHORT);
     }
   }
 }

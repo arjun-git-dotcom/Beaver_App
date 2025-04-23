@@ -13,7 +13,10 @@ import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 
 class ProfileMainWidget extends StatefulWidget {
   final UserEntity currentUser;
-  const ProfileMainWidget({required this.currentUser, super.key});
+  
+  const ProfileMainWidget({
+    
+    required this.currentUser, super.key});
 
   @override
   State<ProfileMainWidget> createState() => _ProfileMainWidgetState();
@@ -22,8 +25,8 @@ class ProfileMainWidget extends StatefulWidget {
 class _ProfileMainWidgetState extends State<ProfileMainWidget> {
   @override
   void initState() {
-    BlocProvider.of<PostCubit>(context).getPost(post:const  PostEntity());
-    
+    BlocProvider.of<PostCubit>(context).getPost(post: const PostEntity());
+
     super.initState();
   }
 
@@ -75,8 +78,11 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                         Column(
                           children: [
                             GestureDetector(
-                              onTap: ()=>Navigator.pushNamed(context, PageConstants.followersPage,arguments: widget.currentUser),
-                              child: Text('${widget.currentUser.totalFollowers}')),
+                                onTap: () => Navigator.pushNamed(
+                                    context, PageConstants.followersPage,
+                                    arguments: widget.currentUser),
+                                child: Text(
+                                    '${widget.currentUser.totalFollowers}')),
                             const Text('followers')
                           ],
                         ),
@@ -84,8 +90,11 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                         Column(
                           children: [
                             GestureDetector(
-                              onTap: ()=>Navigator.pushNamed(context, PageConstants.followingPage,arguments: widget.currentUser),
-                              child: Text('${widget.currentUser.totalFollowing}')),
+                                onTap: () => Navigator.pushNamed(
+                                    context, PageConstants.followingPage,
+                                    arguments: widget.currentUser),
+                                child: Text(
+                                    '${widget.currentUser.totalFollowing}')),
                             const Text('following')
                           ],
                         )
@@ -142,48 +151,46 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
 
 logOut(context) {
   return showDialog(
-  context: context,
-  builder: (_) => AlertDialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    title: const Text(
-      'Log Out',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-      ),
-    ),
-    content: const Text(
-      'Are you sure you want to log out?',
-      style: TextStyle(fontSize: 16),
-    ),
-    actionsAlignment: MainAxisAlignment.spaceBetween,
-    actions: [
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text(
-          'Cancel',
-          style: TextStyle(color: Colors.grey),
+    context: context,
+    builder: (_) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text(
+        'Log Out',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
         ),
       ),
-      TextButton(
-        onPressed: () async {
-          BlocProvider.of<AuthCubit>(context).logOut();
-          Navigator.pushNamedAndRemoveUntil(
-              context, PageConstants.loginpage, (route) => false);
-          await GoogleSignIn().signOut();
-          FirebaseAuth.instance.signOut();
-        },
-        child: const Text(
-          'Log Out',
-          style: TextStyle(color: Colors.red),
-        ),
+      content: const Text(
+        'Are you sure you want to log out?',
+        style: TextStyle(fontSize: 16),
       ),
-    ],
-  ),
-);
-
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+        TextButton(
+          onPressed: () async {
+            BlocProvider.of<AuthCubit>(context).logOut();
+            Navigator.pushNamedAndRemoveUntil(
+                context, PageConstants.loginpage, (route) => false);
+          
+          },
+          child: const Text(
+            'Log Out',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 _openbottomModelSheet(context, currentUser) {
@@ -201,7 +208,7 @@ _openbottomModelSheet(context, currentUser) {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               sizeVer(10),
-               const Divider(
+              const Divider(
                 color: secondaryColor,
               ),
               GestureDetector(
@@ -221,9 +228,10 @@ _openbottomModelSheet(context, currentUser) {
               const Divider(
                 color: secondaryColor,
               ),
-                 GestureDetector(
-                onTap: ()=>Navigator.pushNamed(context, PageConstants.savedPostpage),
-                child: const Text('Saved Posts')),
+              GestureDetector(
+                  onTap: () =>
+                      Navigator.pushNamed(context, PageConstants.savedPostpage),
+                  child: const Text('Saved Posts')),
               sizeVer(10),
               const Divider(
                 color: secondaryColor,

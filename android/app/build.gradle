@@ -1,3 +1,8 @@
+
+
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id "com.android.application"
    id 'com.google.gms.google-services'
@@ -5,6 +10,32 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
+if (flutterVersionCode == null) {
+    flutterVersionCode = "1"
+}
+
+def flutterVersionName = localProperties.getProperty("flutter.versionName")
+if (flutterVersionName == null) {
+    flutterVersionName = "1.0"
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+
 
 android {
     namespace = "com.example.social_media"
@@ -26,21 +57,47 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
-        multiDexEnabled=true;
+        multiDexEnabled=true
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] 
+            keyPassword = keystoreProperties["keyPassword"] 
+            storeFile = keystoreProperties["storeFile"] ? file(keystoreProperties['storeFile']) : null
+            storePassword = keystoreProperties["storePassword"]
+
+        }
+ }
+
     buildTypes {
+
+         debug {
+               signingConfig signingConfigs.debug // Make sure this is not pointing to any keystore for debug
+            debuggable true // Debuggable should be set to true
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            minifyEnabled true
+            signingConfig = signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+
+    implementation("com.google.android.material:material:1.12.0")
+      implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+       implementation "net.sf.proguard:proguard-base:6.2.2"
+         implementation platform('com.google.firebase:firebase-bom:32.3.1')
+    implementation 'com.google.firebase:firebase-analytics'
+
+
 }

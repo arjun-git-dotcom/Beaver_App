@@ -16,7 +16,12 @@ class GetSingleUserCubit extends Cubit<GetSingleUserState> {
 
       streamResponse.listen((users) {
 
-        emit(GetSingleUserLoaded(user: users.first));
+        if (users.isNotEmpty) {
+    emit(GetSingleUserLoaded(user: users.first));
+  } else {
+   
+    emit(GetSingleUserFailure()); 
+  }
       });
     } on SocketException catch (_) {
       emit(GetSingleUserFailure());

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
@@ -24,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final TextEditingController passwordController = TextEditingController();
   bool isLoggedIn = false;
+  bool isGoogleIn = false;
   @override
   void dispose() {
     super.dispose();
@@ -41,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
               BlocProvider.of<AuthCubit>(context).loggedIn();
             }
             if (credentialState is CredentialFailure) {
-              toast('Invalid Email and Password');
+              toast('Invalid Email and Password', duration: Toast.LENGTH_SHORT);
             }
           },
           builder: (context, credentialState) {
@@ -171,12 +173,11 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       );
                     } else {
-                     return  const SizedBox(
+                      return const SizedBox(
                         height: 0,
                         width: 0,
                       );
                     }
-                    
                   },
                 )
               ],

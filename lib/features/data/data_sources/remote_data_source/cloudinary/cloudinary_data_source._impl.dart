@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
@@ -34,7 +35,7 @@ class CloudinaryRepositoryImpl extends CloudinaryRepository {
       var jsonData = jsonDecode(responseData);
 
       if (response.statusCode == 200) {
-        toast('image uploaded successfully');
+        toast('image uploaded successfully',duration: Toast.LENGTH_SHORT);
         final currentUser = firebaseAuth.currentUser!;
 
         final userDoc =
@@ -51,7 +52,7 @@ class CloudinaryRepositoryImpl extends CloudinaryRepository {
         throw Exception("Failed to upload image");
       }
     } catch (e) {
-      toast("Cloudinary Upload Error: $e");
+      toast("Image Upload Error",duration: Toast.LENGTH_SHORT);
       return "";
     }
   }

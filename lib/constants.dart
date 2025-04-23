@@ -49,10 +49,10 @@ class FirebaseConstants {
   static const String reply = 'reply';
 }
 
-void toast(String message) {
+void toast(String message, {required Toast duration}) {
   Fluttertoast.showToast(
       msg: message,
-      toastLength: Toast.LENGTH_SHORT,
+      toastLength: duration,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: primaryColor,
       textColor: backgroundColor,

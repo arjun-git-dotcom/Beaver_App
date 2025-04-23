@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
-import 'package:social_media/features/domain/entities/savedposts/savedposts_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/posts/read_post_usecase.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/savedposts/read_savedPost_usecase.dart';
 import 'package:social_media/features/presentation/cubit/savedposts/savedpost_state.dart';

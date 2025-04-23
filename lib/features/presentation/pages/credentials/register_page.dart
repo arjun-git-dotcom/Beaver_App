@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
@@ -50,10 +51,10 @@ class _RegisterPageState extends State<RegisterPage> {
       if (pickedFile != null) {
         context.read<ImageCubit>().selectImage(File(pickedFile.path));
       } else {
-        toast('no image has been selcted');
+        toast('no image has been selcted',duration: Toast.LENGTH_SHORT);
       }
     } catch (e) {
-      toast('some error occured $e');
+      toast('some error occured ',duration: Toast.LENGTH_SHORT);
     }
   }
 
@@ -80,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
               BlocProvider.of<AuthCubit>(context).loggedIn();
             }
             if (credentialState is CredentialFailure) {
-              toast('Invalid Email and Password');
+              toast('Invalid Email and Password',duration: Toast.LENGTH_SHORT);
             }
           },
         ));

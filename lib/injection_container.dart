@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source._impl.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/comment_remote_data_source/comment_remote_data_source.dart';
@@ -73,10 +74,12 @@ Future<void> init() async {
   final firebaseFirestore = FirebaseFirestore.instance;
   final firebaseAuth = FirebaseAuth.instance;
   final firebaseStorage = FirebaseStorage.instance;
+  final googleSignin = GoogleSignIn();
 
   sl.registerLazySingleton(() => firebaseFirestore);
   sl.registerLazySingleton(() => firebaseAuth);
   sl.registerLazySingleton(() => firebaseStorage);
+  sl.registerLazySingleton(() => googleSignin);
 
   // Data Sources
   sl.registerLazySingleton<CloudinaryRepository>(() => CloudinaryRepositoryImpl(
@@ -88,7 +91,8 @@ Future<void> init() async {
       CredentialRemoteDataSourceImpl(
           firebaseAuth: sl.call(),
           cloudinaryRepository: sl.call(),
-          firebaseFirestore: sl.call()));
+          firebaseFirestore: sl.call(),
+          googleSignin: sl.call()));
 
   sl.registerLazySingleton<PostRemoteDataSource>(() => PostRemoteDataSourceImpl(
       credentialRemoteDataSource: sl.call(), firebaseFirestore: sl.call()));
@@ -101,15 +105,14 @@ Future<void> init() async {
       ReplyRemoteDataSourceImpl(
           firebaseFirestore: sl.call(), credentialRemoteDataSource: sl.call()));
 
-
   // Repositories
   sl.registerLazySingleton<FirebaseRepository>(() => FirebaseRepositoryImpl(
-    replyRemoteDataSource: sl.call(),
-    postRemoteDataSource: sl.call(),
-    commentRemoteDataSource: sl.call(),
-    credentialRemoteDataSource: sl.call(),
-    userRemoteDataSource: sl.call(),
-   cloudinaryRepository: sl.call()));
+      replyRemoteDataSource: sl.call(),
+      postRemoteDataSource: sl.call(),
+      commentRemoteDataSource: sl.call(),
+      credentialRemoteDataSource: sl.call(),
+      userRemoteDataSource: sl.call(),
+      cloudinaryRepository: sl.call()));
 
   // Use Cases - User
   sl.registerLazySingleton<FollowUsecase>(() {

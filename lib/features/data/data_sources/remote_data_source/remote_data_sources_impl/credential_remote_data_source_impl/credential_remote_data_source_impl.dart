@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
@@ -11,18 +12,37 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
   final FirebaseAuth firebaseAuth;
   final CloudinaryRepository cloudinaryRepository;
   final FirebaseFirestore firebaseFirestore;
+  final GoogleSignIn googleSignin;
+
   CredentialRemoteDataSourceImpl(
-      {required this.firebaseAuth,
+
+      {required this.googleSignin,
+        required this.firebaseAuth,
       required this.cloudinaryRepository,
       required this.firebaseFirestore});
+
+
 
   @override
   Future<bool> islogin() async => firebaseAuth.currentUser?.uid != null;
 
   @override
   Future<void> logOut() async {
-    await GoogleSignIn().signOut();
-    return firebaseAuth.signOut();
+    try {
+      final isSignedIn = await googleSignin.isSignedIn();
+
+      if (isSignedIn) {
+        try {
+          await googleSignin.disconnect();
+        } catch (e) {}
+        await googleSignin.signOut();
+      }
+
+      await firebaseAuth.signOut();
+    } catch (e) {
+      toast("Error during logout: $e", duration: Toast.LENGTH_SHORT);
+      rethrow;
+    }
   }
 
   @override
@@ -36,9 +56,9 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        toast('user not found');
+        toast('user not found', duration: Toast.LENGTH_SHORT);
       } else if (e.code == 'wrong-password') {
-        toast('invalid email or password');
+        toast('invalid email or password', duration: Toast.LENGTH_SHORT);
       }
     }
   }
@@ -64,9 +84,10 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        toast('Email is already registered, login instead.');
+        toast('Email is already registered, login instead.',
+            duration: Toast.LENGTH_SHORT);
       } else {
-        toast('Something went wrong.');
+        toast('Something went wrong.', duration: Toast.LENGTH_SHORT);
       }
     }
   }
@@ -99,13 +120,13 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
         userCollection.doc(uid).update(newUser);
       }
     }).catchError((error) {
-      toast('some error occured');
+      toast('some error occured $error', duration: Toast.LENGTH_SHORT);
     });
   }
 
   @override
   Future<String> googleSignIn() async {
-    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    GoogleSignInAccount? googleUser = await googleSignin.signIn();
     GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
     AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
@@ -118,15 +139,17 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
         name: user.displayName ?? "",
         email: user.email ?? "",
         profileUrl: user.photoURL,
-        location: null,
-        bio: null,
+        location: "",
+        bio: "",
         username: user.displayName,
         followers: const [],
         following: const [],
         totalFollowers: 0,
         totalFollowing: 0,
-        website: null);
-    createUserWithImage(firebaseUser, user.photoURL ?? "");
+        totalPosts: 0,
+        website: "");
+    toast('please wait ', duration: Toast.LENGTH_LONG);
+    await createUserWithImage(firebaseUser, user.photoURL ?? "");
 
     return user.uid;
   }
@@ -160,7 +183,7 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
         await userCollection.update(newUser);
       }
     } catch (error) {
-      toast('some error occured');
+      toast('some error occured', duration: Toast.LENGTH_SHORT);
       rethrow;
     }
   }

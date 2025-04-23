@@ -93,7 +93,7 @@ class _ChatPageState extends State<ChatPage> {
       right: isMe ? 8 : null,
       child: Text(
         formattedDate,
-        style: TextStyle(fontSize: 10, color: primaryColor),
+        style: const TextStyle(fontSize: 10, color: primaryColor),
       ),
     ),
   ],

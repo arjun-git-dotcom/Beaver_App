@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:social_media/constants.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
@@ -39,7 +40,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
   
   if (!cameraStatus.isGranted || !micStatus.isGranted) {
    
-    toast("Camera or microphone permission not granted");
+    toast("Camera or microphone permission not granted",duration: Toast.LENGTH_SHORT);
     
   }
 }

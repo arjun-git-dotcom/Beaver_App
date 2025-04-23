@@ -7,7 +7,6 @@ import 'package:social_media/features/domain/entities/replys/replay_entity.dart'
 import 'package:social_media/features/domain/entities/user/user_entity.dart';
 import 'package:social_media/features/presentation/pages/about/about_screen_page.dart';
 import 'package:social_media/features/presentation/pages/chat/chat_page.dart';
-import 'package:social_media/features/presentation/pages/chat/userlist_main_widget.dart';
 import 'package:social_media/features/presentation/pages/chat/userlist_page.dart';
 import 'package:social_media/features/presentation/pages/credentials/forgot_password/forgot_password_page.dart';
 import 'package:social_media/features/presentation/pages/credentials/login_page.dart';

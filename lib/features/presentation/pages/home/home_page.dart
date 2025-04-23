@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
@@ -44,7 +45,7 @@ class Homepage extends StatelessWidget {
             }
 
             if (poststate is PostFailure) {
-              toast('Some failure occured while creating the post');
+              toast('Some failure occured while creating the post',duration: Toast.LENGTH_SHORT);
             }
             if (poststate is PostLoaded) {
               return poststate.posts.isEmpty
