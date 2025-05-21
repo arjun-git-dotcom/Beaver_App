@@ -193,45 +193,87 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
     });
   }
 
-  _openbottomModelSheet(context, CommentEntity comment) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            height: 150,
-            color: backgroundColor,
-            child: Column(
-              children: [
-                sizeVer(10),
-                const Text(
-                  'More Options',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
-                sizeVer(10),
-                const Divider(
-                  color: secondaryColor,
-                ),
-                GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, PageConstants.updateCommentPage,
-                          arguments: comment);
-                    },
-                    child: const Text('Update comment')),
-                sizeVer(10),
-                const Divider(
-                  color: secondaryColor,
-                ),
-                GestureDetector(
-                    onTap: () =>
-                        _deleteComment(comment.commentId!, comment.postId!),
-                    child: const Text('Delete comment')),
-                sizeVer(10),
-              ],
+_openbottomModelSheet(BuildContext context, CommentEntity comment) {
+  return showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+    ),
+    backgroundColor: backgroundColor,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          );
-        });
-  }
+            const SizedBox(height: 15),
+            const Text(
+              'More Options',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 25),
+
+            ListTile(
+              leading: const Icon(Icons.edit, color: blueColor),
+              title: const Text(
+                'Update Comment',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(
+                  context,
+                  PageConstants.updateCommentPage,
+                  arguments: comment,
+                );
+              },
+              tileColor: Colors.grey.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+
+            const SizedBox(height: 10),
+
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              title: const Text(
+                'Delete Comment',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.redAccent,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _deleteComment(comment.commentId!, comment.postId!);
+              },
+              tileColor: Colors.grey.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
   _deleteComment(String commentId, String postId) {
     BlocProvider.of<CommentCubit>(context)

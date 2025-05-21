@@ -36,6 +36,7 @@ class _SavedpostMainWidgetState extends State<SavedpostMainWidget> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor:appbarColor,
           centerTitle: true,
   title: const  Text(
           'Saved Posts',
@@ -59,6 +60,17 @@ class _SavedpostMainWidgetState extends State<SavedpostMainWidget> {
               builder: (context, poststate) {
                 if (poststate is SavedPostLoaded) {
                   final posts = poststate.posts;
+
+                  if (posts.isEmpty) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                        "You haven't saved any posts yet",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  );
+                }
                   return Expanded(
                     child: GridView.builder(
                         itemCount: posts.length,
@@ -71,8 +83,11 @@ class _SavedpostMainWidgetState extends State<SavedpostMainWidget> {
                               onTap: () => Navigator.pushNamed(
                                   context, PageConstants.postDetailsPage,
                                   arguments: posts[index].postId),
-                              child: profileWidget(
-                                  imageUrl: posts[index].postImageUrl),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: profileWidget(
+                                    imageUrl: posts[index].postImageUrl),
+                              ),
                             )),
                   );
                 }

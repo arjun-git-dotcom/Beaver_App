@@ -1,18 +1,39 @@
 {
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint"
-      ]
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "beaver-app-370bd",
+          "appId": "1:754094927603:android:55fee4d41b57e9eaf89186",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "beaver-app-370bd",
+          "configurations": {
+            "android": "1:754094927603:android:55fee4d41b57e9eaf89186",
+            "ios": "1:754094927603:ios:6d55f16d82ecb84ef89186",
+            "macos": "1:754094927603:ios:6d55f16d82ecb84ef89186",
+            "web": "1:754094927603:web:204f0497fddd981ef89186",
+            "windows": "1:754094927603:web:d80b338353cf0e6ff89186"
+          }
+        }
+      }
     }
-  ]
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }

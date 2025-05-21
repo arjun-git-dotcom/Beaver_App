@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const backgroundColor = Colors.white;
 const blueColor = Colors.blue;
@@ -8,6 +9,7 @@ const primaryColor = Colors.black;
 const secondaryColor = Colors.grey;
 const darkgreyColor = Color.fromARGB(255, 92, 92, 92);
 const redColor = Colors.red;
+const appbarColor = Color.fromARGB(255, 173, 207, 222);
 
 Widget sizeVer(double height) {
   return SizedBox(
@@ -82,3 +84,8 @@ class SpinkitConstants {
 }
 
 const snackbar = SnackBar(content: Text('Post Saved'));
+
+class AppTextStyle {
+  static TextStyle stylishfont({Color color = Colors.black}) =>
+      GoogleFonts.dancingScript(fontSize: 25, fontWeight: FontWeight.w800);
+}

@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
@@ -119,6 +118,21 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                           .where((post) =>
                               post.creatorUid == widget.currentUser.uid)
                           .toList();
+
+                             if (posts.isEmpty) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.width*0.5,
+                    child: const Center(
+                      child: Padding(
+                        padding:  EdgeInsets.all(20.0),
+                        child: Text(
+                          "No Posts Yet",
+                          style: TextStyle(fontSize: 17,color: primaryColor),
+                        ),
+                      ),
+                    ),
+                  );
+                }
                       return GridView.builder(
                           itemCount: posts.length,
                           physics: const ScrollPhysics(),
@@ -193,56 +207,125 @@ logOut(context) {
   );
 }
 
-_openbottomModelSheet(context, currentUser) {
+_openbottomModelSheet(BuildContext context, UserEntity currentUser) {
   return showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 220,
-          color: backgroundColor,
-          child: Column(
-            children: [
-              sizeVer(10),
-              const Text(
-                'More Options',
-                style: TextStyle(fontWeight: FontWeight.w700),
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+    ),
+    backgroundColor: backgroundColor,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(10),
               ),
-              sizeVer(10),
-              const Divider(
-                color: secondaryColor,
+            ),
+            const SizedBox(height: 15),
+            const Text(
+              'More Options',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                letterSpacing: 0.5,
               ),
-              GestureDetector(
-                  onTap: () => Navigator.pushNamed(
-                      context, PageConstants.aboutPage,
-                      arguments: currentUser),
-                  child: const Text('About')),
-              const Divider(
-                color: secondaryColor,
+            ),
+            const SizedBox(height: 25),
+
+            ListTile(
+              leading: const Icon(Icons.info_outline, color: blueColor),
+              title: const Text(
+                'About',
+                style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              GestureDetector(
-                  onTap: () => Navigator.pushNamed(
-                      context, PageConstants.editProfilepage,
-                      arguments: currentUser),
-                  child: const Text('Edit profile')),
-              sizeVer(10),
-              const Divider(
-                color: secondaryColor,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, PageConstants.aboutPage, arguments: currentUser);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              GestureDetector(
-                  onTap: () =>
-                      Navigator.pushNamed(context, PageConstants.savedPostpage),
-                  child: const Text('Saved Posts')),
-              sizeVer(10),
-              const Divider(
-                color: secondaryColor,
+              tileColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              hoverColor: Colors.blue.shade50,
+            ),
+
+            const Divider(color: secondaryColor, height: 20),
+
+            ListTile(
+              leading: const Icon(Icons.edit, color: blueColor),
+              title: const Text(
+                'Edit Profile',
+                style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              InkWell(
-                  onTap: () async {
-                    logOut(context);
-                  },
-                  child: const Text('LogOut')),
-            ],
-          ),
-        );
-      });
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, PageConstants.editProfilepage, arguments: currentUser);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              tileColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              hoverColor: Colors.blue.shade50,
+            ),
+
+            const Divider(color: secondaryColor, height: 20),
+
+            ListTile(
+              leading: const Icon(Icons.bookmark_outline, color: blueColor),
+              title: const Text(
+                'Saved Posts',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, PageConstants.savedPostpage);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              tileColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              hoverColor: Colors.blue.shade50,
+            ),
+
+            const Divider(color: secondaryColor, height: 20),
+
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.redAccent),
+              title: const Text(
+                'Log Out',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.redAccent,
+                ),
+              ),
+              onTap: () async {
+               
+                 logOut(context);
+                
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              tileColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              hoverColor: Colors.red.shade50,
+            ),
+
+            const SizedBox(height: 10),
+          ],
+        ),
+      );
+    },
+  );
 }
+

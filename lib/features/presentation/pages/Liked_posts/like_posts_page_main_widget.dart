@@ -28,74 +28,77 @@ class _LikedpageMainWidgetState extends State<LikedpageMainWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar:AppBar(
-          centerTitle: true,
-  title: const  Text(
-          'Liked Posts',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        ),actions: [ Padding(
-          padding: const EdgeInsets.only(right: 15),
-          child: SvgPicture.asset(
-              "assets/beaver-image.svg",
-              height: 50, 
-            ),
-        ),],
-  
-  
- 
-
-
-),
-
-        body: Column(
-          children: [
-            BlocBuilder<PostCubit, PostState>(
-              builder: (context, poststate) {
-                if (poststate is PostLoaded) {
-                  final posts = poststate.posts;
-                  
-                  if (posts.isEmpty) {
-                    return const Expanded(
-                      child: Center(
-                        child: Text(
-                          "You haven't liked any posts yet",
-                          style: TextStyle(fontSize: 16),
-                        ),
+    return Scaffold(
+      appBar:AppBar(
+        backgroundColor: appbarColor,
+        centerTitle: true,
+      title: const  Text(
+        'Liked Posts',
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+      ),actions: [ Padding(
+        padding: const EdgeInsets.only(right: 15),
+        child: SvgPicture.asset(
+            "assets/beaver-image.svg",
+            height: 50, 
+          ),
+      ),
+      ],
+      
+      
+     
+    
+    
+    ),
+    
+      body: Column(
+        children: [
+          BlocBuilder<PostCubit, PostState>(
+            builder: (context, poststate) {
+              if (poststate is PostLoaded) {
+                final posts = poststate.posts;
+                
+                if (posts.isEmpty) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                        "You haven't liked any posts yet",
+                        style: TextStyle(fontSize: 16),
                       ),
-                    );
-                  }
-                  
-                  return Expanded(
-                    child: GridView.builder(
-                      itemCount: posts.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5,
-                        crossAxisCount: 3
-                      ),
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () => Navigator.pushNamed(
-                          context, 
-                          PageConstants.postDetailsPage,
-                          arguments: posts[index].postId
-                        ),
-                        child: profileWidget(imageUrl: posts[index].postImageUrl),
-                      )
                     ),
                   );
                 }
                 
-                return const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
+                return Expanded(
+                  child: GridView.builder(
+                    itemCount: posts.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                      crossAxisCount: 3
+                    ),
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context, 
+                        PageConstants.postDetailsPage,
+                        arguments: posts[index].postId
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: profileWidget(imageUrl: posts[index].postImageUrl),
+                      ),
+                    )
                   ),
                 );
-              },
-            ),
-          ],
-        ),
+              }
+              
+              return const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

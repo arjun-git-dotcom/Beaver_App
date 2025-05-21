@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source._impl.dart';
@@ -69,12 +70,21 @@ import 'package:social_media/features/presentation/cubit/user_reply_flag/user_re
 
 final sl = GetIt.instance;
 
+GoogleSignIn createGoogleSignIn() {
+  if (kIsWeb) {
+    return GoogleSignIn(
+      clientId: '754094927603-gkreu1dmbic1p3kpi9sl8omtcpdvteiv.apps.googleusercontent.com', // Web client ID here
+    );
+  } else {
+    return GoogleSignIn();
+  }
+}
 Future<void> init() async {
   // External Dependencies
   final firebaseFirestore = FirebaseFirestore.instance;
   final firebaseAuth = FirebaseAuth.instance;
   final firebaseStorage = FirebaseStorage.instance;
-  final googleSignin = GoogleSignIn();
+  final googleSignin = createGoogleSignIn();
 
   sl.registerLazySingleton(() => firebaseFirestore);
   sl.registerLazySingleton(() => firebaseAuth);

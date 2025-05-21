@@ -100,30 +100,45 @@ Widget build(BuildContext context) {
       ? Scaffold(
           backgroundColor: backgroundColor,
           body: Center(
-            child: GestureDetector(
-              onTap: () => selectImage(),
-              child: Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: blueColor.withOpacity(0.8),
-                  boxShadow:const  [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.upload_rounded,
-                  size: 40,
-                  color: Colors.white,
-                ),
+  child: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      GestureDetector(
+        onTap: () => selectImage(),
+        child: Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: blueColor.withOpacity(0.8),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8,
+                offset: Offset(0, 4),
               ),
-            ),
+            ],
           ),
+          child: const Icon(
+            Icons.upload_rounded,
+            size: 40,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      const SizedBox(height: 12),
+       Text(
+        'Tap to post an image',
+        style: AppTextStyle.stylishfont(
+          
+          color: Colors.black,
+       
+        ),
+      ),
+    ],
+  ),
+),
+
         )
       : Scaffold(
           backgroundColor: backgroundColor,

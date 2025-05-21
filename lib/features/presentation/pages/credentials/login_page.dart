@@ -77,112 +77,118 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _bodyWidget(context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.210,
-            ),
-            Center(
-                child: SvgPicture.asset(
-              "assets/beaver-image.svg",
-              height: 100,
-              width: 100,
-            )),
-            sizeVer(10),
-            FormContainerWidget(
-              controller: emailController,
-              hintText: "Email",
-            ),
-            sizeVer(10),
-            FormContainerWidget(
-              controller: passwordController,
-              hintText: "Password",
-              isPasswordField: true,
-            ),
-            sizeVer(10),
-            BottomContainerWidget(
-              text: 'Login',
-              color: blueColor,
-              onTapListener: () => _login(),
-            ),
-            sizeVer(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                    onTap: () =>
-                        Navigator.pushNamed(context, 'forgotPasswordPage'),
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(
-                          color: blueColor,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12),
-                    )),
-              ],
-            ),
-            sizeVer(10),
-            const Text('or'),
-            sizeVer(10),
-            GoogleBottomContainerWidget(
-              text: 'Sign in with Google',
-              color: backgroundColor,
-              image: 'assets/google-icon-logo-svgrepo-com.svg',
-              onTapListener: () {
-                BlocProvider.of<AuthCubit>(context).googleSignIn();
-              },
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.210,
-            ),
-            const Divider(color: primaryColor),
-            Row(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+          
               children: [
-                const Text("Don't have an account?"),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, 'registerPage', (route) => false);
-                  },
-                  child: const Text(
-                    ' Register',
-                    style: TextStyle(color: blueColor),
-                  ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.210,
+                ),
+                Center(
+                    child: SvgPicture.asset(
+                  "assets/beaver-image.svg",
+                  height: 100,
+                  width: 100,
+                )),
+                sizeVer(10),
+                FormContainerWidget(
+                  controller: emailController,
+                  hintText: "Email",
                 ),
                 sizeVer(10),
-                BlocBuilder<CredentialCubit, CredentialState>(
-                  builder: (context, state) {
-                    if (state is CredentialLoading) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Please wait ',
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          sizeHor(10),
-                          const CircularProgressIndicator()
-                        ],
-                      );
-                    } else {
-                      return const SizedBox(
-                        height: 0,
-                        width: 0,
-                      );
-                    }
+                FormContainerWidget(
+                  controller: passwordController,
+                  hintText: "Password",
+                  isPasswordField: true,
+                ),
+                sizeVer(10),
+                BottomContainerWidget(
+                  text: 'Login',
+                  color: blueColor,
+                  onTapListener: () => _login(),
+                ),
+                sizeVer(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, 'forgotPasswordPage'),
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                              color: blueColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12),
+                        )),
+                  ],
+                ),
+                sizeVer(10),
+                const Text('or'),
+                sizeVer(10),
+                GoogleBottomContainerWidget(
+                  text: 'Sign in with Google',
+                  color: backgroundColor,
+                  image: 'assets/google-icon-logo-svgrepo-com.svg',
+                  onTapListener: () {
+                    BlocProvider.of<AuthCubit>(context).googleSignIn();
                   },
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.210,
+                ),
+                const Divider(color: primaryColor),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account?"),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, 'registerPage', (route) => false);
+                      },
+                      child: const Text(
+                        ' Register',
+                        style: TextStyle(color: blueColor),
+                      ),
+                    ),
+                    sizeVer(10),
+                    BlocBuilder<CredentialCubit, CredentialState>(
+                      builder: (context, state) {
+                        if (state is CredentialLoading) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Please wait ',
+                                style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              sizeHor(10),
+                              const CircularProgressIndicator()
+                            ],
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 0,
+                            width: 0,
+                          );
+                        }
+                      },
+                    )
+                  ],
                 )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );

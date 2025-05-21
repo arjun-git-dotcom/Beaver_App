@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -90,7 +89,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                       children: [
                         SizedBox(
                           width: double.infinity,
-                               height: MediaQuery.of(context).size.height * 0.35,
+                          height: MediaQuery.of(context).size.height * 0.35,
                           child:
                               profileWidget(imageUrl: widget.post.postImageUrl),
                         ),
@@ -168,11 +167,12 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackbar);
                             },
-                            child: Icon(
-                              Icons.bookmark,
+                            child: 
+                            isBookmarked?const Icon(Icons.bookmark,color: secondaryColor,):const Icon(
+                              Icons.bookmark_outline,
                               color:
-                                  isBookmarked ? primaryColor : secondaryColor,
-                            ),
+                                  primaryColor
+                            )
                           );
                         },
                       )
@@ -222,81 +222,116 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
         });
   }
 
-  _openbottomModelSheet(context, PostEntity post) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            height: 150,
-            color: backgroundColor,
-            child: Column(
-              children: [
-                sizeVer(10),
-                const Text(
-                  'More Options',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
-                sizeVer(10),
-                const Divider(
-                  color: secondaryColor,
-                ),
-                GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, 'updatePostPage',
-                        arguments: post),
-                    child: const Text('Update Post')),
-                sizeVer(10),
-                const Divider(
-                  color: secondaryColor,
-                ),
-                GestureDetector(
-                    onTap: () {
-                      showDialog(
-  context: context,
-  builder: (context) => AlertDialog(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
+_openbottomModelSheet(BuildContext context, PostEntity post) {
+  return showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
     ),
-    title: const Text(
-      'Delete Post',
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ),
-    content: const Text(
-      'Are you sure you want to delete this post? This action cannot be undone.',
-      style: TextStyle(fontSize: 16),
-    ),
-    actionsAlignment: MainAxisAlignment.spaceBetween,
-    actions: [
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text(
-          'Cancel',
-          style: TextStyle(color: Colors.grey),
-        ),
-      ),
-      TextButton(
-        onPressed: () {
-          _deletePost();
-          Navigator.pop(context);
-        },
-        child: const Text(
-          'Delete',
-          style: TextStyle(color: Colors.red),
-        ),
-      ),
-    ],
-  ),
-);
-
-                    },
-                    child: const Text('Delete Posts')),
-                sizeVer(10),
-              ],
+    backgroundColor: backgroundColor,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          );
-        });
-  }
+            const SizedBox(height: 15),
+            const Text(
+              'More Options',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 25),
+            ListTile(
+              leading: const Icon(Icons.edit, color: blueColor),
+              title: const Text(
+                'Update Post',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, 'updatePostPage', arguments: post);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              hoverColor: Colors.blue.shade50,
+              tileColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+            const SizedBox(height: 12),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              title: const Text(
+                'Delete Post',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.redAccent,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: const Text(
+                      'Delete Post',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    content: const Text(
+                      'Are you sure you want to delete this post? This action cannot be undone.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          _deletePost();
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              tileColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   _deletePost() {
     BlocProvider.of<PostCubit>(context)

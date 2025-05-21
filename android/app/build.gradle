@@ -75,10 +75,6 @@ android {
 
     buildTypes {
 
-         debug {
-               signingConfig signingConfigs.debug // Make sure this is not pointing to any keystore for debug
-            debuggable true // Debuggable should be set to true
-        }
         release {
             minifyEnabled true
             signingConfig = signingConfigs.release

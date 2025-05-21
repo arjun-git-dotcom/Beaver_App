@@ -215,48 +215,86 @@ class _SingleCommentWidgetState extends State<SingleCommentWidget> {
         .then((value) => _clear());
   }
 
-  _openbottomModelSheet(context, ReplyEntity reply) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            height: 150,
-            color: backgroundColor,
-            child: Column(
-              children: [
-                sizeVer(10),
-                const Text(
-                  'More Options',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
-                sizeVer(10),
-                const Divider(
-                  color: secondaryColor,
-                ),
-                InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, PageConstants.updateReplyPage,
-                          arguments: reply);
-                          
-                    },
-                    child: const Text('Update reply')),
-                sizeVer(10),
-                const Divider(
-                  color: secondaryColor,
-                ),
-                InkWell(
-                    onTap: () {
-                      _deleteReply(reply: reply);
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Delete reply')),
-                sizeVer(10),
-              ],
+ _openbottomModelSheet(BuildContext context, ReplyEntity reply) {
+  return showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+    ),
+    backgroundColor: backgroundColor,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          );
-        });
-  }
+            const SizedBox(height: 15),
+            const Text(
+              'More Options',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 25),
+
+            ListTile(
+              leading: const Icon(Icons.edit_note, color: blueColor),
+              title: const Text(
+                'Update Reply',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(
+                  context,
+                  PageConstants.updateReplyPage,
+                  arguments: reply,
+                );
+              },
+              tileColor: Colors.grey.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+
+            const SizedBox(height: 10),
+
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              title: const Text(
+                'Delete Reply',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.redAccent,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _deleteReply(reply: reply);
+              },
+              tileColor: Colors.grey.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   _clear() {
     _replyDescriptionController!.clear();

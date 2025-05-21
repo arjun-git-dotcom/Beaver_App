@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,44 +54,127 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, getSingleUserState) {
         if (getSingleUserState is GetSingleUserLoaded) {
           final currentUser = getSingleUserState.user;
+          bool isWebLayout = MediaQuery.of(context).size.width > 900;
+          if (isWebLayout) {
+            return Scaffold(
+             
+              body: Row(
+                children: [
+                  Container(
+                    width: 72,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: BorderSide(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
+                      ),
+                      color: backgroundColor,
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 24),
+                       
+                        const Divider(),
+                        _buildNavItem(Icons.home, 0),
+                        _buildNavItem(Icons.search, 1),
+                        _buildNavItem(Icons.add_circle, 2),
+                        _buildNavItem(MdiIcons.heart, 3),
+                        _buildNavItem(Icons.person_2_rounded, 4),
+                      ],
+                    ),
+                  ),
+             
+                  Expanded(
+                    child: Center(
+                      child: SizedBox(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: PageView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: pageController,
+                            onPageChanged: onPageChanged,
+                            children: [
+                              const Homepage(),
+                              const Searchpage(),
+                              UploadPostpage(
+                                currentUser: currentUser,
+                              ),
+                              const Likedpage(),
+                              Profilepage(currentuser: currentUser)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
           return Scaffold(
-            bottomNavigationBar: CupertinoTabBar(
-              currentIndex: _currentIndex,
-              activeColor: blueColor,
+            bottomNavigationBar: CurvedNavigationBar(
+              height: 50,
+            index: _currentIndex,
+              color: appbarColor,
+              animationDuration:const  Duration(milliseconds: 300),
               backgroundColor: backgroundColor,
               items: [
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                ),
-                const BottomNavigationBarItem(icon: Icon(Icons.search)),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.add_circle),
-                ),
-                BottomNavigationBarItem(icon: Icon(MdiIcons.heart)),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.person_2_rounded)),
+                const 
+                   Icon(Icons.home),
+                
+               const Icon(Icons.search),
+               
+                  const Icon(Icons.add_circle),
+                
+                 Icon(MdiIcons.heart),
+                
+                    const  Icon(Icons.person_2_rounded),
               ],
               onTap: navigationTapped,
             ),
-            body: PageView(
-              controller: pageController,
-              onPageChanged: onPageChanged,
-              children: [
-                const Homepage(),
-                const Searchpage(),
-                UploadPostpage(
-                  currentUser: currentUser,
-                ),
-                const Likedpage(),
-                Profilepage(currentuser: currentUser)
-              ],
+            body: Center(
+              child: PageView(
+                controller: pageController,
+                onPageChanged: onPageChanged,
+                children: [
+                  const Homepage(),
+                  const Searchpage(),
+                  UploadPostpage(
+                    currentUser: currentUser,
+                  ),
+                  const Likedpage(),
+                  Profilepage(currentuser: currentUser)
+                ],
+              ),
             ),
           );
         }
 
-        return Center(
-            child: SpinkitConstants().spinKitRotatingCircle(backgroundColor));
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          body: Center(
+              child: SpinkitConstants().spinKitRotatingCircle(appbarColor)),
+        );
       },
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, int index) {
+    bool isSelected = _currentIndex == index;
+    return InkWell(
+      onTap: () => navigationTapped(index),
+      child: SizedBox(
+        height: 60,
+        width: double.infinity,
+        child: Center(
+          child: Icon(
+            icon,
+            size: 28,
+            color: isSelected ? blueColor : Colors.grey,
+          ),
+        ),
+      ),
     );
   }
 }

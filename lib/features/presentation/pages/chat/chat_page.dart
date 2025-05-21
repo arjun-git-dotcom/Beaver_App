@@ -47,6 +47,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor:appbarColor,
         title: Text(widget.peerName),
         actions: [
           IconButton(
@@ -66,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
               messageContentBuilder: (context, message, defaultWidget) {
                 final isMe = message.info.senderUserID == widget.currentUserId;
                 final timestamp = message.info.timestamp;
-                final formattedDate = DateFormat('hh:mm a').format(
+                final formattedDate = DateFormat('EEEE, hh:mm a').format(
                   DateTime.fromMillisecondsSinceEpoch(timestamp),
                 );
 
@@ -81,12 +82,17 @@ class _ChatPageState extends State<ChatPage> {
         color: isMe ? Colors.blue[200] : Colors.grey[300],
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        message.textContent?.text ?? '',
-        style: const TextStyle(fontSize: 16),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 220),
+        child: Text(
+          message.textContent?.text ?? '',
+          style: const TextStyle(fontSize: 16),
+          
+          softWrap: true,
+        ),
       ),
     ),
-    // Timestamp
+    
     Positioned(
       bottom: 0,
       left: isMe ? null : 8,

@@ -122,119 +122,124 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _bodyWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(
-                  "assets/beaver-image.svg",
-                  height: 80,
-                  width: 80,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-            ),
-            Stack(children: [
-              SizedBox(
-                height: 100,
-                width: 100,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: BlocBuilder<ImageCubit, File?>(
-                        builder: (context, state) {
-                      return profileWidget(image: state);
-                    })),
-              ),
-              Positioned(
-                  right: -8,
-                  bottom: -5,
-                  child: IconButton(
-                      onPressed: () => selectImage(),
-                      icon: const Icon(
-                        Icons.add_a_photo,
-                        size: 30,
-                      )))
-            ]),
-            sizeVer(10),
-            FormContainerWidget(
-              controller: _usernameController,
-              hintText: 'Enter your username',
-            ),
-            sizeVer(10),
-            FormContainerWidget(
-              controller: _emailController,
-              hintText: 'Enter your email',
-            ),
-            sizeVer(10),
-            FormContainerWidget(
-              controller: _passwordController,
-              hintText: 'Enter your password',
-            ),
-            sizeVer(10),
-            FormContainerWidget(
-              controller: _bioController,
-              hintText: 'Enter your bio',
-            ),
-            sizeVer(10),
-            BottomContainerWidget(
-              text: 'Register',
-              color: blueColor,
-              onTapListener: () => _registerUser(),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-            ),
-            const Divider(color: primaryColor),
-            Row(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Already have an account?'),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, 'loginPage', (route) => false);
-                  },
-                  child: const Text(
-                    ' Login',
-                    style: TextStyle(color: blueColor),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/beaver-image.svg",
+                      height: 80,
+                      width: 80,
+                    ),
+                  ],
                 ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                ),
+                Stack(children: [
+                  SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: BlocBuilder<ImageCubit, File?>(
+                            builder: (context, state) {
+                          return profileWidget(image: state);
+                        })),
+                  ),
+                  Positioned(
+                      right: -8,
+                      bottom: -5,
+                      child: IconButton(
+                          onPressed: () => selectImage(),
+                          icon: const Icon(
+                            Icons.add_a_photo,
+                            size: 30,
+                          )))
+                ]),
+                sizeVer(10),
+                FormContainerWidget(
+                  controller: _usernameController,
+                  hintText: 'Enter your username',
+                ),
+                sizeVer(10),
+                FormContainerWidget(
+                  controller: _emailController,
+                  hintText: 'Enter your email',
+                ),
+                sizeVer(10),
+                FormContainerWidget(
+                  controller: _passwordController,
+                  hintText: 'Enter your password',
+                ),
+                sizeVer(10),
+                FormContainerWidget(
+                  controller: _bioController,
+                  hintText: 'Enter your bio',
+                ),
+                sizeVer(10),
+                BottomContainerWidget(
+                  text: 'Register',
+                  color: blueColor,
+                  onTapListener: () => _registerUser(),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                ),
+                const Divider(color: primaryColor),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Already have an account?'),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, 'loginPage', (route) => false);
+                      },
+                      child: const Text(
+                        ' Login',
+                        style: TextStyle(color: blueColor),
+                      ),
+                    ),
+                  ],
+                ),
+                sizeVer(10),
+                BlocBuilder<CredentialCubit, CredentialState>(
+                  builder: (context, state) {
+                    if (state is CredentialLoading) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Please wait ',
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          sizeHor(10),
+                           SpinkitConstants().spinkitcircle(blueColor)
+                        ],
+                      );
+                    } else {
+                      return const SizedBox(
+                        height: 0,
+                        width: 0,
+                      );
+                    }
+                  },
+                )
               ],
             ),
-            sizeVer(10),
-            BlocBuilder<CredentialCubit, CredentialState>(
-              builder: (context, state) {
-                if (state is CredentialLoading) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Please wait ',
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400),
-                      ),
-                      sizeHor(10),
-                       SpinkitConstants().spinkitcircle(blueColor)
-                    ],
-                  );
-                } else {
-                  return const SizedBox(
-                    height: 0,
-                    width: 0,
-                  );
-                }
-              },
-            )
-          ],
+          ),
         ),
       ),
     );

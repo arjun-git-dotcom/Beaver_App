@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/domain/entities/posts/post_entity.dart';
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/get_current_uuid_usecase.dart';
+import 'package:social_media/features/presentation/cubit/bookmark/bookmark_cubit.dart';
 import 'package:social_media/features/presentation/cubit/like_animation/like_animation_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/get_single_post/get_single_post_state.dart';
@@ -40,12 +41,12 @@ class _PostDetailsMainWidgetState extends State<PostDetailsMainWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Post Details")),
+      appBar: AppBar(title:  Text("Post Details",style: AppTextStyle.stylishfont(color:primaryColor),)),
       body: BlocBuilder<GetSinglePostCubit, GetSinglePostState>(
         builder: (context, singlePostState) {
           if (singlePostState is GetSinglePostLoaded) {
             final singlepost = singlePostState.post;
-            return FutureBuilder<Object>(
+            return FutureBuilder(
               future: _currentUid,
               builder: (context, snapshot) {
                    if (!snapshot.hasData) {
@@ -156,7 +157,31 @@ class _PostDetailsMainWidgetState extends State<PostDetailsMainWidget> {
                                 ),
                               ],
                             ),
-                            const Icon(Icons.bookmark_border),
+                             BlocBuilder<BookmarkCubit, Set<String>>(
+                        builder: (context, bookmarkedPosts) {
+                          final isBookmarked =
+                              bookmarkedPosts.contains(widget.postId);
+
+                          return GestureDetector(
+                            onTap: () {
+                              context
+                                  .read<BookmarkCubit>()
+                                  .toggleBookmark(widget.postId);
+                              BlocProvider.of<PostCubit>(context)
+                                  .savePostUsecase(
+                                      widget.postId, currentUid);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            },
+                            child: 
+                            isBookmarked?const Icon(Icons.bookmark,color: secondaryColor,):const Icon(
+                              Icons.bookmark_outline,
+                              color:
+                                  primaryColor
+                            )
+                          );
+                        },
+                      )
                           ],
                         ),
                         Text(

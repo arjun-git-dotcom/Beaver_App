@@ -90,7 +90,8 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
                         ),
                       ]);
                     }
-                    return const CircularProgressIndicator();
+                    return  SpinkitConstants()
+                                .spinKitRotatingCircle(blueColor);
                   },
                 )
               : BlocBuilder<PostCubit, PostState>(
