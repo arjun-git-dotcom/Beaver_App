@@ -12,6 +12,8 @@ import 'package:social_media/features/presentation/cubit/credential/credential_c
 import 'package:social_media/features/presentation/cubit/credential/credential_state.dart';
 import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
+import 'package:social_media/features/presentation/cubit/validation/validation_cubit.dart';
+import 'package:social_media/features/presentation/cubit/validation/validation_state.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
 import 'package:social_media/features/presentation/widgets/form_container_widget.dart';
@@ -33,6 +35,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   final TextEditingController _bioController = TextEditingController();
+
+@override
+void initState() {
+    
+    super.initState();
+formCubit = context.read<FormCubit>();
+  }
   @override
   void dispose() {
     super.dispose();
@@ -40,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _usernameController.dispose();
     _passwordController.dispose();
     _bioController.dispose();
-    formCubit = context.read<FormCubit>();
+    
   }
 
   Future selectImage() async {
@@ -51,10 +60,10 @@ class _RegisterPageState extends State<RegisterPage> {
       if (pickedFile != null) {
         context.read<ImageCubit>().selectImage(File(pickedFile.path));
       } else {
-        toast('no image has been selcted',duration: Toast.LENGTH_SHORT);
+        toast('no image has been selected', duration: Toast.LENGTH_SHORT);
       }
     } catch (e) {
-      toast('some error occured ',duration: Toast.LENGTH_SHORT);
+      toast('some error occured ', duration: Toast.LENGTH_SHORT);
     }
   }
 
@@ -79,9 +88,8 @@ class _RegisterPageState extends State<RegisterPage> {
           listener: (context, credentialState) {
             if (credentialState is CredentialSuccess) {
               BlocProvider.of<AuthCubit>(context).loggedIn();
-            }
-            if (credentialState is CredentialFailure) {
-              toast('Invalid Email and Password',duration: Toast.LENGTH_SHORT);
+            }else if(credentialState is CredentialFailure){
+                ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text(credentialState.errorText??"Login Failed")));
             }
           },
         ));
@@ -119,6 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _bioController.clear();
     context.read<ImageCubit>().clearImage();
     formCubit.resetForm();
+    context.read<ValidationCubit>().clearValidation();
   }
 
   _bodyWidget() {
@@ -171,14 +180,34 @@ class _RegisterPageState extends State<RegisterPage> {
                   hintText: 'Enter your username',
                 ),
                 sizeVer(10),
-                FormContainerWidget(
-                  controller: _emailController,
-                  hintText: 'Enter your email',
+                BlocBuilder<ValidationCubit, ValidationState>(
+                  builder: (context, state) {
+                    return FormContainerWidget(
+                      controller: _emailController,
+                      hintText: 'Enter your email',
+                      errorText: state.emailerrorText,
+                      onChanged: (value) {
+                        context
+                            .read<ValidationCubit>()
+                            .validateEmail(value.trim());
+                      },
+                    );
+                  },
                 ),
                 sizeVer(10),
-                FormContainerWidget(
-                  controller: _passwordController,
-                  hintText: 'Enter your password',
+                BlocBuilder<ValidationCubit, ValidationState>(
+                  builder: (context, state) {
+                    return FormContainerWidget(
+                      controller: _passwordController,
+                      hintText: 'Enter your password',
+                      errorText: state.passworderrorText,
+                      onChanged: (value) {
+                        context
+                            .read<ValidationCubit>()
+                            .validatePassword(value.trim());
+                      },
+                    );
+                  },
                 ),
                 sizeVer(10),
                 FormContainerWidget(
@@ -226,7 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 fontWeight: FontWeight.w400),
                           ),
                           sizeHor(10),
-                           SpinkitConstants().spinkitcircle(blueColor)
+                          SpinkitConstants().spinkitcircle(blueColor)
                         ],
                       );
                     } else {

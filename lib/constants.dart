@@ -10,6 +10,7 @@ const secondaryColor = Colors.grey;
 const darkgreyColor = Color.fromARGB(255, 92, 92, 92);
 const redColor = Colors.red;
 const appbarColor = Color.fromARGB(255, 173, 207, 222);
+const themeColor = Color.fromARGB(255, 230, 206, 214);
 
 Widget sizeVer(double height) {
   return SizedBox(

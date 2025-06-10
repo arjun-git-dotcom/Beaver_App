@@ -9,7 +9,15 @@ class HomeAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: appbarColor,
+     backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [appbarColor, themeColor],
+              stops: [0.4,0.7],
+              begin: Alignment.topLeft,
+              end: Alignment.centerRight,))),
           title: SvgPicture.asset(
             "assets/beaver-image.svg",
             height: 80,

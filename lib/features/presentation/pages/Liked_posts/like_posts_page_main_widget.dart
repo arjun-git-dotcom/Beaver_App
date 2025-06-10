@@ -29,6 +29,7 @@ class _LikedpageMainWidgetState extends State<LikedpageMainWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: themeColor,
       appBar:AppBar(
         backgroundColor: appbarColor,
         centerTitle: true,

@@ -67,18 +67,21 @@ import 'package:social_media/features/presentation/cubit/savedposts/savedpost_cu
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
+import 'package:social_media/features/presentation/cubit/validation/validation_cubit.dart';
 
 final sl = GetIt.instance;
 
 GoogleSignIn createGoogleSignIn() {
   if (kIsWeb) {
     return GoogleSignIn(
-      clientId: '754094927603-gkreu1dmbic1p3kpi9sl8omtcpdvteiv.apps.googleusercontent.com', // Web client ID here
+      clientId:
+          '754094927603-gkreu1dmbic1p3kpi9sl8omtcpdvteiv.apps.googleusercontent.com', // Web client ID here
     );
   } else {
     return GoogleSignIn();
   }
 }
+
 Future<void> init() async {
   // External Dependencies
   final firebaseFirestore = FirebaseFirestore.instance;
@@ -228,4 +231,5 @@ Future<void> init() async {
   sl.registerFactory(() => CurrentUidCubit());
   sl.registerFactory(() => ObscureTextCubit());
   sl.registerFactory(() => BookmarkCubit());
+  sl.registerFactory(() => ValidationCubit());
 }

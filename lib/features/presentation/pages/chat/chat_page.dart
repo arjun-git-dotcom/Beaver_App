@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/features/presentation/pages/video_call/video_call_page.dart';
@@ -24,7 +23,6 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late Future<void> _connectFuture;
-  bool _isConnected = false;
 
   @override
   void initState() {
@@ -32,36 +30,48 @@ class _ChatPageState extends State<ChatPage> {
 
     _connectFuture = ZIMKit()
         .connectUser(
-      id: widget.currentUserId,
-      name: widget.currentUserName,
-    )
+          id: widget.currentUserId,
+          name: widget.currentUserName,
+        )
+       
         .then((_) {
-      ZIMKit().updateUserInfo(name: widget.currentUserName);
-      setState(() {
-        _isConnected = true;
-      });
-    });
+         
+          ZIMKit().updateUserInfo(name: widget.currentUserName);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:appbarColor,
+        backgroundColor: appbarColor,
         title: Text(widget.peerName),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const VideoCallPage()));
-              },
-              icon: const Icon(Icons.video_call)),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const VideoCallPage()));
+            },
+            icon: const Icon(Icons.video_call),
+          ),
         ],
       ),
-      body: _isConnected
-          ? ZIMKitMessageListPage(
+      body: FutureBuilder<void>(
+        future: _connectFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+           
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+         
+            return Center(
+              child: Text('Failed to connect: ${snapshot.error}'),
+            );
+          } else {
+           
+            return ZIMKitMessageListPage(
               conversationID: widget.peerId,
               conversationType: ZIMConversationType.peer,
               messageContentBuilder: (context, message, defaultWidget) {
@@ -72,42 +82,44 @@ class _ChatPageState extends State<ChatPage> {
                 );
 
                 return Stack(
-  clipBehavior: Clip.none,
-  children: [
-   
-    Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: isMe ? Colors.blue[200] : Colors.grey[300],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 220),
-        child: Text(
-          message.textContent?.text ?? '',
-          style: const TextStyle(fontSize: 16),
-          
-          softWrap: true,
-        ),
-      ),
-    ),
-    
-    Positioned(
-      bottom: 0,
-      left: isMe ? null : 8,
-      right: isMe ? 8 : null,
-      child: Text(
-        formattedDate,
-        style: const TextStyle(fontSize: 10, color: primaryColor),
-      ),
-    ),
-  ],
-);
-
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 14),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: isMe ? Colors.blue[200] : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 220),
+                        child: Text(
+                          message.textContent?.text ?? '',
+                          style: const TextStyle(fontSize: 16),
+                          softWrap: true,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: isMe ? null : 8,
+                      right: isMe ? 8 : null,
+                      child: Text(
+                        formattedDate,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               },
-            )
-          : const Center(child: CircularProgressIndicator()),
+            );
+          }
+        },
+      ),
     );
   }
 }

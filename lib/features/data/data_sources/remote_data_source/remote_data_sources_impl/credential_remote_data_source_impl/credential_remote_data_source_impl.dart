@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/features/core/auth_exception.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/cloudinary/cloudinary_data_source.dart';
 import 'package:social_media/features/data/data_sources/remote_data_source/remote_data_sources.dart/credential_remote_data_source/credential_remote_data_source.dart';
 import 'package:social_media/features/data/model/user/user_model.dart';
@@ -15,14 +16,10 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
   final GoogleSignIn googleSignin;
 
   CredentialRemoteDataSourceImpl(
-
       {required this.googleSignin,
-        required this.firebaseAuth,
+      required this.firebaseAuth,
       required this.cloudinaryRepository,
       required this.firebaseFirestore});
-
-
-
 
   @override
   Future<bool> islogin() async => firebaseAuth.currentUser?.uid != null;
@@ -49,7 +46,7 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
   @override
   Future<void> loginUser(UserEntity user) async {
     try {
-      if (user.email!.isNotEmpty || user.password!.isNotEmpty) {
+      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
       } else {
@@ -57,9 +54,9 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        toast('user not found', duration: Toast.LENGTH_SHORT);
+        throw AuthException("user not found");
       } else if (e.code == 'wrong-password') {
-        toast('invalid email or password', duration: Toast.LENGTH_SHORT);
+        throw AuthException ("the password is incorrect");
       }
     }
   }
@@ -85,10 +82,10 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        toast('Email is already registered, login instead.',
-            duration: Toast.LENGTH_SHORT);
+        throw AuthException('Email is already registered, login instead.',
+           );
       } else {
-        toast('Something went wrong.', duration: Toast.LENGTH_SHORT);
+        throw AuthException('Please try again', );
       }
     }
   }
@@ -121,7 +118,7 @@ class CredentialRemoteDataSourceImpl implements CredentialRemoteDataSource {
         userCollection.doc(uid).update(newUser);
       }
     }).catchError((error) {
-      toast('some error occured $error', duration: Toast.LENGTH_SHORT);
+      throw AuthException('some error occured $error');
     });
   }
 

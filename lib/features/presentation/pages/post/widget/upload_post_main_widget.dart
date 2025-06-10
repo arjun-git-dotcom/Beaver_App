@@ -10,6 +10,7 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/storage/u
 import 'package:social_media/features/presentation/cubit/form/form_cubit.dart';
 import 'package:social_media/features/presentation/cubit/image/image_cubit.dart';
 import 'package:social_media/features/presentation/cubit/posts/post_cubit.dart';
+import 'package:social_media/features/presentation/pages/post/widget/camera_widget.dart';
 import 'package:social_media/features/presentation/pages/profile/widget/profile_form_widget.dart';
 import 'package:social_media/features/presentation/widgets/widget_profile.dart';
 import 'package:uuid/uuid.dart';
@@ -41,14 +42,10 @@ class _UploadPostMainWidgetState extends State<UploadPostMainWidget> {
 
   Future selectImage() async {
     try {
-      final pickedFile = await ImagePicker.platform
-          .getImageFromSource(source: ImageSource.gallery);
-
-      if (pickedFile != null) {
-        context.read<ImageCubit>().selectImage(File(pickedFile.path));
-      } else {
-        print('no image is selected');
-      }
+    Navigator.push(
+  context,
+  MaterialPageRoute(builder: (_) => CameraCaptureWidget()),
+);
     } catch (e) {
       print('some error occured');
     }
@@ -98,7 +95,7 @@ Widget build(BuildContext context) {
 
   return image == null
       ? Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: themeColor,
           body: Center(
   child: Column(
     mainAxisSize: MainAxisSize.min,
@@ -128,7 +125,7 @@ Widget build(BuildContext context) {
       ),
       const SizedBox(height: 12),
        Text(
-        'Tap to post an image',
+        'Tap to Take Selfie',
         style: AppTextStyle.stylishfont(
           
           color: Colors.black,
@@ -141,9 +138,9 @@ Widget build(BuildContext context) {
 
         )
       : Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: themeColor,
           appBar: AppBar(
-            backgroundColor: backgroundColor,
+            backgroundColor: themeColor,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.close, color: Colors.red),
@@ -186,7 +183,7 @@ Widget build(BuildContext context) {
                   borderRadius: BorderRadius.circular(16),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 350,
+                    height: 400,
                     child: profileWidget(image: image),
                   ),
                 ),

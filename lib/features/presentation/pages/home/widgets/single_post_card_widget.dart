@@ -43,7 +43,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
 
           final currentUid = snapshot.data!;
           return Container(
-            color: backgroundColor,
+            color: themeColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
@@ -63,7 +63,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                                     imageUrl: widget.post.userProfileUrl)),
                           ),
                           sizeHor(10),
-                          Text(widget.post.username!),
+                          Text(widget.post.username!,style:const  TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
                         ],
                       ),
                       GestureDetector(
@@ -89,7 +89,7 @@ class _SinglePostCardWidgetState extends State<SinglePostCardWidget> {
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.35,
+                          height: MediaQuery.of(context).size.height * 0.45,
                           child:
                               profileWidget(imageUrl: widget.post.postImageUrl),
                         ),

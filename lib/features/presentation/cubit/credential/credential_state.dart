@@ -7,21 +7,23 @@ abstract class CredentialState extends Equatable {
 }
 
 class CredentialInitial extends CredentialState {
-   @override
+  @override
   List<Object?> get props => [];
 }
 
 class CredentialLoading extends CredentialState {
-   @override
+  @override
   List<Object?> get props => [];
 }
 
 class CredentialSuccess extends CredentialState {
-   @override
+  @override
   List<Object?> get props => [];
 }
 
 class CredentialFailure extends CredentialState {
-   @override
-  List<Object?> get props => [];
+  final String? errorText;
+  const CredentialFailure([this.errorText]);
+  @override
+  List<Object?> get props => [errorText];
 }

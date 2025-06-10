@@ -1,5 +1,4 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media/constants.dart';
@@ -57,7 +56,6 @@ class _MainScreenState extends State<MainScreen> {
           bool isWebLayout = MediaQuery.of(context).size.width > 900;
           if (isWebLayout) {
             return Scaffold(
-             
               body: Row(
                 children: [
                   Container(
@@ -74,7 +72,6 @@ class _MainScreenState extends State<MainScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 24),
-                       
                         const Divider(),
                         _buildNavItem(Icons.home, 0),
                         _buildNavItem(Icons.search, 1),
@@ -84,7 +81,6 @@ class _MainScreenState extends State<MainScreen> {
                       ],
                     ),
                   ),
-             
                   Expanded(
                     child: Center(
                       child: SizedBox(
@@ -115,21 +111,16 @@ class _MainScreenState extends State<MainScreen> {
           return Scaffold(
             bottomNavigationBar: CurvedNavigationBar(
               height: 50,
-            index: _currentIndex,
+              index: _currentIndex,
               color: appbarColor,
-              animationDuration:const  Duration(milliseconds: 300),
-              backgroundColor: backgroundColor,
+              animationDuration: const Duration(milliseconds: 300),
+              backgroundColor: themeColor,
               items: [
-                const 
-                   Icon(Icons.home),
-                
-               const Icon(Icons.search),
-               
-                  const Icon(Icons.add_circle),
-                
-                 Icon(MdiIcons.heart),
-                
-                    const  Icon(Icons.person_2_rounded),
+                const Icon(Icons.home),
+                const Icon(Icons.search),
+                const Icon(Icons.add_circle),
+                Icon(MdiIcons.heart),
+                const Icon(Icons.person_2_rounded),
               ],
               onTap: navigationTapped,
             ),

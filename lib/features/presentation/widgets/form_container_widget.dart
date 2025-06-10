@@ -14,6 +14,9 @@ class FormContainerWidget extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? inputType;
+  final String? errorText;
+  final ValueChanged<String>? onChanged;
+
 
   const FormContainerWidget(
       {super.key,
@@ -26,14 +29,14 @@ class FormContainerWidget extends StatefulWidget {
       this.onSaved,
       this.validator,
       this.onFieldSubmitted,
-      this.inputType});
+      this.onChanged,
+      this.inputType,this.errorText});
 
   @override
   State<FormContainerWidget> createState() => _FormContainerWidgetState();
 }
 
 class _FormContainerWidgetState extends State<FormContainerWidget> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,7 +54,10 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
             onSaved: widget.onSaved,
             validator: widget.validator,
             onFieldSubmitted: widget.onFieldSubmitted,
+            onChanged:widget.onChanged,
+            
             decoration: InputDecoration(
+              errorText: widget.errorText,
                 border: const OutlineInputBorder(),
                 hintText: widget.hintText,
                 hintStyle: const TextStyle(

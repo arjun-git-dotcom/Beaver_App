@@ -31,131 +31,133 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "${widget.currentUser.username}",
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.w700),
-                    ),
-                    InkWell(
-                        onTap: () =>
-                            _openbottomModelSheet(context, widget.currentUser),
-                        child: Icon(MdiIcons.menu))
-                  ],
-                ),
-                sizeVer(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: profileWidget(
-                              imageUrl: widget.currentUser.profileUrl)),
-                    ),
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text('${widget.currentUser.totalPosts}'),
-                            const Text('Posts')
-                          ],
-                        ),
-                        sizeHor(20),
-                        Column(
-                          children: [
-                            GestureDetector(
-                                onTap: () => Navigator.pushNamed(
-                                    context, PageConstants.followersPage,
-                                    arguments: widget.currentUser),
-                                child: Text(
-                                    '${widget.currentUser.totalFollowers}')),
-                            const Text('followers')
-                          ],
-                        ),
-                        sizeHor(20),
-                        Column(
-                          children: [
-                            GestureDetector(
-                                onTap: () => Navigator.pushNamed(
-                                    context, PageConstants.followingPage,
-                                    arguments: widget.currentUser),
-                                child: Text(
-                                    '${widget.currentUser.totalFollowing}')),
-                            const Text('following')
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                sizeVer(10),
-                Text(
+    return Scaffold(
+      backgroundColor: themeColor,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${widget.currentUser.username}",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w700),
+                  ),
+                  InkWell(
+                      onTap: () =>
+                          _openbottomModelSheet(context, widget.currentUser),
+                      child: Icon(MdiIcons.menu))
+                ],
+              ),
+              sizeVer(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(40),
+                        child: profileWidget(
+                            imageUrl: widget.currentUser.profileUrl)),
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          Text('${widget.currentUser.totalPosts}'),
+                          const Text('Posts')
+                        ],
+                      ),
+                      sizeHor(20),
+                      Column(
+                        children: [
+                          GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, PageConstants.followersPage,
+                                  arguments: widget.currentUser),
+                              child: Text(
+                                  '${widget.currentUser.totalFollowers}')),
+                          const Text('followers')
+                        ],
+                      ),
+                      sizeHor(20),
+                      Column(
+                        children: [
+                          GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, PageConstants.followingPage,
+                                  arguments: widget.currentUser),
+                              child: Text(
+                                  '${widget.currentUser.totalFollowing}')),
+                          const Text('following')
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+              sizeVer(10),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
                     '${widget.currentUser.name == "" ? widget.currentUser.username : widget.currentUser.name}',
                     style: const TextStyle(
                         fontSize: 13, fontWeight: FontWeight.w600)),
-                Text(
-                  ' ${widget.currentUser.bio}',
-                  style: const TextStyle(fontSize: 12),
-                ),
-                sizeVer(10),
-                BlocBuilder<PostCubit, PostState>(
-                  builder: (context, poststate) {
-                    if (poststate is PostLoaded) {
-                      final posts = poststate.posts
-                          .where((post) =>
-                              post.creatorUid == widget.currentUser.uid)
-                          .toList();
-
-                             if (posts.isEmpty) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.width*0.5,
-                    child: const Center(
-                      child: Padding(
-                        padding:  EdgeInsets.all(20.0),
-                        child: Text(
-                          "No Posts Yet",
-                          style: TextStyle(fontSize: 17,color: primaryColor),
-                        ),
+              ),
+              Text(
+                ' ${widget.currentUser.bio}',
+                style: const TextStyle(fontSize: 12),
+              ),
+              sizeVer(10),
+              BlocBuilder<PostCubit, PostState>(
+                builder: (context, poststate) {
+                  if (poststate is PostLoaded) {
+                    final posts = poststate.posts
+                        .where((post) =>
+                            post.creatorUid == widget.currentUser.uid)
+                        .toList();
+    
+                           if (posts.isEmpty) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.width*0.5,
+                  child: const Center(
+                    child: Padding(
+                      padding:  EdgeInsets.all(20.0),
+                      child: Text(
+                        "No Posts Yet",
+                        style: TextStyle(fontSize: 17,color: primaryColor),
                       ),
                     ),
-                  );
-                }
-                      return GridView.builder(
-                          itemCount: posts.length,
-                          physics: const ScrollPhysics(),
-                          shrinkWrap: true,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 5,
-                                  mainAxisSpacing: 5,
-                                  crossAxisCount: 3),
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: profileWidget(
-                                  imageUrl: posts[index].postImageUrl),
-                            );
-                          });
-                    }
-                    return const CircularProgressIndicator();
-                  },
-                )
-              ],
-            ),
+                  ),
+                );
+              }
+                    return GridView.builder(
+                        itemCount: posts.length,
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisSpacing: 5,
+                                mainAxisSpacing: 5,
+                                crossAxisCount: 3),
+                        itemBuilder: (context, index) {
+                          return SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: profileWidget(
+                                imageUrl: posts[index].postImageUrl),
+                          );
+                        });
+                  }
+                  return const CircularProgressIndicator();
+                },
+              )
+            ],
           ),
         ),
       ),

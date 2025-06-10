@@ -1,7 +1,6 @@
 import 'dart:io';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:social_media/features/core/validator.dart';
+
 
 class UserEntity extends Equatable {
   final String? username;
@@ -63,19 +62,7 @@ class UserEntity extends Equatable {
       ];
 }
 
-Either<ValidationError, Tuple2<String, String>> validate(
-    String email, String password) {
-  final emailValidation = Validator.validateEmail(email);
-  final passwordValidation = Validator.validatePassword(password);
 
-  if (emailValidation.isLeft()) {
-    return const Left(ValidationError.invalidEmail);
-  }
-  if (passwordValidation.isLeft()) {
-    return const Left(ValidationError.weakPassword);
-  }
-  return right(Tuple2(email, password));
-}
 
 
 

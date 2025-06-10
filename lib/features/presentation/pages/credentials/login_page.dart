@@ -7,6 +7,8 @@ import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_cubit.dart';
 import 'package:social_media/features/presentation/cubit/credential/credential_state.dart';
+import 'package:social_media/features/presentation/cubit/validation/validation_cubit.dart';
+import 'package:social_media/features/presentation/cubit/validation/validation_state.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 
 import 'package:social_media/features/presentation/widgets/bottom_container_widget.dart';
@@ -26,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool isLoggedIn = false;
   bool isGoogleIn = false;
+
   @override
   void dispose() {
     super.dispose();
@@ -43,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               BlocProvider.of<AuthCubit>(context).loggedIn();
             }
             if (credentialState is CredentialFailure) {
-              toast('Invalid Email and Password', duration: Toast.LENGTH_SHORT);
+              ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text(credentialState.errorText??"Login Failed")));
             }
           },
           builder: (context, credentialState) {
@@ -74,6 +77,7 @@ class _LoginPageState extends State<LoginPage> {
     emailController.clear();
     passwordController.clear();
     isLoggedIn = false;
+    context.read<ValidationCubit>().clearValidation();
   }
 
   _bodyWidget(context) {
@@ -85,7 +89,6 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-          
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.210,
@@ -97,16 +100,35 @@ class _LoginPageState extends State<LoginPage> {
                   width: 100,
                 )),
                 sizeVer(10),
-                FormContainerWidget(
-                  controller: emailController,
-                  hintText: "Email",
+                BlocBuilder<ValidationCubit, ValidationState>(
+                  builder: (context, state) {
+                    return FormContainerWidget(
+                      controller: emailController,
+                      hintText: "Email",
+                      errorText: state.emailerrorText,
+                      onChanged: (value) {
+                        context
+                            .read<ValidationCubit>()
+                            .validateEmail(value.trim());
+                      },
+                    );
+                  },
                 ),
                 sizeVer(10),
-                FormContainerWidget(
-                  controller: passwordController,
-                  hintText: "Password",
-                  isPasswordField: true,
-                ),
+                BlocBuilder<ValidationCubit, ValidationState>(
+                    builder: (context, state) {
+                  return FormContainerWidget(
+                    controller: passwordController,
+                    hintText: "Password",
+                    isPasswordField: true,
+                    errorText: state.passworderrorText,
+                    onChanged: (value) {
+                      context
+                          .read<ValidationCubit>()
+                          .validatePassword(value.trim());
+                    },
+                  );
+                }),
                 sizeVer(10),
                 BottomContainerWidget(
                   text: 'Login',

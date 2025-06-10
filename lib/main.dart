@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:social_media/constants.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_cubit.dart';
 import 'package:social_media/features/presentation/cubit/auth/auth_state.dart';
 import 'package:social_media/features/presentation/cubit/bookmark/bookmark_cubit.dart';
@@ -15,6 +16,7 @@ import 'package:social_media/features/presentation/cubit/obscure_text/obscure_te
 import 'package:social_media/features/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user/user_cubit.dart';
 import 'package:social_media/features/presentation/cubit/user_reply_flag/user_reply_flag_cubit.dart';
+import 'package:social_media/features/presentation/cubit/validation/validation_cubit.dart';
 import 'package:social_media/features/presentation/pages/credentials/login_page.dart';
 import 'package:social_media/features/presentation/pages/main_screen/main_screen.dart';
 import 'package:social_media/firebase_options.dart';
@@ -59,6 +61,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_)=>di.sl<ValidationCubit>()),
         BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
         BlocProvider(create: (_) => di.sl<CredentialCubit>()),
         BlocProvider(create: (_) {
@@ -73,9 +76,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<UserReplyFlagCubit>()),
         BlocProvider(create: (_) => di.sl<CurrentUidCubit>()),
         BlocProvider(create: (_) => di.sl<ObscureTextCubit>()),
-        BlocProvider(create: (_) => di.sl<BookmarkCubit>())
+        BlocProvider(create: (_) => di.sl<BookmarkCubit>()),
+        
       ],
       child: MaterialApp(
+        theme: ThemeData(primaryColor: themeColor),
         debugShowCheckedModeBanner: false,
         title: 'Beaver',
         onGenerateRoute: OnGenerateRoute.route,

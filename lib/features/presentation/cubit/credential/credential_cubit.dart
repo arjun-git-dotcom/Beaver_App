@@ -6,7 +6,6 @@ import 'package:social_media/features/domain/usecase/firebase_usecases/user/logi
 import 'package:social_media/features/domain/usecase/firebase_usecases/user/register_user_usecase.dart';
 
 import 'package:social_media/features/presentation/cubit/credential/credential_state.dart';
-import 'package:social_media/features/presentation/utils/validation_toast.dart';
 
 class CredentialCubit extends Cubit<CredentialState> {
   final LoginUserUsecase loginUserUsecase;
@@ -22,10 +21,10 @@ class CredentialCubit extends Cubit<CredentialState> {
 
     try {
       await loginUserUsecase.call(UserEntity(email: email, password: password));
-      validateAndShowToast(email, password);
+      
       emit(CredentialSuccess());
-    } catch (_) {
-      emit(CredentialFailure());
+    } catch (e) {
+      emit(CredentialFailure(e.toString()));
     }
   }
 
@@ -34,12 +33,12 @@ class CredentialCubit extends Cubit<CredentialState> {
 
     try {
       await registerUserUsecase.call(user);
-      validateAndShowToastRegistration(user);
+    
       emit(CredentialSuccess());
-    } on SocketException catch (_) {
-      emit(CredentialFailure());
-    } catch (_) {
-      emit(CredentialFailure());
+    } on SocketException catch (e) {
+      emit(CredentialFailure(e.toString()));
+    } catch (e) {
+      emit(CredentialFailure(e.toString()));
     }
   }
 }

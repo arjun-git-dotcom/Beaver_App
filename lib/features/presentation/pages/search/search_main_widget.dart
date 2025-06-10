@@ -40,6 +40,7 @@ class _SearchMainWidgetState extends State<SearchMainWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: themeColor,
           body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(children: [
